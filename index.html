@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Notebook</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#E668A7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="The Notebook">
+<link rel="icon" type="image/jpeg" href="icon.jpg">
+<link rel="apple-touch-icon" href="icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Antonio:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* AKQ palette (sourced from Visual Brand Guide v14) */
+    --hot-pink:     #DA005F;
+    --pink-main:    #E668A7;
+    --pink-soft:    #f6d0f6;
+    --pink-lighter: #FFAEF7;
+    --blush:        #F1BCD7;
+    --blush-pale:   #FFD4F4;
+    --rose:         #f39bc9;
+    --berry:        #ab5a81;
+    --deep-rose:    #c55c6b;
+    --coral:        #e36d61;
+    --terracotta:   #ea876b;
+    --salmon:       #FFAD8F;
+    --orange:       #ec8f2c;
+    --butter:       #F5F0C8;
+    --cream:        #FEF9F5;
+    --warm-white:   #fff2f1;
+    --offwhite:     #FBF8FC;
+    --white:        #FFFFFF;
+    --celery:       #EFFBD5;
+    --mint:         #bbe4c6;
+    --sage:         #90BBB1;
+    --olive-yellow: #B8B959;
+    --periwinkle-pl:#cfd8ff;
+    --periwinkle:   #b2c0f9;
+    --mist:         #F0E8EF;
+    --ink:          #1C1410;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    font-family:'DM Sans',sans-serif;
+    background:var(--white);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,textarea,select{font-family:inherit}
+  kbd{font-family:inherit}
+
+  .icon{width:16px;height:16px;stroke-width:1.8;stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .icon-sm{width:13px;height:13px}
+  .icon-xl{width:26px;height:26px}
+
+  .page{display:flex;flex-direction:column;min-height:100vh}
+  .hidden{display:none !important}
+  .only-mobile{display:none}
+  .only-desktop{display:initial}
+
+  /* ─────────── MASTHEAD ─────────── */
+  .c-top{
+    position:relative;
+    padding:30px 44px 18px;
+    display:flex;align-items:center;gap:26px;
+    flex-shrink:0;
+  }
+  .logo-tile{
+    width:58px;height:58px;border-radius:14px;
+    background:var(--periwinkle);
+    color:var(--pink-main);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    box-shadow:5px 5px 0 var(--ink);
+    flex-shrink:0;
+  }
+  .logo-tile::before{
+    content:'';position:absolute;
+    top:-7px;left:-7px;
+    width:18px;height:18px;border-radius:50%;
+    background:var(--pink-main);
+    border:2.5px solid var(--white);
+    box-shadow:1px 1px 0 var(--ink);
+  }
+  .logo-tile svg{
+    width:28px;height:28px;
+    stroke:var(--pink-main);
+    stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .masthead{
+    display:flex;flex-direction:column;gap:4px;
+    transform:rotate(-1.2deg);
+  }
+  .masthead .title{
+    font-family:'Fraunces',serif;
+    font-style:italic;font-weight:900;
+    font-size:56px;line-height:0.95;
+    color:var(--ink);letter-spacing:-0.02em;
+  }
+  .masthead .title u{
+    text-decoration:none;
+    background:linear-gradient(transparent 62%, var(--pink-soft) 62%, var(--pink-soft) 94%, transparent 94%);
+    padding:0 10px;
+  }
+  .mast-right{
+    margin-left:auto;
+    display:flex;align-items:center;gap:10px;
+  }
+  .dbx-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 14px;border-radius:999px;
+    background:var(--white);color:var(--ink);
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    min-height:44px;
+  }
+  .dbx-btn .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#b0aeb0;flex-shrink:0;
+  }
+  .dbx-btn.linked .dot{background:#3bd167}
+  .dbx-btn.syncing .dot{background:var(--orange);animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+  .dbx-btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+  /* ─────────── FILTERS / SEARCH / NEW ─────────── */
+  .c-filters{
+    padding:0 44px 18px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .c-filters .eyebrow{
+    font-family:'Antonio',sans-serif;
+    font-size:11px;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.22em;
+    color:var(--ink);opacity:0.7;
+    margin-right:6px;
+  }
+  .chip{
+    font-family:'DM Sans',sans-serif;
+    font-weight:800;font-size:10px;
+    text-transform:uppercase;letter-spacing:0.12em;
+    padding:10px 14px;border-radius:999px;
+    background:var(--white);color:var(--ink);
+    border:2px solid var(--ink);cursor:pointer;
+    transition:background 0.15s,color 0.15s,border-color 0.15s,box-shadow 0.15s;
+    min-height:38px;
+  }
+  .chip.on{
+    background:var(--pink-main);color:var(--white);
+    border-color:var(--pink-main);
+    box-shadow:2px 2px 0 var(--ink);
+  }
+  .chip-count{font-size:10px;font-weight:800;margin-left:6px;opacity:0.55}
+  .chip.on .chip-count{opacity:0.85;color:var(--pink-soft)}
+
+  .c-search{
+    margin-left:auto;
+    flex:0 1 280px;
+    display:flex;align-items:center;gap:8px;
+    background:var(--white);border-radius:999px;
+    padding:9px 14px;
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    min-height:42px;
+  }
+  .c-search input{
+    flex:1;border:none;outline:none;background:transparent;
+    font-size:14px;color:var(--ink);min-width:0;
+  }
+  .c-search input::placeholder{color:#a67695;font-weight:600}
+  .c-search .icon{color:var(--ink)}
+
+  .btn-new-badge{
+    background:var(--pink-main);color:var(--white);
+    padding:12px 20px;border-radius:999px;
+    font-family:'Fraunces',serif;font-style:italic;font-weight:700;
+    font-size:14px;
+    display:inline-flex;align-items:center;gap:8px;
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    transform:rotate(2.5deg);
+    min-height:44px;
+  }
+  .btn-new-badge:hover{transform:rotate(0) translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+  /* ─────────── VIEW TOGGLE ─────────── */
+  .view-toggle{
+    display:inline-flex;align-items:center;
+    background:var(--white);
+    border:2px solid var(--ink);
+    border-radius:999px;
+    padding:3px;
+    box-shadow:3px 3px 0 var(--ink);
+    margin-left:8px;
+  }
+  .view-toggle button{
+    font-family:'DM Sans',sans-serif;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    padding:8px 14px;border-radius:999px;
+    color:var(--ink);
+    display:inline-flex;align-items:center;gap:6px;
+    min-height:36px;
+  }
+  .view-toggle button.on{
+    background:var(--pink-main);color:var(--white);
+  }
+
+  /* ─────────── LIST VIEW ─────────── */
+  .list-wrap{
+    max-width:960px;margin:0 auto;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .list-head{
+    display:grid;
+    grid-template-columns:12px minmax(0,3fr) 110px 110px 60px;
+    gap:14px;align-items:center;
+    padding:10px 16px;
+    font-family:'DM Sans',sans-serif;
+    font-size:9px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.18em;
+    color:var(--ink);opacity:0.5;
+    border-bottom:1.5px dashed rgba(28,20,16,0.2);
+  }
+  .list-row{
+    display:grid;
+    grid-template-columns:12px minmax(0,3fr) 110px 110px 60px;
+    gap:14px;align-items:center;
+    padding:14px 16px;
+    background:var(--white);
+    border:1.5px solid transparent;
+    border-radius:10px;
+    cursor:pointer;
+    transition:transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  }
+  .list-row:hover{
+    transform:translateX(4px);
+    border-color:var(--pink-main);
+    box-shadow:2px 2px 0 var(--ink);
+  }
+  .list-paper-dot{
+    width:12px;height:12px;border-radius:50%;
+    border:1.5px solid var(--ink);
+  }
+  .list-title{
+    font-family:'Fraunces',serif;
+    font-weight:700;font-size:18px;line-height:1.2;
+    color:var(--ink);letter-spacing:-0.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .list-title em{font-style:italic;color:var(--pink-main)}
+  .list-title .sub{
+    display:block;
+    font-family:'DM Sans',sans-serif;
+    font-weight:500;font-size:11px;
+    color:var(--ink);opacity:0.55;
+    margin-top:2px;
+    font-style:normal;
+    letter-spacing:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .list-tag{
+    font-family:'DM Sans',sans-serif;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    color:var(--ink);opacity:0.7;
+  }
+  .list-date{
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;font-weight:700;
+    color:var(--ink);opacity:0.65;
+  }
+  .list-wc{
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;font-weight:800;
+    color:var(--ink);opacity:0.6;
+    text-align:right;
+    display:flex;align-items:center;justify-content:flex-end;gap:6px;
+  }
+  .list-wc .star{color:var(--pink-main);font-size:13px;opacity:1}
+  .list-pinned{
+    display:inline-block;
+    background:var(--pink-main);color:var(--white);
+    font-family:'Antonio',sans-serif;
+    font-size:9px;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.16em;
+    padding:2px 6px;border-radius:4px;
+    margin-left:8px;vertical-align:middle;
+  }
+  .list-new{
+    display:flex;align-items:center;gap:12px;
+    padding:18px 20px;
+    margin-top:14px;
+    background:var(--pink-main);color:var(--white);
+    border:2px solid var(--ink);
+    border-radius:14px;
+    box-shadow:5px 5px 0 var(--ink);
+    cursor:pointer;
+    min-height:60px;
+  }
+  .list-new svg{stroke:var(--white)}
+  .list-new .lab{
+    font-family:'Fraunces',serif;
+    font-style:italic;font-weight:700;font-size:17px;
+  }
+  .list-new .kb{
+    margin-left:auto;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.16em;
+  }
+  .list-new .kb kbd{
+    background:var(--white);color:var(--pink-main);
+    padding:3px 8px;border-radius:4px;margin-left:6px;
+  }
+
+  /* ─────────── BOARD ─────────── */
+  .board{
+    position:relative;
+    flex:1;overflow-y:auto;
+    padding:10px 44px 80px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:26px;
+  }
+
+  .note{
+    position:relative;
+    padding:28px 28px 24px;
+    border-radius:10px;
+    grid-column:span 4;
+    box-shadow:
+      2px 4px 0 rgba(28,20,16,0.08),
+      0 10px 24px rgba(28,20,16,0.06);
+    cursor:pointer;
+    transition:transform 0.22s, box-shadow 0.22s;
+  }
+  .note:hover{
+    transform:translateY(-3px) rotate(0) !important;
+    box-shadow:
+      2px 4px 0 rgba(28,20,16,0.08),
+      0 18px 32px rgba(28,20,16,0.14);
+    z-index:10;
+  }
+  .note::before{
+    content:'';position:absolute;
+    top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
+    width:72px;height:20px;
+    background:var(--pink-soft);
+    border-left:1.5px dashed rgba(28,20,16,0.2);
+    border-right:1.5px dashed rgba(28,20,16,0.2);
+    box-shadow:0 1px 2px rgba(0,0,0,0.05);
+  }
+  .note .tag{
+    font-family:'DM Sans',sans-serif;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    color:var(--ink);opacity:0.55;
+    margin-bottom:14px;
+  }
+  .note .n-title{
+    font-family:'Fraunces',serif;
+    font-weight:700;font-size:24px;line-height:1.1;
+    color:var(--ink);letter-spacing:-0.015em;
+    margin-bottom:12px;
+  }
+  .note .n-title em{font-style:italic;color:var(--pink-main)}
+  .note .n-excerpt{
+    font-size:13px;line-height:1.6;color:var(--ink);opacity:0.82;
+    display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;
+    overflow:hidden;white-space:pre-wrap;
+  }
+  .note .n-foot{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:18px;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--ink);opacity:0.55;
+  }
+  .note .n-foot .star{color:var(--pink-main);opacity:1;font-size:13px}
+  .note .n-foot .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--ink);opacity:0.35;display:inline-block;
+  }
+  .sticker{
+    position:absolute;bottom:-12px;right:-10px;
+    background:var(--ink);color:var(--butter);
+    font-family:'Antonio',sans-serif;
+    font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.14em;
+    padding:8px 12px;border-radius:999px;
+    transform:rotate(6deg);
+    box-shadow:2px 2px 0 rgba(230,104,167,0.55);z-index:2;
+  }
+  .sticker.today{background:var(--pink-main);color:var(--white)}
+  .sticker.starred{background:var(--butter);color:var(--ink)}
+
+  /* rotational variety */
+  .note:nth-child(6n+1){transform:rotate(-1.3deg)}
+  .note:nth-child(6n+2){transform:rotate(1deg)}
+  .note:nth-child(6n+3){transform:rotate(-0.8deg)}
+  .note:nth-child(6n+4){transform:rotate(0.6deg)}
+  .note:nth-child(6n+5){transform:rotate(-1.5deg)}
+  .note:nth-child(6n+6){transform:rotate(1.3deg)}
+
+  /* New-entry super-sticker */
+  .new-sticker{
+    grid-column:span 4;
+    background:var(--pink-main);color:var(--white);
+    border-radius:14px;
+    padding:32px 22px;position:relative;
+    display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:16px;
+    min-height:260px;
+    transform:rotate(-1.5deg);
+    border:3px solid var(--ink);
+    box-shadow:
+      5px 5px 0 var(--ink),
+      0 16px 30px rgba(230,104,167,0.3);
+    cursor:pointer;
+  }
+  .new-sticker::before{
+    content:'';position:absolute;
+    top:-16px;right:24px;
+    width:72px;height:22px;
+    background:var(--butter);
+    transform:rotate(8deg);
+    border-left:1.5px dashed rgba(28,20,16,0.3);
+    border-right:1.5px dashed rgba(28,20,16,0.3);
+  }
+  .new-sticker .circle{
+    width:74px;height:74px;border-radius:50%;
+    background:var(--pink-soft);color:var(--pink-main);
+    display:flex;align-items:center;justify-content:center;
+    border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+  }
+  .new-sticker .ns-a{
+    font-family:'Antonio',sans-serif;
+    font-size:13px;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.22em;
+    color:var(--pink-soft);
+  }
+  .new-sticker .ns-b{
+    font-family:'Fraunces',serif;
+    font-style:italic;font-weight:900;
+    font-size:32px;line-height:0.95;text-align:center;
+    letter-spacing:-0.02em;color:var(--white);
+  }
+  .new-sticker .ns-c{
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.18em;
+    color:var(--pink-soft);
+  }
+  .new-sticker .ns-c kbd{
+    background:var(--white);color:var(--pink-main);
+    padding:3px 8px;border-radius:4px;margin-right:2px;
+  }
+
+  /* Empty state */
+  .empty-state{
+    grid-column:span 12;
+    padding:60px 20px;text-align:center;
+    font-family:'Fraunces',serif;
+    font-style:italic;font-weight:700;font-size:22px;
+    color:var(--ink);opacity:0.55;
+  }
+  .empty-state em{color:var(--pink-main);font-style:italic}
+
+  /* ─────────── WRITING VIEW ─────────── */
+  .writing-view{
+    position:fixed;inset:0;
+    background:var(--cream);
+    z-index:100;
+    display:flex;flex-direction:column;
+    overflow:auto;
+  }
+  .wv-bar{
+    position:sticky;top:0;z-index:5;
+    background:var(--cream);
+    padding:18px 36px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    border-bottom:1.5px dashed rgba(28,20,16,0.15);
+  }
+  .wv-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    padding:10px 16px;border-radius:999px;
+    background:var(--white);color:var(--ink);
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);cursor:pointer;
+    min-height:42px;
+  }
+  .wv-btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .wv-btn.primary{background:var(--pink-main);color:var(--white);font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:13px;text-transform:none;letter-spacing:0}
+  .wv-btn[disabled]{opacity:0.45;cursor:not-allowed;box-shadow:none;transform:none !important;background:var(--mist)}
+  .wv-btn.ghost{background:transparent;box-shadow:none}
+  .wv-btn.ghost:hover{background:var(--white);box-shadow:2px 2px 0 var(--ink);transform:none}
+  .wv-btn.star.on{background:var(--butter)}
+  .wv-btn.pin.on{background:var(--pink-soft)}
+  .wv-btn.danger:hover{background:#ffe0e0}
+
+  .wv-meta{
+    display:flex;align-items:center;gap:10px;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    color:var(--ink);opacity:0.7;
+    margin-left:4px;
+  }
+  .wv-spacer{margin-left:auto}
+
+  .wv-tag-select{
+    font-size:11px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    padding:10px 14px;border-radius:999px;
+    background:var(--white);color:var(--ink);
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    cursor:pointer;outline:none;
+    appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231C1410' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 10px center;
+    background-size:12px;
+    padding-right:32px;
+    min-height:42px;
+  }
+
+  .wv-page{
+    flex:1;
+    max-width:1080px;width:100%;
+    margin:32px auto 80px;
+    padding:44px 64px 60px;
+    background:var(--white);
+    border:1.5px solid var(--mist);
+    border-radius:4px;
+    box-shadow:
+      2px 4px 0 rgba(28,20,16,0.08),
+      0 18px 40px rgba(28,20,16,0.08);
+    position:relative;
+  }
+  .wv-page::before{
+    content:'';position:absolute;
+    left:56px;top:0;bottom:0;width:1.5px;
+    background:var(--pink-main);opacity:0.45;
+  }
+  .wv-title{
+    font-family:'Fraunces',serif;
+    font-weight:900;font-size:44px;line-height:1.05;
+    letter-spacing:-0.02em;color:var(--ink);
+    margin-bottom:24px;
+    width:100%;border:none;outline:none;
+    background:transparent;resize:none;display:block;
+  }
+  .wv-title::placeholder{color:var(--pink-main);font-style:italic;opacity:0.5}
+
+  /* Lined surface: font 15px, line-height 34px (rule grid).
+     DM Sans baseline sits ~24-25px from top of line-box, so we draw the
+     rule at 25-26px so letters sit on it instead of floating. */
+  .wv-lines{
+    width:100%;min-height:62vh;
+    border:none;outline:none;resize:vertical;
+    background-color:transparent;
+    background-image:repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 25px,
+      rgba(230,104,167,0.32) 25px,
+      rgba(230,104,167,0.32) 26px,
+      transparent 26px,
+      transparent 34px
+    );
+    background-repeat:repeat-y;
+    font-family:'DM Sans',sans-serif;
+    font-size:15px;line-height:34px;
+    color:var(--ink);
+    padding:0 2px;
+    letter-spacing:0.005em;
+    display:block;
+  }
+  .wv-foot{
+    margin-top:30px;padding-top:18px;
+    border-top:1.5px dashed rgba(28,20,16,0.15);
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    color:var(--ink);opacity:0.6;
+    flex-wrap:wrap;gap:8px;
+  }
+  .wv-foot .star{color:var(--pink-main);opacity:1;font-size:14px}
+
+  /* ── In-writing-view paper + tape pickers ── */
+  .wv-picker-row{
+    max-width:1080px;width:100%;margin:0 auto;
+    padding:14px 64px 0;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  }
+  .wv-pick-group{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    padding:8px 14px;border-radius:18px;
+    background:var(--white);
+    border:1.5px dashed rgba(28,20,16,0.25);
+  }
+  .wv-pick-label{
+    font-family:'Antonio',sans-serif;
+    font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.22em;
+    color:var(--ink);opacity:0.7;margin-right:4px;
+  }
+  .wv-swatch{
+    width:26px;height:26px;border-radius:50%;
+    border:1.5px solid var(--ink);cursor:pointer;
+    position:relative;transition:transform 0.15s;
+  }
+  .wv-swatch:hover{transform:translateY(-2px)}
+  .wv-swatch.picked{outline:2px solid var(--pink-main);outline-offset:3px}
+  .wv-tape-sw{
+    width:40px;height:18px;border-radius:3px;
+    border:1.5px dashed rgba(28,20,16,0.4);
+    cursor:pointer;position:relative;transition:transform 0.15s;
+  }
+  .wv-tape-sw:hover{transform:translateY(-2px)}
+  .wv-tape-sw.picked{outline:2px solid var(--pink-main);outline-offset:3px}
+
+  /* Tape strip on top of the writing page — shows tape color live */
+  .wv-tape-strip{
+    position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-2deg);
+    width:140px;height:24px;
+    background:var(--pink-soft);
+    border-left:1.5px dashed rgba(28,20,16,0.25);
+    border-right:1.5px dashed rgba(28,20,16,0.25);
+    box-shadow:0 1px 2px rgba(0,0,0,0.05);
+    z-index:1;
+  }
+  /* Card-color tint ribbon on the wv-page so you see the paper color
+     without losing readability of the main writing surface. */
+  .wv-paper-ribbon{
+    position:absolute;top:0;left:0;right:0;height:8px;
+    background:var(--pink-soft);
+    border-top-left-radius:4px;border-top-right-radius:4px;
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed;bottom:24px;left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--white);
+    padding:12px 20px;border-radius:999px;
+    font-size:11px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.14em;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    opacity:0;pointer-events:none;
+    transition:opacity 0.25s, transform 0.25s;
+    z-index:200;
+    max-width:calc(100vw - 32px);
+    text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* Dialog */
+  .modal{
+    position:fixed;inset:0;
+    background:rgba(28,20,16,0.4);
+    display:flex;align-items:center;justify-content:center;
+    z-index:300;padding:20px;
+  }
+  .modal-card{
+    background:var(--white);border:2px solid var(--ink);
+    border-radius:16px;padding:28px;
+    max-width:440px;width:100%;
+    box-shadow:5px 5px 0 var(--ink);
+    max-height:90vh;overflow-y:auto;
+  }
+  .modal-card h3{
+    font-family:'Fraunces',serif;font-style:italic;
+    font-size:26px;margin-bottom:8px;
+  }
+  .modal-card p{font-size:13px;line-height:1.55;opacity:0.75;margin-bottom:18px}
+  .modal-card p.nobreak{opacity:0.9}
+  .modal-card label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.14em;opacity:0.7;margin-bottom:6px;margin-top:14px}
+  .modal-card input[type="text"]{width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;font-size:14px;outline:none}
+  .modal-card input[type="text"]:focus{border-color:var(--pink-main)}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+
+  @media print{
+    .wv-bar,.c-top,.c-filters,.board,.toast,.wv-picker-row{display:none !important}
+    .writing-view{position:static;background:var(--white)}
+    .wv-page{box-shadow:none;border:none;margin:0;padding:40px 60px}
+    .wv-lines{background-image:none;resize:none}
+    .wv-foot{border-color:#ddd}
+  }
+
+  /* ─────────── RESPONSIVE ─────────── */
+  @media (max-width:1100px){
+    .note{grid-column:span 6}
+    .new-sticker{grid-column:span 6}
+    .masthead .title{font-size:44px}
+    .wv-page{padding:32px 28px 48px;margin:18px 14px 60px}
+    .wv-page::before{left:22px}
+    .wv-picker-row{padding:14px 22px 0}
+  }
+
+  /* TABLET / small tablet */
+  @media (max-width:768px){
+    .c-top{padding:22px 20px 10px;gap:14px}
+    .logo-tile{width:48px;height:48px;border-radius:12px}
+    .logo-tile svg{width:24px;height:24px}
+    .masthead .title{font-size:34px}
+    .c-filters{padding:0 20px 14px;gap:8px}
+    .board{padding:8px 20px 100px}
+    .grid{gap:18px}
+    /* List view on narrower screens: collapse category+date under title */
+    .list-head{display:none}
+    .list-row{
+      grid-template-columns:12px 1fr 60px;
+      gap:10px;padding:12px 14px;
+    }
+    .list-row .list-tag,
+    .list-row .list-date{
+      grid-column:2;grid-row:2;
+      display:inline-block;margin-right:10px;
+    }
+    .list-row .list-date{opacity:0.55}
+  }
+
+  /* PHONE */
+  @media (max-width:640px){
+    .only-mobile{display:initial}
+    .only-desktop{display:none}
+
+    /* Masthead — compact, 2 rows: logo + title, then Dropbox button */
+    .c-top{
+      padding:16px 16px 8px;
+      flex-wrap:wrap;gap:12px;
+    }
+    .masthead{flex:1}
+    .masthead .title{font-size:28px;line-height:0.98}
+    .logo-tile{width:42px;height:42px}
+    .logo-tile::before{width:14px;height:14px;top:-5px;left:-5px}
+    .logo-tile svg{width:22px;height:22px}
+    .mast-right{width:100%;margin-left:0}
+    .dbx-btn{width:100%;justify-content:center;font-size:11px;padding:11px 14px}
+
+    /* Filters — horizontal scroll row */
+    .c-filters{
+      padding:0 16px 8px;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      gap:8px;
+    }
+    .c-filters::-webkit-scrollbar{display:none}
+    .c-filters .eyebrow{display:none}
+    .chip{flex-shrink:0;font-size:11px;padding:10px 14px}
+    .view-toggle{margin-left:0;flex-shrink:0}
+    .view-toggle button{padding:8px 12px;font-size:10px}
+
+    /* Search — full-width row below filters */
+    .c-search{
+      order:10;
+      margin-left:0;
+      width:100%;
+      flex:1 1 100%;
+    }
+
+    /* Hide desktop new button, show FAB instead */
+    .btn-new-badge{display:none}
+
+    .board{padding:4px 16px 100px}
+    .grid{gap:20px;grid-template-columns:1fr}
+    .note{
+      grid-column:1 / -1;
+      padding:22px 22px 20px;
+    }
+    /* Gentler rotations on mobile */
+    .note:nth-child(6n+1){transform:rotate(-0.5deg)}
+    .note:nth-child(6n+2){transform:rotate(0.4deg)}
+    .note:nth-child(6n+3){transform:rotate(-0.3deg)}
+    .note:nth-child(6n+4){transform:rotate(0.3deg)}
+    .note:nth-child(6n+5){transform:rotate(-0.6deg)}
+    .note:nth-child(6n+6){transform:rotate(0.5deg)}
+    .note:hover{transform:none !important}
+    .note .n-title{font-size:22px}
+    .note .n-excerpt{font-size:13px}
+    .new-sticker{grid-column:1 / -1;min-height:200px;padding:26px 22px;transform:rotate(-0.8deg)}
+    .new-sticker .ns-b{font-size:26px}
+
+    /* FAB for new page on mobile */
+    .fab-new{
+      display:flex;
+      position:fixed;bottom:24px;right:20px;
+      width:60px;height:60px;border-radius:50%;
+      background:var(--pink-main);color:var(--white);
+      border:2.5px solid var(--ink);
+      box-shadow:4px 4px 0 var(--ink), 0 10px 24px rgba(230,104,167,0.4);
+      align-items:center;justify-content:center;
+      z-index:50;
+      transform:rotate(-4deg);
+    }
+    .fab-new svg{width:26px;height:26px;stroke-width:2.4;stroke:var(--white);fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+    /* Writing view — full bleed */
+    .wv-bar{
+      padding:12px 14px;
+      gap:6px;
+    }
+    .wv-meta{display:none}
+    .wv-btn{font-size:10px;padding:9px 12px;min-height:40px}
+    .wv-btn.primary{padding:10px 14px}
+    .wv-btn.ghost svg{margin-right:0}
+    .wv-btn.ghost span{display:none}
+    .wv-tag-select{font-size:10px;padding:9px 28px 9px 12px;min-height:40px}
+
+    .wv-page{
+      margin:14px 10px 40px;
+      padding:26px 22px 40px;
+    }
+    .wv-page::before{left:18px}
+    .wv-title{font-size:30px;margin-bottom:16px}
+    .wv-lines{min-height:calc(100vh - 280px)}
+
+    .wv-picker-row{
+      padding:10px 14px 0;
+      gap:8px;
+    }
+    .wv-pick-group{
+      padding:8px 10px;flex:1;min-width:0;
+      overflow-x:auto;
+      flex-wrap:nowrap;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .wv-pick-group::-webkit-scrollbar{display:none}
+    .wv-swatch{width:28px;height:28px;flex-shrink:0}
+    .wv-tape-sw{width:36px;height:18px;flex-shrink:0}
+    .wv-pick-label{flex-shrink:0}
+  }
+
+  /* FAB hidden by default, shown on mobile */
+  .fab-new{display:none}
+</style>
+</head>
+<body>
+
+<div class="page" id="board-view">
+
+  <div class="c-top">
+    <div class="logo-tile" aria-label="The Notebook">
+      <svg viewBox="0 0 24 24">
+        <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+        <polyline points="14 3 14 9 20 9"/>
+        <line x1="8" y1="13" x2="14" y2="13"/>
+        <line x1="8" y1="17" x2="12" y2="17"/>
+      </svg>
+    </div>
+    <div class="masthead">
+      <span class="title">The <u>Notebook</u></span>
+    </div>
+    <div class="mast-right">
+      <button class="dbx-btn" id="btn-dropbox" title="Connect Dropbox so your pages sync across devices">
+        <span class="dot"></span>
+        <span id="dbx-label">Connect Dropbox</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="c-filters">
+    <span class="eyebrow">Filter</span>
+    <div class="chip on" data-chip="all">All <span class="chip-count" data-count="all">0</span></div>
+    <div class="chip" data-chip="Journal">Journal <span class="chip-count" data-count="Journal">0</span></div>
+    <div class="chip" data-chip="Script">Script <span class="chip-count" data-count="Script">0</span></div>
+    <div class="chip" data-chip="Essay">Essays <span class="chip-count" data-count="Essay">0</span></div>
+    <div class="chip" data-chip="Idea">Ideas <span class="chip-count" data-count="Idea">0</span></div>
+    <div class="chip" data-chip="Starred">Starred <span class="chip-count" data-count="Starred">0</span></div>
+    <div class="view-toggle" id="view-toggle">
+      <button class="on" data-view="board" title="Pinboard view">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Board
+      </button>
+      <button data-view="list" title="List view">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        List
+      </button>
+    </div>
+    <div class="c-search">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-input" placeholder="Find a note…" />
+    </div>
+    <button class="btn-new-badge" id="btn-new">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Start a page
+    </button>
+  </div>
+
+  <div class="board">
+    <div class="grid" id="grid"></div>
+    <div class="list-wrap hidden" id="list-wrap">
+      <div class="list-head">
+        <span></span>
+        <span>Title</span>
+        <span>Category</span>
+        <span>Updated</span>
+        <span style="text-align:right">Words</span>
+      </div>
+      <div id="list-rows"></div>
+      <div class="list-new" id="list-new-btn">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span class="lab">Start a new page</span>
+        <span class="kb">Shortcut<kbd>⌘N</kbd></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile FAB -->
+  <button class="fab-new" id="fab-new" aria-label="Start a new page">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+</div>
+
+<!-- ─────────── WRITING VIEW ─────────── -->
+<div class="writing-view hidden" id="writing-view">
+  <div class="wv-bar">
+    <button class="wv-btn" id="wv-back">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Board
+    </button>
+
+    <select class="wv-tag-select" id="wv-tag">
+      <option value="Journal">Journal</option>
+      <option value="Script">Script</option>
+      <option value="Essay">Essay</option>
+      <option value="Idea">Idea</option>
+      <option value="Draft">Draft</option>
+      <option value="Letter">Letter</option>
+    </select>
+
+    <button class="wv-btn ghost star" id="wv-star" title="Star this page">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
+      <span>Star</span>
+    </button>
+    <button class="wv-btn ghost pin" id="wv-pin" title="Pin to today">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 2.24v3H7v-3z"/></svg>
+      <span>Pin today</span>
+    </button>
+
+    <div class="wv-meta">
+      <span id="wv-date">—</span>
+      <span>·</span>
+      <span id="wv-wc">0 W</span>
+      <span id="wv-saved" style="color:var(--pink-main)"></span>
+    </div>
+
+    <div class="wv-spacer"></div>
+
+    <button class="wv-btn ghost" id="wv-export-txt" title="Download .txt">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="14 3 14 9 20 9"/></svg>
+      <span>TXT</span>
+    </button>
+    <button class="wv-btn ghost" id="wv-export-pdf" title="Print / save as PDF">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <span>PDF</span>
+    </button>
+    <button class="wv-btn ghost danger" id="wv-delete" title="Delete this page">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+    </button>
+    <button class="wv-btn primary" id="wv-save">Save page</button>
+  </div>
+
+  <!-- Per-entry paper + tape pickers -->
+  <div class="wv-picker-row">
+    <div class="wv-pick-group" id="wv-paper-group">
+      <span class="wv-pick-label">Paper</span>
+      <div class="wv-swatch" style="background:#fff2f1" title="Warm white" data-paper="#fff2f1"></div>
+      <div class="wv-swatch" style="background:#F5F0C8" title="Butter" data-paper="#F5F0C8"></div>
+      <div class="wv-swatch" style="background:#EFFBD5" title="Celery" data-paper="#EFFBD5"></div>
+      <div class="wv-swatch" style="background:#bbe4c6" title="Mint" data-paper="#bbe4c6"></div>
+      <div class="wv-swatch" style="background:#cfd8ff" title="Pale periwinkle" data-paper="#cfd8ff"></div>
+      <div class="wv-swatch" style="background:#b2c0f9" title="Periwinkle" data-paper="#b2c0f9"></div>
+      <div class="wv-swatch" style="background:#f6d0f6" title="Soft pink" data-paper="#f6d0f6"></div>
+      <div class="wv-swatch" style="background:#FFD4F4" title="Pale blush" data-paper="#FFD4F4"></div>
+      <div class="wv-swatch" style="background:#F1BCD7" title="Millennial pink" data-paper="#F1BCD7"></div>
+      <div class="wv-swatch" style="background:#FFAEF7" title="Light pink" data-paper="#FFAEF7"></div>
+      <div class="wv-swatch" style="background:#f39bc9" title="Soft rose" data-paper="#f39bc9"></div>
+      <div class="wv-swatch" style="background:#FFAD8F" title="Salmon" data-paper="#FFAD8F"></div>
+    </div>
+    <div class="wv-pick-group" id="wv-tape-group">
+      <span class="wv-pick-label">Tape</span>
+      <div class="wv-tape-sw" style="background:#E668A7" title="Medium pink" data-tape="#E668A7"></div>
+      <div class="wv-tape-sw" style="background:#DA005F" title="Hot pink" data-tape="#DA005F"></div>
+      <div class="wv-tape-sw" style="background:#F1BCD7" title="Millennial pink" data-tape="#F1BCD7"></div>
+      <div class="wv-tape-sw" style="background:#f39bc9" title="Soft rose" data-tape="#f39bc9"></div>
+      <div class="wv-tape-sw" style="background:#ab5a81" title="Berry" data-tape="#ab5a81"></div>
+      <div class="wv-tape-sw" style="background:#c55c6b" title="Deep rose" data-tape="#c55c6b"></div>
+      <div class="wv-tape-sw" style="background:#ec8f2c" title="Orange" data-tape="#ec8f2c"></div>
+      <div class="wv-tape-sw" style="background:#e36d61" title="Coral" data-tape="#e36d61"></div>
+      <div class="wv-tape-sw" style="background:#ea876b" title="Terracotta" data-tape="#ea876b"></div>
+      <div class="wv-tape-sw" style="background:#B8B959" title="Olive yellow" data-tape="#B8B959"></div>
+      <div class="wv-tape-sw" style="background:#90BBB1" title="Sage" data-tape="#90BBB1"></div>
+      <div class="wv-tape-sw" style="background:#b2c0f9" title="Soft periwinkle" data-tape="#b2c0f9"></div>
+    </div>
+  </div>
+
+  <div class="wv-page">
+    <!-- Live tape strip + paper ribbon so you see the card's colors while writing -->
+    <div class="wv-tape-strip" id="wv-tape-strip"></div>
+    <div class="wv-paper-ribbon" id="wv-paper-ribbon"></div>
+    <textarea class="wv-title" id="wv-title" rows="1" placeholder="Untitled page…"></textarea>
+    <textarea class="wv-lines" id="wv-lines" placeholder="Start writing. The lines will hold you."></textarea>
+    <div class="wv-foot">
+      <span id="wv-foot-left">Draft</span>
+      <span id="wv-foot-right">—</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast + confirm modal + Dropbox setup modal -->
+<div class="toast" id="toast">Saved</div>
+<div class="modal hidden" id="confirm-modal">
+  <div class="modal-card">
+    <h3 id="confirm-title">Delete this page?</h3>
+    <p id="confirm-body">This removes the page from your Notebook. This can't be undone.</p>
+    <div class="modal-actions">
+      <button class="wv-btn ghost" id="confirm-cancel">Cancel</button>
+      <button class="wv-btn primary" id="confirm-ok" style="background:#d94545">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal hidden" id="dbx-modal">
+  <div class="modal-card">
+    <h3>Connect Dropbox</h3>
+    <p class="nobreak">Sync your Notebook across devices through your Dropbox account. Your pages will live in a <strong>/The Notebook/</strong> folder. You can move it anywhere — it'll still find them.</p>
+    <div id="dbx-connected-panel" class="hidden">
+      <p style="margin-top:4px;margin-bottom:12px;font-size:13px"><strong>Connected as</strong> <span id="dbx-acct" style="color:var(--pink-main)">—</span></p>
+      <div class="modal-actions">
+        <button class="wv-btn ghost" id="dbx-pull">Pull from Dropbox</button>
+        <button class="wv-btn ghost danger" id="dbx-disconnect">Disconnect</button>
+        <button class="wv-btn primary" id="dbx-close">Done</button>
+      </div>
+    </div>
+    <div id="dbx-disconnected-panel">
+      <div class="modal-actions">
+        <button class="wv-btn ghost" id="dbx-cancel">Cancel</button>
+        <button class="wv-btn primary" id="dbx-connect">Connect Dropbox</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ──────────────────────────────────────────────────────────────
+   THE NOTEBOOK — working app
+   Storage: localStorage key "akq_notebook_v2"
+   ────────────────────────────────────────────────────────────── */
+
+const STORAGE_KEY = 'akq_notebook_v2';
+const DEFAULT_PAPER = '#f6d0f6';
+const DEFAULT_TAPE  = '#E668A7';
+
+/* ═══════════════ DROPBOX API MODULE ═══════════════════════════
+   OAuth PKCE flow. No client secret needed — safe for a static
+   browser app. App key is public info. Tokens are stored in
+   localStorage.
+
+   Files: a single backup file at /The Notebook/notebook.json
+   holding the full state. We also write per-entry .txt files
+   under /The Notebook/text/ so you can read pages natively in
+   Dropbox (phone, web, Finder). Lookups use Dropbox file IDs
+   so moves and renames don't break anything.
+   ────────────────────────────────────────────────────────────── */
+const DBX = (() => {
+  // ⚠️ REPLACE this with your Dropbox App Key after registering
+  //    at https://www.dropbox.com/developers/apps  (see DEPLOY doc).
+  const APP_KEY = 'tcsdxfbdfianv6i';
+
+  const KEY_TOKENS = 'akq_notebook_dbx_tokens';
+  const KEY_PKCE   = 'akq_notebook_dbx_pkce';
+  const KEY_NBID   = 'akq_notebook_dbx_nbid'; // notebook.json file id
+
+  let state = {
+    accessToken: null,
+    refreshToken: null,
+    expiresAt: 0,
+    account: null,
+    notebookFileId: null
+  };
+
+  // ── PKCE helpers ──
+  function b64url(buf){
+    return btoa(String.fromCharCode(...new Uint8Array(buf)))
+      .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  async function sha256(str){
+    const data = new TextEncoder().encode(str);
+    return b64url(await crypto.subtle.digest('SHA-256', data));
+  }
+  function randVerifier(len=64){
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+    let s='';
+    const arr=new Uint8Array(len);
+    crypto.getRandomValues(arr);
+    for(let i=0;i<len;i++) s+=chars[arr[i]%chars.length];
+    return s;
+  }
+
+  function getRedirectUri(){
+    // Use the current origin + path (without query/hash)
+    const u = new URL(location.href);
+    u.search=''; u.hash='';
+    return u.href;
+  }
+
+  function loadFromStorage(){
+    try{
+      const raw = localStorage.getItem(KEY_TOKENS);
+      if(raw){
+        const t = JSON.parse(raw);
+        state.accessToken = t.accessToken || null;
+        state.refreshToken = t.refreshToken || null;
+        state.expiresAt = t.expiresAt || 0;
+        state.account = t.account || null;
+      }
+      state.notebookFileId = localStorage.getItem(KEY_NBID) || null;
+    }catch(e){ console.warn('DBX load failed:',e); }
+  }
+  function saveTokens(){
+    localStorage.setItem(KEY_TOKENS, JSON.stringify({
+      accessToken:state.accessToken,
+      refreshToken:state.refreshToken,
+      expiresAt:state.expiresAt,
+      account:state.account
+    }));
+    if(state.notebookFileId) localStorage.setItem(KEY_NBID, state.notebookFileId);
+  }
+  function clearTokens(){
+    localStorage.removeItem(KEY_TOKENS);
+    localStorage.removeItem(KEY_NBID);
+    state = {accessToken:null,refreshToken:null,expiresAt:0,account:null,notebookFileId:null};
+  }
+
+  function isConfigured(){
+    return APP_KEY && APP_KEY !== '__DROPBOX_APP_KEY__';
+  }
+  function isConnected(){
+    return !!state.refreshToken;
+  }
+  function account(){ return state.account; }
+
+  // ── OAuth flow ──
+  async function startOAuth(){
+    if(!isConfigured()){
+      alert(
+        "Dropbox isn't set up yet.\n\n"+
+        "You need to:\n"+
+        "1. Register an app at https://www.dropbox.com/developers/apps\n"+
+        "2. Paste its App Key into THE_NOTEBOOK.html (search for __DROPBOX_APP_KEY__)\n\n"+
+        "See the deployment walkthrough for step-by-step instructions."
+      );
+      return;
+    }
+    const verifier  = randVerifier();
+    const challenge = await sha256(verifier);
+    sessionStorage.setItem(KEY_PKCE, verifier);
+
+    const params = new URLSearchParams({
+      response_type:'code',
+      client_id:APP_KEY,
+      code_challenge:challenge,
+      code_challenge_method:'S256',
+      redirect_uri:getRedirectUri(),
+      token_access_type:'offline' // gives us a refresh_token too
+    });
+    location.href = `https://www.dropbox.com/oauth2/authorize?${params.toString()}`;
+  }
+
+  async function handleCallback(){
+    const url = new URL(location.href);
+    const code = url.searchParams.get('code');
+    const error = url.searchParams.get('error');
+    if(error){
+      url.searchParams.delete('error');
+      url.searchParams.delete('error_description');
+      history.replaceState(null,'',url.href);
+      alert('Dropbox connection cancelled: ' + error);
+      return false;
+    }
+    if(!code) return false;
+
+    const verifier = sessionStorage.getItem(KEY_PKCE);
+    sessionStorage.removeItem(KEY_PKCE);
+    if(!verifier){
+      console.warn('No PKCE verifier in session. Ignoring code.');
+      url.searchParams.delete('code'); url.searchParams.delete('state');
+      history.replaceState(null,'',url.href);
+      return false;
+    }
+    // clean URL right away
+    url.searchParams.delete('code');
+    url.searchParams.delete('state');
+    history.replaceState(null,'',url.href);
+
+    const body = new URLSearchParams({
+      code,
+      grant_type:'authorization_code',
+      client_id:APP_KEY,
+      redirect_uri:getRedirectUri(),
+      code_verifier:verifier
+    });
+    const r = await fetch('https://api.dropbox.com/oauth2/token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body
+    });
+    if(!r.ok){
+      const txt = await r.text();
+      console.error('DBX token exchange failed',txt);
+      alert('Could not finish Dropbox connection. Try again.');
+      return false;
+    }
+    const t = await r.json();
+    state.accessToken  = t.access_token;
+    state.refreshToken = t.refresh_token;
+    state.expiresAt    = Date.now() + (t.expires_in||14400)*1000;
+    try{
+      const acct = await apiCall('/users/get_current_account', null);
+      state.account = { name: acct.name?.display_name || '—', email: acct.email || '' };
+    }catch(e){ state.account = null; }
+    saveTokens();
+    return true;
+  }
+
+  async function refreshIfNeeded(){
+    if(!state.refreshToken) throw new Error('Not connected');
+    if(state.accessToken && Date.now() < state.expiresAt - 30000) return;
+    const body = new URLSearchParams({
+      grant_type:'refresh_token',
+      refresh_token:state.refreshToken,
+      client_id:APP_KEY
+    });
+    const r = await fetch('https://api.dropbox.com/oauth2/token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body
+    });
+    if(!r.ok){
+      // refresh failed — force re-connect
+      clearTokens();
+      throw new Error('Dropbox session expired — please reconnect');
+    }
+    const t = await r.json();
+    state.accessToken = t.access_token;
+    state.expiresAt   = Date.now() + (t.expires_in||14400)*1000;
+    saveTokens();
+  }
+
+  // ── API calls ──
+  async function apiCall(endpoint, argsObj){
+    await refreshIfNeeded();
+    const headers = {
+      'Authorization':'Bearer ' + state.accessToken,
+      'Content-Type':'application/json'
+    };
+    const r = await fetch('https://api.dropboxapi.com/2'+endpoint,{
+      method:'POST',
+      headers,
+      body: argsObj ? JSON.stringify(argsObj) : 'null'
+    });
+    if(!r.ok){
+      const txt = await r.text();
+      throw new Error(`DBX ${endpoint} ${r.status}: ${txt}`);
+    }
+    return r.json();
+  }
+
+  // Upload to an explicit path (creates or overwrites)
+  async function uploadPath(path, content){
+    await refreshIfNeeded();
+    const arg = {
+      path,
+      mode: {'.tag':'overwrite'},
+      autorename:false,
+      mute:true,
+      strict_conflict:false
+    };
+    const r = await fetch('https://content.dropboxapi.com/2/files/upload',{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer ' + state.accessToken,
+        'Dropbox-API-Arg': JSON.stringify(arg),
+        'Content-Type':'application/octet-stream'
+      },
+      body: typeof content==='string' ? new Blob([content]) : content
+    });
+    if(!r.ok){
+      const txt = await r.text();
+      throw new Error(`DBX upload ${path} ${r.status}: ${txt}`);
+    }
+    return r.json(); // { id, path_display, content_hash, ... }
+  }
+
+  // Resolve an id to its current path, so we can overwrite it even
+  // if the user moved the folder.
+  async function getPathById(id){
+    try{
+      const meta = await apiCall('/files/get_metadata', { path: id });
+      return meta.path_display || null;
+    }catch(e){
+      return null;
+    }
+  }
+
+  // Smart upload: if we have a saved id, write to that current path;
+  // otherwise write to the given fallback path. Update the id map.
+  async function uploadSmart(idCell, fallbackPath, content){
+    let path = fallbackPath;
+    if(idCell.id){
+      const cur = await getPathById(idCell.id);
+      if(cur) path = cur;
+    }
+    const res = await uploadPath(path, content);
+    idCell.id = res.id;
+    idCell.path = res.path_display;
+    return res;
+  }
+
+  async function downloadPath(path){
+    await refreshIfNeeded();
+    const r = await fetch('https://content.dropboxapi.com/2/files/download',{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer ' + state.accessToken,
+        'Dropbox-API-Arg': JSON.stringify({path})
+      }
+    });
+    if(r.status===409) return null; // not found
+    if(!r.ok){
+      const txt = await r.text();
+      throw new Error(`DBX download ${path} ${r.status}: ${txt}`);
+    }
+    return r.text();
+  }
+
+  async function downloadById(id){
+    const p = await getPathById(id);
+    if(!p) return null;
+    return downloadPath(p);
+  }
+
+  async function disconnect(){
+    try{ await apiCall('/auth/token/revoke', null); }catch(e){}
+    clearTokens();
+  }
+
+  return {
+    load: loadFromStorage,
+    isConfigured, isConnected, account,
+    startOAuth, handleCallback, refreshIfNeeded, disconnect,
+    uploadPath, uploadSmart, downloadPath, downloadById, getPathById,
+    // expose for notebook-level storage
+    getNotebookId: ()=>state.notebookFileId,
+    setNotebookId: (id)=>{ state.notebookFileId = id; localStorage.setItem(KEY_NBID, id); }
+  };
+})();
+
+/* ═══════════════ NOTEBOOK STATE ═══════════════════════════════ */
+function emptyState(){
+  return {
+    version: 2,
+    entries: [],
+    settings: {
+      defaultPaper: DEFAULT_PAPER,
+      defaultTape:  DEFAULT_TAPE,
+      filter: 'all',
+      search: '',
+      view: 'board'
+    },
+    lastModified: Date.now()
+  };
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return seedIfFirstRun(emptyState());
+    const parsed = JSON.parse(raw);
+    if(!parsed.entries) return seedIfFirstRun(emptyState());
+    parsed.settings = Object.assign({
+      defaultPaper: DEFAULT_PAPER,
+      defaultTape:  DEFAULT_TAPE,
+      filter:'all',search:'',view:'board'
+    }, parsed.settings || {});
+    parsed.lastModified = parsed.lastModified || Date.now();
+    return parsed;
+  }catch(e){
+    console.error('Failed to parse state:',e);
+    return emptyState();
+  }
+}
+
+function seedIfFirstRun(state){
+  if(!localStorage.getItem(STORAGE_KEY+'_seeded')){
+    const now = Date.now();
+    state.entries = [{
+      id: crypto.randomUUID(),
+      title: 'A note from The Notebook',
+      tag: 'Journal',
+      body:
+        "Welcome. This is the Notebook — a quiet place for morning pages, scripts, essays, and ideas.\n\n" +
+        "Click a card to open it full-screen. The lined page holds your words.\n\n" +
+        "Star anything you want to come back to. Pin today's page. Export any entry as .txt or PDF.\n\n" +
+        "Connect Dropbox (top right) and every page syncs across your devices — desktop, iPhone, anywhere.",
+      paper: '#f6d0f6',
+      tape:  '#E668A7',
+      starred: true,
+      pinnedToday: true,
+      createdAt: now,
+      updatedAt: now,
+      wordCount: 0,
+      dbxTextId: null   // Dropbox file id for the .txt backup
+    }];
+    state.entries[0].wordCount = countWords(state.entries[0].body);
+    localStorage.setItem(STORAGE_KEY+'_seeded','1');
+  }
+  return state;
+}
+
+function saveState(state){
+  state.lastModified = Date.now();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  scheduleDropboxPush();
+}
+
+function countWords(s){
+  if(!s) return 0;
+  return s.trim().split(/\s+/).filter(Boolean).length;
+}
+function fmtDate(ts){
+  const d = new Date(ts);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[d.getMonth()]} ${d.getDate()}`;
+}
+function fmtDateLong(ts){
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+}
+function isSameDay(a,b){
+  const da=new Date(a),db=new Date(b);
+  return da.getFullYear()===db.getFullYear()&&da.getMonth()===db.getMonth()&&da.getDate()===db.getDate();
+}
+function safeFilename(s){
+  return (s||'untitled').replace(/[^\w\- ]+/g,'').replace(/\s+/g,'-').slice(0,60) || 'untitled';
+}
+function txtOf(e){
+  const header = `${e.title}\n${'='.repeat(Math.max(1,e.title.length))}\n${e.tag} · ${fmtDateLong(e.updatedAt)} · ${e.wordCount} W${e.starred?' · ★':''}\n\n`;
+  return header + (e.body||'');
+}
+
+/* ─── State + rendering ─── */
+let STATE = loadState();
+let CURRENT_ID = null;
+let DIRTY = false;
+let AUTOSAVE_TIMER = null;
+let CURRENT_PAPER = null;
+let CURRENT_TAPE  = null;
+
+const $ = (id)=>document.getElementById(id);
+
+function renderBoard(){
+  const grid = $('grid');
+  const listWrap = $('list-wrap');
+  const listRows = $('list-rows');
+  grid.innerHTML = '';
+  listRows.innerHTML = '';
+
+  const filter = STATE.settings.filter;
+  const q = (STATE.settings.search||'').trim().toLowerCase();
+
+  const filtered = STATE.entries.filter(e=>{
+    if(filter === 'all') { /* keep */ }
+    else if(filter === 'Starred') { if(!e.starred) return false; }
+    else { if(e.tag !== filter) return false; }
+    if(q){
+      const hay = (e.title+' '+e.body+' '+e.tag).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  }).sort((a,b)=>{
+    if(a.pinnedToday!==b.pinnedToday) return a.pinnedToday?-1:1;
+    return b.updatedAt - a.updatedAt;
+  });
+
+  const counts = {
+    all: STATE.entries.length,
+    Journal: 0, Script:0, Essay:0, Idea:0, Starred:0
+  };
+  STATE.entries.forEach(e=>{
+    if(counts[e.tag]!==undefined) counts[e.tag]++;
+    if(e.starred) counts.Starred++;
+  });
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const k = el.getAttribute('data-count');
+    el.textContent = counts[k] ?? 0;
+  });
+
+  // ── BOARD ──
+  if(filtered.length===0){
+    const msg = document.createElement('div');
+    msg.className='empty-state';
+    if(q) msg.innerHTML = `Nothing matches <em>"${escapeHtml(q)}"</em>.`;
+    else if(filter!=='all') msg.innerHTML = `No pages under <em>${filter}</em> yet.`;
+    else msg.innerHTML = `A blank board. <em>Start a page.</em>`;
+    grid.appendChild(msg);
+  } else {
+    filtered.forEach(e=>grid.appendChild(buildCard(e)));
+  }
+  const nsWrap = document.createElement('div');
+  nsWrap.className = 'new-sticker';
+  nsWrap.id = 'new-sticker';
+  nsWrap.innerHTML = `
+    <div class="circle">
+      <svg class="icon icon-xl" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </div>
+    <div class="ns-a">blank page</div>
+    <div class="ns-b">Start <em>something new</em></div>
+    <div class="ns-c"><kbd>⌘N</kbd></div>`;
+  nsWrap.addEventListener('click',()=>openWriting(null));
+  grid.appendChild(nsWrap);
+
+  // ── LIST VIEW ──
+  if(filtered.length===0){
+    const msg = document.createElement('div');
+    msg.className='empty-state';
+    msg.style.gridColumn='1 / -1';
+    if(q) msg.innerHTML = `Nothing matches <em>"${escapeHtml(q)}"</em>.`;
+    else if(filter!=='all') msg.innerHTML = `No pages under <em>${filter}</em> yet.`;
+    else msg.innerHTML = `A blank page awaits. <em>Start one.</em>`;
+    listRows.appendChild(msg);
+  } else {
+    filtered.forEach(e=>listRows.appendChild(buildListRow(e)));
+  }
+  paintViewToggle();
+}
+
+function buildListRow(e){
+  const row = document.createElement('div');
+  row.className = 'list-row';
+  const words = e.wordCount ?? countWords(e.body);
+  const sub = (e.body||'').replace(/\s+/g,' ').slice(0,120);
+  const paperBg = e.paper || '#FFFFFF';
+  row.innerHTML = `
+    <span class="list-paper-dot" style="background:${paperBg}"></span>
+    <span class="list-title">
+      ${highlightTitle(e.title || 'Untitled page')}
+      ${e.pinnedToday ? '<span class="list-pinned">Pinned today</span>' : ''}
+      <span class="sub">${escapeHtml(sub)}</span>
+    </span>
+    <span class="list-tag">${escapeHtml(e.tag||'')}</span>
+    <span class="list-date">${fmtDateLong(e.updatedAt)}</span>
+    <span class="list-wc">${words} W ${e.starred?'<span class="star">★</span>':''}</span>
+  `;
+  row.addEventListener('click',()=>openWriting(e.id));
+  return row;
+}
+
+function paintViewToggle(){
+  const view = STATE.settings.view || 'board';
+  document.querySelectorAll('#view-toggle button').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('data-view')===view);
+  });
+  $('grid').classList.toggle('hidden', view!=='board');
+  $('list-wrap').classList.toggle('hidden', view!=='list');
+}
+
+document.querySelectorAll('#view-toggle button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    STATE.settings.view = b.getAttribute('data-view');
+    saveState(STATE);
+    paintViewToggle();
+  });
+});
+$('list-new-btn').addEventListener('click',()=>openWriting(null));
+
+function buildCard(e){
+  const card = document.createElement('div');
+  card.className = 'note';
+  card.style.background = e.paper || DEFAULT_PAPER;
+  const words = e.wordCount ?? countWords(e.body);
+  const today = isSameDay(e.updatedAt, Date.now());
+  card.innerHTML = `
+    <div class="tag">${escapeHtml(e.tag)}${today?' · Today':''}</div>
+    <div class="n-title">${highlightTitle(e.title || 'Untitled page')}</div>
+    <div class="n-excerpt">${escapeHtml((e.body||'').slice(0,220))}</div>
+    <div class="n-foot">
+      <span>${fmtDate(e.updatedAt)} · ${words} W</span>
+      <span class="${e.starred?'star':'dot'}">${e.starred?'★':''}</span>
+    </div>
+    ${e.pinnedToday?'<span class="sticker today">pinned today</span>':''}
+    ${e.starred && !e.pinnedToday?'<span class="sticker starred">starred</span>':''}
+  `;
+  // Tape color via dynamic ::before
+  if(e.tape){
+    const uid = 'c'+e.id.replace(/-/g,'').slice(0,10);
+    card.id = uid;
+    const style = document.createElement('style');
+    style.textContent = `#${uid}::before{background:${e.tape}}`;
+    card.appendChild(style);
+  }
+  card.addEventListener('click',()=>openWriting(e.id));
+  return card;
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+function highlightTitle(t){
+  return escapeHtml(t).replace(/\*([^*]+)\*/g,'<em>$1</em>');
+}
+
+/* ─── Filter chips ─── */
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    chip.classList.add('on');
+    STATE.settings.filter = chip.getAttribute('data-chip');
+    saveState(STATE);
+    renderBoard();
+  });
+});
+
+/* ─── Search ─── */
+$('search-input').addEventListener('input',(e)=>{
+  STATE.settings.search = e.target.value;
+  saveState(STATE);
+  renderBoard();
+});
+
+/* ─── Per-entry paper + tape pickers ─── */
+function paintWvPickers(){
+  document.querySelectorAll('#wv-paper-group .wv-swatch').forEach(sw=>{
+    sw.classList.toggle('picked', sw.getAttribute('data-paper')===CURRENT_PAPER);
+  });
+  document.querySelectorAll('#wv-tape-group .wv-tape-sw').forEach(sw=>{
+    sw.classList.toggle('picked', sw.getAttribute('data-tape')===CURRENT_TAPE);
+  });
+  $('wv-tape-strip').style.background = CURRENT_TAPE || DEFAULT_TAPE;
+  $('wv-paper-ribbon').style.background = CURRENT_PAPER || DEFAULT_PAPER;
+}
+
+document.querySelectorAll('#wv-paper-group .wv-swatch').forEach(sw=>{
+  sw.addEventListener('click',()=>{
+    CURRENT_PAPER = sw.getAttribute('data-paper');
+    STATE.settings.defaultPaper = CURRENT_PAPER;
+    saveState(STATE);
+    paintWvPickers();
+    markDirty();
+  });
+});
+document.querySelectorAll('#wv-tape-group .wv-tape-sw').forEach(sw=>{
+  sw.addEventListener('click',()=>{
+    CURRENT_TAPE = sw.getAttribute('data-tape');
+    STATE.settings.defaultTape = CURRENT_TAPE;
+    saveState(STATE);
+    paintWvPickers();
+    markDirty();
+  });
+});
+
+/* ─── Writing view ─── */
+const boardView   = $('board-view');
+const writingView = $('writing-view');
+const wvTitle = $('wv-title');
+const wvLines = $('wv-lines');
+const wvTag   = $('wv-tag');
+const wvWc    = $('wv-wc');
+const wvDate  = $('wv-date');
+const wvSaved = $('wv-saved');
+const wvStar  = $('wv-star');
+const wvPin   = $('wv-pin');
+const wvSave  = $('wv-save');
+const wvDelete= $('wv-delete');
+const wvFootLeft = $('wv-foot-left');
+const wvFootRight= $('wv-foot-right');
+
+function openWriting(id){
+  CURRENT_ID = id;
+  DIRTY = false;
+  let entry;
+  if(id){
+    entry = STATE.entries.find(e=>e.id===id);
+    if(!entry){ CURRENT_ID = null; return; }
+  } else {
+    entry = {
+      id: null, title: '', tag: 'Journal', body: '',
+      paper: STATE.settings.defaultPaper, tape: STATE.settings.defaultTape,
+      starred: false, pinnedToday: false,
+      createdAt: Date.now(), updatedAt: Date.now(), wordCount: 0
+    };
+  }
+  wvTitle.value = entry.title || '';
+  wvLines.value = entry.body || '';
+  wvTag.value   = ['Journal','Script','Essay','Idea','Draft','Letter'].includes(entry.tag) ? entry.tag : 'Journal';
+  wvStar.classList.toggle('on', !!entry.starred);
+  wvPin.classList.toggle('on',  !!entry.pinnedToday);
+  CURRENT_PAPER = entry.paper || STATE.settings.defaultPaper || DEFAULT_PAPER;
+  CURRENT_TAPE  = entry.tape  || STATE.settings.defaultTape  || DEFAULT_TAPE;
+  paintWvPickers();
+  wvDate.textContent = fmtDateLong(entry.createdAt || Date.now());
+  updateWc();
+  wvSaved.textContent = id ? '· saved' : '· new';
+  wvFootLeft.textContent = entry.starred ? '★ starred' : 'Draft';
+  wvFootRight.textContent = `${fmtDate(entry.updatedAt||Date.now())} · ${entry.wordCount||0} W`;
+  wvSave.disabled = true;
+  wvDelete.style.display = id ? '' : 'none';
+
+  boardView.classList.add('hidden');
+  writingView.classList.remove('hidden');
+  window.scrollTo(0,0);
+  setTimeout(()=>{
+    if(!entry.title) wvTitle.focus();
+    else wvLines.focus();
+  },50);
+  autosizeTitle();
+}
+
+function closeWriting(save=true){
+  if(save && DIRTY) persistCurrent(true);
+  writingView.classList.add('hidden');
+  boardView.classList.remove('hidden');
+  CURRENT_ID = null;
+  DIRTY = false;
+  renderBoard();
+}
+
+function updateWc(){
+  wvWc.textContent = countWords(wvLines.value) + ' W';
+}
+
+function markDirty(){
+  DIRTY = true;
+  wvSave.disabled = false;
+  wvSaved.textContent = '· unsaved…';
+  clearTimeout(AUTOSAVE_TIMER);
+  AUTOSAVE_TIMER = setTimeout(()=>persistCurrent(false), 1400);
+}
+
+wvTitle.addEventListener('input',()=>{autosizeTitle();markDirty()});
+wvLines.addEventListener('input',()=>{updateWc();markDirty()});
+wvTag.addEventListener('change',markDirty);
+wvStar.addEventListener('click',()=>{wvStar.classList.toggle('on');markDirty()});
+wvPin.addEventListener('click', ()=>{wvPin.classList.toggle('on'); markDirty()});
+
+function autosizeTitle(){
+  wvTitle.style.height = 'auto';
+  wvTitle.style.height = wvTitle.scrollHeight + 'px';
+}
+
+function persistCurrent(explicit){
+  const title = wvTitle.value.trim();
+  const body  = wvLines.value;
+  if(!title && !body.trim()){
+    if(!CURRENT_ID){
+      wvSaved.textContent = '· empty';
+      wvSave.disabled = true;
+      DIRTY = false;
+      return;
+    }
+  }
+  const now = Date.now();
+  let entry;
+  if(CURRENT_ID){
+    entry = STATE.entries.find(e=>e.id===CURRENT_ID);
+    if(!entry){ CURRENT_ID = null; return persistCurrent(explicit); }
+  } else {
+    entry = {
+      id: crypto.randomUUID(),
+      createdAt: now,
+      paper: STATE.settings.defaultPaper,
+      tape:  STATE.settings.defaultTape,
+      dbxTextId: null
+    };
+    STATE.entries.unshift(entry);
+    CURRENT_ID = entry.id;
+  }
+  entry.title = title || 'Untitled page';
+  entry.body  = body;
+  entry.tag   = wvTag.value;
+  entry.starred     = wvStar.classList.contains('on');
+  entry.pinnedToday = wvPin.classList.contains('on');
+  entry.updatedAt   = now;
+  entry.wordCount   = countWords(body);
+  entry.paper = CURRENT_PAPER || STATE.settings.defaultPaper || DEFAULT_PAPER;
+  entry.tape  = CURRENT_TAPE  || STATE.settings.defaultTape  || DEFAULT_TAPE;
+
+  saveState(STATE);
+  DIRTY = false;
+  wvSave.disabled = true;
+  wvSaved.textContent = explicit ? '· saved' : '· autosaved';
+  wvFootRight.textContent = `${fmtDate(entry.updatedAt)} · ${entry.wordCount} W`;
+  wvFootLeft.textContent  = entry.starred ? '★ starred' : 'Draft';
+
+  if(explicit) showToast('Saved');
+  // Note: Dropbox push is scheduled by saveState → scheduleDropboxPush
+}
+
+$('wv-back').addEventListener('click',()=>closeWriting(true));
+wvSave.addEventListener('click',()=>persistCurrent(true));
+wvDelete.addEventListener('click',()=>{
+  if(!CURRENT_ID) return;
+  openConfirm('Delete this page?','This removes the page from your Notebook. This can\'t be undone.',()=>{
+    STATE.entries = STATE.entries.filter(e=>e.id!==CURRENT_ID);
+    saveState(STATE);
+    CURRENT_ID = null;
+    DIRTY = false;
+    showToast('Deleted');
+    closeWriting(false);
+  });
+});
+
+/* ─── Export ─── */
+function currentEntryForExport(){
+  if(CURRENT_ID) return STATE.entries.find(e=>e.id===CURRENT_ID);
+  return {
+    title: wvTitle.value.trim() || 'Untitled page',
+    body: wvLines.value,
+    tag: wvTag.value,
+    updatedAt: Date.now(), createdAt: Date.now(),
+    wordCount: countWords(wvLines.value),
+    starred: wvStar.classList.contains('on'),
+    pinnedToday: wvPin.classList.contains('on')
+  };
+}
+$('wv-export-txt').addEventListener('click',()=>{
+  if(DIRTY) persistCurrent(false);
+  const e = currentEntryForExport();
+  const blob = new Blob([txtOf(e)],{type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${safeFilename(e.title)}_${new Date(e.updatedAt).toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),500);
+  showToast('TXT downloaded');
+});
+$('wv-export-pdf').addEventListener('click',()=>{
+  if(DIRTY) persistCurrent(false);
+  window.print();
+});
+
+/* ─── Toast + modal ─── */
+function showToast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove('show'),1600);
+}
+function openConfirm(title,body,onOk){
+  $('confirm-title').textContent = title;
+  $('confirm-body').textContent = body;
+  const m = $('confirm-modal');
+  m.classList.remove('hidden');
+  const cleanup = ()=>{ m.classList.add('hidden'); okBtn.removeEventListener('click',okH); cancelBtn.removeEventListener('click',cancelH); };
+  const okBtn = $('confirm-ok'), cancelBtn = $('confirm-cancel');
+  const okH = ()=>{ cleanup(); onOk(); };
+  const cancelH = ()=>cleanup();
+  okBtn.addEventListener('click',okH);
+  cancelBtn.addEventListener('click',cancelH);
+}
+
+/* ═══════════════ DROPBOX — APP-LEVEL SYNC ════════════════════ */
+DBX.load();
+
+const dbxBtn   = $('btn-dropbox');
+const dbxLabel = $('dbx-label');
+const dbxModal = $('dbx-modal');
+
+function paintDbxBtn(state){
+  dbxBtn.classList.remove('linked','syncing');
+  if(state==='syncing'){
+    dbxBtn.classList.add('syncing');
+    dbxLabel.textContent = 'Syncing…';
+  } else if(DBX.isConnected()){
+    dbxBtn.classList.add('linked');
+    const acct = DBX.account();
+    dbxLabel.textContent = acct ? `Dropbox · ${acct.name.split(' ')[0]}` : 'Dropbox linked';
+  } else {
+    dbxLabel.textContent = 'Connect Dropbox';
+  }
+}
+
+function openDbxModal(){
+  const connected = DBX.isConnected();
+  $('dbx-connected-panel').classList.toggle('hidden', !connected);
+  $('dbx-disconnected-panel').classList.toggle('hidden', connected);
+  if(connected){
+    const a = DBX.account();
+    $('dbx-acct').textContent = a ? `${a.name} (${a.email})` : '—';
+  }
+  dbxModal.classList.remove('hidden');
+}
+function closeDbxModal(){ dbxModal.classList.add('hidden'); }
+
+dbxBtn.addEventListener('click',openDbxModal);
+$('dbx-cancel').addEventListener('click',closeDbxModal);
+$('dbx-close').addEventListener('click',closeDbxModal);
+$('dbx-connect').addEventListener('click',()=>DBX.startOAuth());
+$('dbx-disconnect').addEventListener('click',async()=>{
+  await DBX.disconnect();
+  paintDbxBtn();
+  closeDbxModal();
+  showToast('Dropbox disconnected');
+});
+$('dbx-pull').addEventListener('click',async()=>{
+  closeDbxModal();
+  await dbxPull();
+});
+
+/* Debounced push: any state change queues a push in ~6s */
+let PUSH_TIMER = null;
+function scheduleDropboxPush(){
+  if(!DBX.isConnected()) return;
+  clearTimeout(PUSH_TIMER);
+  PUSH_TIMER = setTimeout(()=>{ dbxPush().catch(e=>console.warn('DBX push:',e)); }, 6000);
+}
+
+async function dbxPush(){
+  if(!DBX.isConnected()) return;
+  paintDbxBtn('syncing');
+  try{
+    // 1. Push the full notebook JSON as a single file (source of truth)
+    const payload = JSON.stringify(STATE, null, 2);
+    const idCell = { id: DBX.getNotebookId(), path: null };
+    const res = await DBX.uploadSmart(idCell, '/The Notebook/notebook.json', payload);
+    if(res?.id) DBX.setNotebookId(res.id);
+
+    // 2. For human readability, also write a .txt per entry under /The Notebook/text/
+    //    This happens in the background so saves feel fast.
+    for(const e of STATE.entries){
+      try{
+        const idCell = { id: e.dbxTextId || null, path: null };
+        const fallback = `/The Notebook/text/${safeFilename(e.title)}-${e.id.slice(0,8)}.txt`;
+        const r = await DBX.uploadSmart(idCell, fallback, txtOf(e));
+        if(r?.id && r.id !== e.dbxTextId){
+          e.dbxTextId = r.id;
+          // Save without scheduling another push
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+        }
+      }catch(err){ console.warn('text backup failed for', e.id, err); }
+    }
+  }catch(err){
+    console.warn('dbxPush failed:', err);
+    showToast('Dropbox sync paused — check connection');
+  } finally {
+    paintDbxBtn();
+  }
+}
+
+async function dbxPull(){
+  if(!DBX.isConnected()){ showToast('Not connected'); return; }
+  paintDbxBtn('syncing');
+  try{
+    let txt = null;
+    const nbId = DBX.getNotebookId();
+    if(nbId) txt = await DBX.downloadById(nbId);
+    if(!txt) txt = await DBX.downloadPath('/The Notebook/notebook.json');
+    if(!txt){
+      showToast('Nothing in Dropbox yet — push instead');
+      return;
+    }
+    const remote = JSON.parse(txt);
+    if(!remote.entries){ showToast('Could not read Dropbox file'); return; }
+    // Merge: if remote is newer, adopt it; otherwise keep local
+    const rTs = remote.lastModified || 0;
+    const lTs = STATE.lastModified || 0;
+    if(rTs > lTs){
+      STATE = remote;
+      STATE.settings = Object.assign({
+        defaultPaper: DEFAULT_PAPER, defaultTape: DEFAULT_TAPE,
+        filter:'all', search:'', view:'board'
+      }, STATE.settings || {});
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      renderBoard();
+      showToast('Pulled from Dropbox');
+    } else {
+      showToast('Local is newer — nothing to pull');
+    }
+  }catch(err){
+    console.warn('dbxPull failed:', err);
+    showToast('Pull failed — check connection');
+  } finally {
+    paintDbxBtn();
+  }
+}
+
+/* On load: finish OAuth if we just came back from Dropbox,
+   then paint and do an initial pull if connected. */
+(async function bootDropbox(){
+  let justConnected = false;
+  try{ justConnected = await DBX.handleCallback(); }catch(e){ console.warn('OAuth callback:',e); }
+  paintDbxBtn();
+  if(justConnected){
+    showToast('Dropbox connected');
+    // First-run sync: pull existing notebook if there is one, else push local
+    try{
+      const existing = await DBX.downloadPath('/The Notebook/notebook.json');
+      if(existing){
+        await dbxPull();
+      } else {
+        await dbxPush();
+      }
+    }catch(e){ console.warn('initial sync failed:',e); }
+  } else if(DBX.isConnected()){
+    // Silent background pull-then-sync on every load
+    try{ await dbxPull(); }catch(e){ console.warn(e); }
+  }
+})();
+
+/* ─── Keyboard shortcuts ─── */
+document.addEventListener('keydown',(e)=>{
+  const cmd = e.metaKey||e.ctrlKey;
+  const inWriting = !writingView.classList.contains('hidden');
+  if(e.key==='Escape' && inWriting){
+    e.preventDefault(); closeWriting(true); return;
+  }
+  if(cmd && (e.key==='s' || e.key==='S')){
+    if(inWriting){ e.preventDefault(); persistCurrent(true); }
+  }
+  if(cmd && (e.key==='n' || e.key==='N')){
+    if(!inWriting){ e.preventDefault(); openWriting(null); }
+  }
+  if(cmd && (e.key==='p' || e.key==='P')){
+    if(inWriting){ e.preventDefault(); window.print(); }
+  }
+});
+
+/* ─── New-page buttons (desktop + mobile FAB + list) ─── */
+$('btn-new').addEventListener('click',()=>openWriting(null));
+$('fab-new').addEventListener('click',()=>openWriting(null));
+
+/* ─── Startup ─── */
+function boot(){
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.classList.toggle('on', c.getAttribute('data-chip')===STATE.settings.filter);
+  });
+  $('search-input').value = STATE.settings.search || '';
+  renderBoard();
+}
+boot();
+
+/* Service worker (only when served over http(s)) */
+if('serviceWorker' in navigator && (location.protocol==='https:' || location.protocol==='http:')){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(err=>{
+      console.warn('SW registration failed:',err);
+    });
+  });
+}
+</script>
+</body>
+</html>
