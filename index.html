@@ -9,7 +9,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="The Notebook">
-<link rel="icon" type="image/jpeg" href="icon.jpg">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/jpeg" href="favicon.jpg">
 <link rel="apple-touch-icon" href="icon.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -134,6 +135,17 @@
   .dbx-btn.syncing .dot{background:var(--orange);animation:pulse 1.2s infinite}
   @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
   .dbx-btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+  .info-btn{
+    width:36px;height:36px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--white);color:var(--ink);
+    border:2px solid var(--ink);
+    box-shadow:2px 2px 0 var(--ink);
+    cursor:pointer;flex-shrink:0;
+    font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:16px;
+  }
+  .info-btn:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
 
   /* ─────────── FILTERS / SEARCH / NEW ─────────── */
   .c-filters{
@@ -875,6 +887,7 @@
         <span class="dot"></span>
         <span id="dbx-label">Connect Dropbox</span>
       </button>
+      <button class="info-btn" id="btn-about" aria-label="About this app" title="About">i</button>
     </div>
   </div>
 
@@ -1058,6 +1071,16 @@
         <button class="wv-btn ghost" id="dbx-cancel">Cancel</button>
         <button class="wv-btn primary" id="dbx-connect">Connect Dropbox</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal hidden" id="about-modal">
+  <div class="modal-card">
+    <h3>The Notebook v2.1</h3>
+    <p class="nobreak">Built for April Korto Quioh</p>
+    <div class="modal-actions">
+      <button class="wv-btn primary" id="about-close">Done</button>
     </div>
   </div>
 </div>
@@ -1466,7 +1489,7 @@ function safeFilename(s){
   return (s||'untitled').replace(/[^\w\- ]+/g,'').replace(/\s+/g,'-').slice(0,60) || 'untitled';
 }
 function txtOf(e){
-  const header = `${e.title}\n${'='.repeat(Math.max(1,e.title.length))}\n${e.tag} · ${fmtDateLong(e.updatedAt)} · ${e.wordCount} W${e.starred?' · ★':''}\n\n`;
+  const header = `${e.title}\n${'='.repeat(Math.max(1,e.title.length))}\n${e.tag} · ${fmtDateLong(e.updatedAt)} · ${e.wordCount} W${e.starred?' · starred':''}\n\n`;
   return header + (e.body||'');
 }
 
@@ -1571,7 +1594,7 @@ function buildListRow(e){
     </span>
     <span class="list-tag">${escapeHtml(e.tag||'')}</span>
     <span class="list-date">${fmtDateLong(e.updatedAt)}</span>
-    <span class="list-wc">${words} W ${e.starred?'<span class="star">★</span>':''}</span>
+    <span class="list-wc">${words} W ${e.starred?'<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>':''}</span>
   `;
   row.addEventListener('click',()=>openWriting(e.id));
   return row;
@@ -1607,7 +1630,7 @@ function buildCard(e){
     <div class="n-excerpt">${escapeHtml((e.body||'').slice(0,220))}</div>
     <div class="n-foot">
       <span>${fmtDate(e.updatedAt)} · ${words} W</span>
-      <span class="${e.starred?'star':'dot'}">${e.starred?'★':''}</span>
+      <span class="${e.starred?'star':'dot'}">${e.starred?'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>':''}</span>
     </div>
     ${e.pinnedToday?'<span class="sticker today">pinned today</span>':''}
     ${e.starred && !e.pinnedToday?'<span class="sticker starred">starred</span>':''}
@@ -1724,7 +1747,7 @@ function openWriting(id){
   wvDate.textContent = fmtDateLong(entry.createdAt || Date.now());
   updateWc();
   wvSaved.textContent = id ? '· saved' : '· new';
-  wvFootLeft.textContent = entry.starred ? '★ starred' : 'Draft';
+  wvFootLeft.innerHTML = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span> starred' : 'Draft';
   wvFootRight.textContent = `${fmtDate(entry.updatedAt||Date.now())} · ${entry.wordCount||0} W`;
   wvSave.disabled = true;
   wvDelete.style.display = id ? '' : 'none';
@@ -1813,7 +1836,7 @@ function persistCurrent(explicit){
   wvSave.disabled = true;
   wvSaved.textContent = explicit ? '· saved' : '· autosaved';
   wvFootRight.textContent = `${fmtDate(entry.updatedAt)} · ${entry.wordCount} W`;
-  wvFootLeft.textContent  = entry.starred ? '★ starred' : 'Draft';
+  wvFootLeft.innerHTML    = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span> starred' : 'Draft';
 
   if(explicit) showToast('Saved');
   // Note: Dropbox push is scheduled by saveState → scheduleDropboxPush
@@ -1921,6 +1944,12 @@ dbxBtn.addEventListener('click',openDbxModal);
 $('dbx-cancel').addEventListener('click',closeDbxModal);
 $('dbx-close').addEventListener('click',closeDbxModal);
 $('dbx-connect').addEventListener('click',()=>DBX.startOAuth());
+
+/* ═══════════════ ABOUT MODAL ═══════════════════════════════ */
+const aboutModal = $('about-modal');
+$('btn-about').addEventListener('click',()=>aboutModal.classList.remove('hidden'));
+$('about-close').addEventListener('click',()=>aboutModal.classList.add('hidden'));
+aboutModal.addEventListener('click',(e)=>{if(e.target===aboutModal)aboutModal.classList.add('hidden')});
 $('dbx-disconnect').addEventListener('click',async()=>{
   await DBX.disconnect();
   paintDbxBtn();
