@@ -2,13 +2,13 @@
    Caches app shell + Google Fonts so it opens offline once installed.
    Bump CACHE_VERSION to force a refresh on deploy. */
 
-const CACHE_VERSION = 'notebook-v2';
+const CACHE_VERSION = 'notebook-v4';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './icon.jpg',
-  './favicon.jpg',
+  './favicon.png',
   './favicon.ico'
 ];
 

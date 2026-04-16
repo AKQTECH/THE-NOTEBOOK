@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="The Notebook">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="icon.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1077,7 +1077,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.1</h3>
+    <h3>The Notebook v2.2</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1961,12 +1961,13 @@ $('dbx-pull').addEventListener('click',async()=>{
   await dbxPull();
 });
 
-/* Debounced push: any state change queues a push in ~6s */
+/* Debounced push: any state change queues a push in ~2s (was 6s —
+   tightened for near-real-time sync across devices). */
 let PUSH_TIMER = null;
 function scheduleDropboxPush(){
   if(!DBX.isConnected()) return;
   clearTimeout(PUSH_TIMER);
-  PUSH_TIMER = setTimeout(()=>{ dbxPush().catch(e=>console.warn('DBX push:',e)); }, 6000);
+  PUSH_TIMER = setTimeout(()=>{ dbxPush().catch(e=>console.warn('DBX push:',e)); }, 2000);
 }
 
 async function dbxPush(){
@@ -2001,24 +2002,26 @@ async function dbxPush(){
   }
 }
 
-async function dbxPull(){
-  if(!DBX.isConnected()){ showToast('Not connected'); return; }
-  paintDbxBtn('syncing');
+async function dbxPull(silent=false){
+  if(!DBX.isConnected()){ if(!silent) showToast('Not connected'); return; }
+  if(!silent) paintDbxBtn('syncing');
   try{
     let txt = null;
     const nbId = DBX.getNotebookId();
     if(nbId) txt = await DBX.downloadById(nbId);
     if(!txt) txt = await DBX.downloadPath('/The Notebook/notebook.json');
     if(!txt){
-      showToast('Nothing in Dropbox yet — push instead');
+      if(!silent) showToast('Nothing in Dropbox yet — push instead');
       return;
     }
     const remote = JSON.parse(txt);
-    if(!remote.entries){ showToast('Could not read Dropbox file'); return; }
+    if(!remote.entries){ if(!silent) showToast('Could not read Dropbox file'); return; }
     // Merge: if remote is newer, adopt it; otherwise keep local
     const rTs = remote.lastModified || 0;
     const lTs = STATE.lastModified || 0;
     if(rTs > lTs){
+      // Guard: if user has an unsaved in-progress edit, don't clobber it.
+      if(DIRTY){ if(!silent) showToast('Unsaved edit — pull skipped'); return; }
       STATE = remote;
       STATE.settings = Object.assign({
         defaultPaper: DEFAULT_PAPER, defaultTape: DEFAULT_TAPE,
@@ -2026,17 +2029,43 @@ async function dbxPull(){
       }, STATE.settings || {});
       localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
       renderBoard();
-      showToast('Pulled from Dropbox');
+      if(!silent) showToast('Pulled from Dropbox');
+      else showToast('Synced from Dropbox'); // brief confirmation on auto-pull updates
     } else {
-      showToast('Local is newer — nothing to pull');
+      if(!silent) showToast('Local is newer — nothing to pull');
     }
   }catch(err){
     console.warn('dbxPull failed:', err);
-    showToast('Pull failed — check connection');
+    if(silent) return; // auto-pulls fail quietly
+    const msg = String(err?.message || err);
+    let userMsg = 'Pull failed';
+    if(/401|unauthorized|session expired/i.test(msg)) userMsg = 'Pull failed: session expired — reconnect';
+    else if(/scope|insufficient_scope/i.test(msg)) userMsg = 'Pull failed: missing Dropbox scopes — reconnect';
+    else if(/network|failed to fetch|NetworkError/i.test(msg)) userMsg = 'Pull failed: no network';
+    else if(/JSON/i.test(msg)) userMsg = 'Pull failed: bad data in Dropbox file';
+    else if(msg.length<60) userMsg = 'Pull failed: ' + msg;
+    showToast(userMsg);
   } finally {
-    paintDbxBtn();
+    if(!silent) paintDbxBtn();
   }
 }
+
+/* Real-time sync: poll Dropbox every ~10s for remote changes from another
+   device. Skip while the user is typing (DIRTY) or the tab is backgrounded
+   (save battery). Also pull immediately when the tab comes back to foreground. */
+setInterval(()=>{
+  if(!DBX.isConnected()) return;
+  if(DIRTY) return;           // don't clobber an in-progress edit
+  if(document.hidden) return; // save battery / data
+  dbxPull(true).catch(e=>console.warn('auto-pull:', e));
+}, 10000);
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) return;
+  if(!DBX.isConnected()) return;
+  if(DIRTY) return;
+  dbxPull(true).catch(e=>console.warn('visibility-pull:', e));
+});
 
 /* On load: finish OAuth if we just came back from Dropbox,
    then paint and do an initial pull if connected. */
@@ -2057,7 +2086,7 @@ async function dbxPull(){
     }catch(e){ console.warn('initial sync failed:',e); }
   } else if(DBX.isConnected()){
     // Silent background pull-then-sync on every load
-    try{ await dbxPull(); }catch(e){ console.warn(e); }
+    try{ await dbxPull(true); }catch(e){ console.warn(e); }
   }
 })();
 
