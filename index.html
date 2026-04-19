@@ -1077,7 +1077,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.2</h3>
+    <h3>The Notebook v2.3</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1467,6 +1467,11 @@ function saveState(state){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   scheduleDropboxPush();
 }
+/* Save to localStorage only — no Dropbox push.
+   Use for local-only UI state (search, filter, view toggle). */
+function saveStateLocal(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
 
 function countWords(s){
   if(!s) return 0;
@@ -1612,7 +1617,7 @@ function paintViewToggle(){
 document.querySelectorAll('#view-toggle button').forEach(b=>{
   b.addEventListener('click',()=>{
     STATE.settings.view = b.getAttribute('data-view');
-    saveState(STATE);
+    saveStateLocal(STATE);
     paintViewToggle();
   });
 });
@@ -1662,7 +1667,7 @@ document.querySelectorAll('.chip').forEach(chip=>{
     document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
     chip.classList.add('on');
     STATE.settings.filter = chip.getAttribute('data-chip');
-    saveState(STATE);
+    saveStateLocal(STATE);
     renderBoard();
   });
 });
@@ -1670,7 +1675,7 @@ document.querySelectorAll('.chip').forEach(chip=>{
 /* ─── Search ─── */
 $('search-input').addEventListener('input',(e)=>{
   STATE.settings.search = e.target.value;
-  saveState(STATE);
+  saveStateLocal(STATE);
   renderBoard();
 });
 
@@ -1970,8 +1975,11 @@ function scheduleDropboxPush(){
   PUSH_TIMER = setTimeout(()=>{ dbxPush().catch(e=>console.warn('DBX push:',e)); }, 2000);
 }
 
+let PUSH_IN_FLIGHT = false;
 async function dbxPush(){
   if(!DBX.isConnected()) return;
+  if(PUSH_IN_FLIGHT){ scheduleDropboxPush(); return; } // re-queue, don't overlap
+  PUSH_IN_FLIGHT = true;
   paintDbxBtn('syncing');
   try{
     // 1. Push the full notebook JSON as a single file (source of truth)
@@ -1998,6 +2006,7 @@ async function dbxPush(){
     console.warn('dbxPush failed:', err);
     showToast('Dropbox sync paused — check connection');
   } finally {
+    PUSH_IN_FLIGHT = false;
     paintDbxBtn();
   }
 }
@@ -2022,15 +2031,41 @@ async function dbxPull(silent=false){
     if(rTs > lTs){
       // Guard: if user has an unsaved in-progress edit, don't clobber it.
       if(DIRTY){ if(!silent) showToast('Unsaved edit — pull skipped'); return; }
+      // Preserve local-only UI settings (filter, search, view) so auto-pull
+      // from another device doesn't switch your current filter/view/search.
+      const localUI = {
+        filter: STATE.settings?.filter || 'all',
+        search: STATE.settings?.search || '',
+        view:   STATE.settings?.view   || 'board'
+      };
       STATE = remote;
       STATE.settings = Object.assign({
         defaultPaper: DEFAULT_PAPER, defaultTape: DEFAULT_TAPE,
         filter:'all', search:'', view:'board'
-      }, STATE.settings || {});
+      }, STATE.settings || {}, localUI);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
       renderBoard();
+      // If the writing view is open and showing this entry, refresh it
+      // so the user sees the updated content instead of stale textarea values.
+      if(CURRENT_ID && !writingView.classList.contains('hidden')){
+        const updated = STATE.entries.find(e=>e.id===CURRENT_ID);
+        if(updated){
+          wvTitle.value = updated.title || '';
+          wvLines.value = updated.body || '';
+          wvTag.value = ['Journal','Script','Essay','Idea','Draft','Letter'].includes(updated.tag) ? updated.tag : 'Journal';
+          wvStar.classList.toggle('on', !!updated.starred);
+          wvPin.classList.toggle('on', !!updated.pinnedToday);
+          CURRENT_PAPER = updated.paper || DEFAULT_PAPER;
+          CURRENT_TAPE  = updated.tape  || DEFAULT_TAPE;
+          paintWvPickers();
+          updateWc();
+          wvFootRight.textContent = `${fmtDate(updated.updatedAt)} · ${updated.wordCount||0} W`;
+          wvSaved.textContent = '· synced';
+          autosizeTitle();
+        }
+      }
       if(!silent) showToast('Pulled from Dropbox');
-      else showToast('Synced from Dropbox'); // brief confirmation on auto-pull updates
+      // Silent auto-pulls don't toast — avoids spamming user every 10s
     } else {
       if(!silent) showToast('Local is newer — nothing to pull');
     }
