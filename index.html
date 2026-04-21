@@ -1076,7 +1076,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.6</h3>
+    <h3>The Notebook v2.7</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1426,7 +1426,7 @@ function emptyState(){
       search: '',
       view: 'board'
     },
-    lastModified: Date.now()
+    lastModified: 0  // Zero so any Dropbox data always wins over a fresh empty state
   };
 }
 
@@ -1441,7 +1441,7 @@ function loadState(){
       defaultTape:  DEFAULT_TAPE,
       filter:'all',search:'',view:'board'
     }, parsed.settings || {});
-    parsed.lastModified = parsed.lastModified || Date.now();
+    parsed.lastModified = parsed.lastModified ?? Date.now();
     return parsed;
   }catch(e){
     console.error('Failed to parse state:',e);
