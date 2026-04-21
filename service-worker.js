@@ -7,7 +7,7 @@ const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './icon.jpg',
+  './icon.png',
   './favicon.png',
   './favicon.ico'
 ];
