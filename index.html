@@ -1077,7 +1077,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.3</h3>
+    <h3>The Notebook v2.5</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1100,11 +1100,9 @@ const DEFAULT_TAPE  = '#E668A7';
    browser app. App key is public info. Tokens are stored in
    localStorage.
 
-   Files: a single backup file at /The Notebook/notebook.json
-   holding the full state. We also write per-entry .txt files
-   under /The Notebook/text/ so you can read pages natively in
-   Dropbox (phone, web, Finder). Lookups use Dropbox file IDs
-   so moves and renames don't break anything.
+   Files: a single file at /The Notebook/notebook.json holding the
+   full state. Lookups use Dropbox file IDs so moves and renames
+   don't break anything.
    ────────────────────────────────────────────────────────────── */
 const DBX = (() => {
   // ⚠️ REPLACE this with your Dropbox App Key after registering
@@ -1370,7 +1368,19 @@ const DBX = (() => {
         'Dropbox-API-Arg': JSON.stringify({path})
       }
     });
-    if(r.status===409) return null; // not found
+    if(r.status===409){
+      try{
+        const errBody = await r.json();
+        const tag = errBody?.error?.['.tag'] || errBody?.error_summary || '';
+        if(tag.includes('not_found')) return null;
+        console.warn('DBX downloadPath 409:', JSON.stringify(errBody));
+        throw new Error('DBX download 409: ' + (errBody?.error_summary || 'unknown'));
+      }catch(parseErr){
+        if(parseErr.message?.startsWith('DBX download 409')) throw parseErr;
+        console.warn('DBX downloadPath 409 (unparseable):', parseErr);
+        return null;
+      }
+    }
     if(!r.ok){
       const txt = await r.text();
       throw new Error(`DBX download ${path} ${r.status}: ${txt}`);
@@ -1380,7 +1390,12 @@ const DBX = (() => {
 
   async function downloadById(id){
     const p = await getPathById(id);
-    if(!p) return null;
+    if(!p){
+      // Stale file ID — clear it so we don't keep trying a dead reference
+      state.notebookFileId = null;
+      localStorage.removeItem(KEY_NBID);
+      return null;
+    }
     return downloadPath(p);
   }
 
@@ -1982,26 +1997,10 @@ async function dbxPush(){
   PUSH_IN_FLIGHT = true;
   paintDbxBtn('syncing');
   try{
-    // 1. Push the full notebook JSON as a single file (source of truth)
     const payload = JSON.stringify(STATE, null, 2);
     const idCell = { id: DBX.getNotebookId(), path: null };
     const res = await DBX.uploadSmart(idCell, '/The Notebook/notebook.json', payload);
     if(res?.id) DBX.setNotebookId(res.id);
-
-    // 2. For human readability, also write a .txt per entry under /The Notebook/text/
-    //    This happens in the background so saves feel fast.
-    for(const e of STATE.entries){
-      try{
-        const idCell = { id: e.dbxTextId || null, path: null };
-        const fallback = `/The Notebook/text/${safeFilename(e.title)}-${e.id.slice(0,8)}.txt`;
-        const r = await DBX.uploadSmart(idCell, fallback, txtOf(e));
-        if(r?.id && r.id !== e.dbxTextId){
-          e.dbxTextId = r.id;
-          // Save without scheduling another push
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
-        }
-      }catch(err){ console.warn('text backup failed for', e.id, err); }
-    }
   }catch(err){
     console.warn('dbxPush failed:', err);
     showToast('Dropbox sync paused — check connection');
@@ -2017,8 +2016,14 @@ async function dbxPull(silent=false){
   try{
     let txt = null;
     const nbId = DBX.getNotebookId();
+    console.log('dbxPull: trying downloadById, nbId =', nbId);
     if(nbId) txt = await DBX.downloadById(nbId);
-    if(!txt) txt = await DBX.downloadPath('/The Notebook/notebook.json');
+    console.log('dbxPull: downloadById result =', txt ? 'got data (' + txt.length + ' chars)' : 'null');
+    if(!txt){
+      console.log('dbxPull: trying downloadPath /The Notebook/notebook.json');
+      txt = await DBX.downloadPath('/The Notebook/notebook.json');
+      console.log('dbxPull: downloadPath result =', txt ? 'got data (' + txt.length + ' chars)' : 'null');
+    }
     if(!txt){
       if(!silent) showToast('Nothing in Dropbox yet — push instead');
       return;
