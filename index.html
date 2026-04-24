@@ -702,6 +702,38 @@
   }
   .modal-card p{font-size:13px;line-height:1.55;opacity:0.75;margin-bottom:18px}
   .modal-card p.nobreak{opacity:0.9}
+
+  /* Category management */
+  .chip-edit{
+    padding:10px 10px;min-height:38px;
+    opacity:0.45;
+    border:1.5px dashed rgba(28,20,16,0.35) !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+  .chip-edit:hover{opacity:1;border-color:var(--ink) !important}
+  .cat-item{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 0;
+    border-bottom:1px dashed rgba(28,20,16,0.15);
+    font-family:'DM Sans',sans-serif;
+  }
+  .cat-item:last-child{border-bottom:none}
+  .cat-item .cat-name{
+    flex:1;font-weight:700;font-size:14px;
+    text-transform:uppercase;letter-spacing:0.08em;
+  }
+  .cat-item .cat-count{font-size:11px;font-weight:600;opacity:0.5}
+  .cat-del-btn{
+    width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;opacity:0.4;
+    transition:opacity 0.15s, background 0.15s;
+  }
+  .cat-del-btn:hover{opacity:1;background:#ffe0e0}
+  .cat-add-row{display:flex;gap:8px;margin-top:14px}
+  .cat-add-row input{flex:1;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;font-size:14px;outline:none;font-family:inherit}
+  .cat-add-row input:focus{border-color:var(--pink-main)}
   .modal-card label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.14em;opacity:0.7;margin-bottom:6px;margin-top:14px}
   .modal-card input[type="text"]{width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;font-size:14px;outline:none}
   .modal-card input[type="text"]:focus{border-color:var(--pink-main)}
@@ -893,10 +925,7 @@
   <div class="c-filters">
     <span class="eyebrow">Filter</span>
     <div class="chip on" data-chip="all">All <span class="chip-count" data-count="all">0</span></div>
-    <div class="chip" data-chip="Journal">Journal <span class="chip-count" data-count="Journal">0</span></div>
-    <div class="chip" data-chip="Script">Script <span class="chip-count" data-count="Script">0</span></div>
-    <div class="chip" data-chip="Essay">Essays <span class="chip-count" data-count="Essay">0</span></div>
-    <div class="chip" data-chip="Idea">Ideas <span class="chip-count" data-count="Idea">0</span></div>
+    <span id="cat-chips" style="display:contents"></span>
     <div class="chip" data-chip="Starred">Starred <span class="chip-count" data-count="Starred">0</span></div>
     <div class="view-toggle" id="view-toggle">
       <button class="on" data-view="board" title="Pinboard view">
@@ -952,14 +981,7 @@
       Board
     </button>
 
-    <select class="wv-tag-select" id="wv-tag">
-      <option value="Journal">Journal</option>
-      <option value="Script">Script</option>
-      <option value="Essay">Essay</option>
-      <option value="Idea">Idea</option>
-      <option value="Draft">Draft</option>
-      <option value="Letter">Letter</option>
-    </select>
+    <select class="wv-tag-select" id="wv-tag"></select>
 
     <button class="wv-btn ghost star" id="wv-star" title="Star this page">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
@@ -1074,9 +1096,24 @@
   </div>
 </div>
 
+<div class="modal hidden" id="cat-modal">
+  <div class="modal-card">
+    <h3>Categories</h3>
+    <p>Add or remove the tags you use to organize your pages.</p>
+    <div id="cat-list"></div>
+    <div class="cat-add-row">
+      <input type="text" id="cat-new-input" placeholder="New category name..." maxlength="30">
+      <button class="wv-btn primary" id="cat-add-btn">Add</button>
+    </div>
+    <div class="modal-actions">
+      <button class="wv-btn primary" id="cat-done">Done</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.7</h3>
+    <h3>The Notebook v2.8</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1093,6 +1130,7 @@
 const STORAGE_KEY = 'akq_notebook_v2';
 const DEFAULT_PAPER = '#f6d0f6';
 const DEFAULT_TAPE  = '#E668A7';
+const DEFAULT_CATEGORIES = ['Journal','Script','Essay','Idea','Draft','Letter'];
 
 /* ═══════════════ DROPBOX API MODULE ═══════════════════════════
    OAuth PKCE flow. No client secret needed — safe for a static
@@ -1424,7 +1462,8 @@ function emptyState(){
       defaultTape:  DEFAULT_TAPE,
       filter: 'all',
       search: '',
-      view: 'board'
+      view: 'board',
+      categories: DEFAULT_CATEGORIES.slice()
     },
     lastModified: 0  // Zero so any Dropbox data always wins over a fresh empty state
   };
@@ -1439,7 +1478,8 @@ function loadState(){
     parsed.settings = Object.assign({
       defaultPaper: DEFAULT_PAPER,
       defaultTape:  DEFAULT_TAPE,
-      filter:'all',search:'',view:'board'
+      filter:'all',search:'',view:'board',
+      categories: DEFAULT_CATEGORIES.slice()
     }, parsed.settings || {});
     parsed.lastModified = parsed.lastModified ?? Date.now();
     return parsed;
@@ -1546,10 +1586,8 @@ function renderBoard(){
     return b.updatedAt - a.updatedAt;
   });
 
-  const counts = {
-    all: STATE.entries.length,
-    Journal: 0, Script:0, Essay:0, Idea:0, Starred:0
-  };
+  const counts = { all: STATE.entries.length, Starred: 0 };
+  (STATE.settings.categories||DEFAULT_CATEGORIES).forEach(c=>counts[c]=0);
   STATE.entries.forEach(e=>{
     if(counts[e.tag]!==undefined) counts[e.tag]++;
     if(e.starred) counts.Starred++;
@@ -1675,15 +1713,156 @@ function highlightTitle(t){
   return escapeHtml(t).replace(/\*([^*]+)\*/g,'<em>$1</em>');
 }
 
-/* ─── Filter chips ─── */
-document.querySelectorAll('.chip').forEach(chip=>{
-  chip.addEventListener('click',()=>{
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-    chip.classList.add('on');
-    STATE.settings.filter = chip.getAttribute('data-chip');
-    saveStateLocal(STATE);
-    renderBoard();
+/* ─── Filter chips (event delegation — works with dynamic category chips) ─── */
+document.querySelector('.c-filters').addEventListener('click',(e)=>{
+  const chip = e.target.closest('[data-chip]');
+  if(!chip) return;
+  document.querySelectorAll('[data-chip]').forEach(c=>c.classList.remove('on'));
+  chip.classList.add('on');
+  STATE.settings.filter = chip.getAttribute('data-chip');
+  saveStateLocal(STATE);
+  renderBoard();
+});
+
+/* ─── Category helpers ─── */
+function getCategories(){
+  return STATE.settings.categories || DEFAULT_CATEGORIES;
+}
+
+function rebuildCategoryUI(){
+  // Dynamic filter chips
+  const container = $('cat-chips');
+  container.innerHTML = '';
+  getCategories().forEach(cat=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.setAttribute('data-chip', cat);
+    chip.innerHTML = `${escapeHtml(cat)} <span class="chip-count" data-count="${escapeHtml(cat)}">0</span>`;
+    container.appendChild(chip);
   });
+  // Edit button
+  const editChip = document.createElement('button');
+  editChip.className = 'chip chip-edit';
+  editChip.title = 'Edit categories';
+  editChip.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  editChip.addEventListener('click',(e)=>{ e.stopPropagation(); openCatModal(); });
+  container.appendChild(editChip);
+
+  // Dynamic tag <select> in writing view
+  const sel = $('wv-tag');
+  const curVal = sel.value;
+  sel.innerHTML = '';
+  getCategories().forEach(cat=>{
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    sel.appendChild(opt);
+  });
+  if(curVal && getCategories().includes(curVal)) sel.value = curVal;
+
+  // Re-apply active chip
+  document.querySelectorAll('[data-chip]').forEach(c=>{
+    c.classList.toggle('on', c.getAttribute('data-chip')===STATE.settings.filter);
+  });
+}
+
+/* ─── Category management modal ─── */
+function openCatModal(){
+  const modal = $('cat-modal');
+  paintCatList();
+  $('cat-new-input').value = '';
+  modal.classList.remove('hidden');
+}
+function closeCatModal(){
+  $('cat-modal').classList.add('hidden');
+}
+
+function paintCatList(){
+  const list = $('cat-list');
+  list.innerHTML = '';
+  const cats = getCategories();
+  cats.forEach((cat,i)=>{
+    const count = STATE.entries.filter(e=>e.tag===cat).length;
+    const item = document.createElement('div');
+    item.className = 'cat-item';
+    item.innerHTML = `
+      <span class="cat-name">${escapeHtml(cat)}</span>
+      <span class="cat-count">${count} page${count!==1?'s':''}</span>
+      <button class="cat-del-btn" title="Remove ${escapeHtml(cat)}" data-cat-idx="${i}">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    `;
+    list.appendChild(item);
+  });
+  // Wire delete buttons
+  list.querySelectorAll('.cat-del-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const idx = parseInt(btn.getAttribute('data-cat-idx'));
+      const cats = getCategories();
+      if(cats.length<=1){ showToast('Need at least one category'); return; }
+      const removed = cats[idx];
+      const count = STATE.entries.filter(e=>e.tag===removed).length;
+      if(count>0){
+        openConfirm(
+          `Remove "${removed}"?`,
+          `${count} page${count!==1?'s':''} tagged "${removed}" will keep their content but show as uncategorized until you re-tag them.`,
+          ()=>{
+            doRemoveCategory(idx);
+            openCatModal(); // re-open to show updated list
+          }
+        );
+      } else {
+        doRemoveCategory(idx);
+        paintCatList();
+      }
+    });
+  });
+}
+
+function doRemoveCategory(idx){
+  const cats = getCategories();
+  const removed = cats.splice(idx,1)[0];
+  STATE.settings.categories = cats;
+  // If current filter was the deleted category, reset to all
+  if(STATE.settings.filter===removed) STATE.settings.filter = 'all';
+  saveState(STATE);
+  rebuildCategoryUI();
+  renderBoard();
+}
+
+function addCategory(name){
+  const clean = name.trim();
+  if(!clean){ showToast('Enter a category name'); return; }
+  if(clean.length>30){ showToast('Category name too long'); return; }
+  const cats = getCategories();
+  if(cats.some(c=>c.toLowerCase()===clean.toLowerCase())){
+    showToast('Category already exists'); return;
+  }
+  if(clean.toLowerCase()==='all' || clean.toLowerCase()==='starred'){
+    showToast('That name is reserved'); return;
+  }
+  cats.push(clean);
+  STATE.settings.categories = cats;
+  saveState(STATE);
+  rebuildCategoryUI();
+  renderBoard();
+  showToast(`Added "${clean}"`);
+}
+
+$('cat-done').addEventListener('click', closeCatModal);
+$('cat-modal').addEventListener('click',(e)=>{if(e.target===$('cat-modal'))closeCatModal()});
+$('cat-add-btn').addEventListener('click',()=>{
+  addCategory($('cat-new-input').value);
+  $('cat-new-input').value = '';
+  paintCatList();
+});
+$('cat-new-input').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    addCategory($('cat-new-input').value);
+    $('cat-new-input').value = '';
+    paintCatList();
+  }
 });
 
 /* ─── Search ─── */
@@ -1749,7 +1928,7 @@ function openWriting(id){
     if(!entry){ CURRENT_ID = null; return; }
   } else {
     entry = {
-      id: null, title: '', tag: 'Journal', body: '',
+      id: null, title: '', tag: getCategories()[0], body: '',
       paper: STATE.settings.defaultPaper, tape: STATE.settings.defaultTape,
       starred: false, pinnedToday: false,
       createdAt: Date.now(), updatedAt: Date.now(), wordCount: 0
@@ -1757,7 +1936,16 @@ function openWriting(id){
   }
   wvTitle.value = entry.title || '';
   wvLines.value = entry.body || '';
-  wvTag.value   = ['Journal','Script','Essay','Idea','Draft','Letter'].includes(entry.tag) ? entry.tag : 'Journal';
+  // If the entry's tag isn't in the current category list (orphaned after
+  // category deletion), add it as a temporary option so the user sees the
+  // real tag and can choose to re-tag or leave it.
+  if(entry.tag && !getCategories().includes(entry.tag)){
+    const opt = document.createElement('option');
+    opt.value = entry.tag;
+    opt.textContent = entry.tag;
+    wvTag.prepend(opt);
+  }
+  wvTag.value = entry.tag || getCategories()[0];
   wvStar.classList.toggle('on', !!entry.starred);
   wvPin.classList.toggle('on',  !!entry.pinnedToday);
   CURRENT_PAPER = entry.paper || STATE.settings.defaultPaper || DEFAULT_PAPER;
@@ -1782,6 +1970,7 @@ function openWriting(id){
 }
 
 function closeWriting(save=true){
+  clearTimeout(AUTOSAVE_TIMER);   // kill pending autosave before nulling CURRENT_ID
   if(save && DIRTY) persistCurrent(true);
   writingView.classList.add('hidden');
   boardView.classList.remove('hidden');
@@ -2045,9 +2234,15 @@ async function dbxPull(silent=false){
       STATE = remote;
       STATE.settings = Object.assign({
         defaultPaper: DEFAULT_PAPER, defaultTape: DEFAULT_TAPE,
-        filter:'all', search:'', view:'board'
+        filter:'all', search:'', view:'board',
+        categories: DEFAULT_CATEGORIES.slice()
       }, STATE.settings || {}, localUI);
+      // Cancel any pending push — we just pulled, we don't want to immediately
+      // push back with a fresh timestamp and make this device look "newer"
+      clearTimeout(PUSH_TIMER);
+      PUSH_TIMER = null;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      rebuildCategoryUI();
       renderBoard();
       // If the writing view is open and showing this entry, refresh it
       // so the user sees the updated content instead of stale textarea values.
@@ -2056,7 +2251,13 @@ async function dbxPull(silent=false){
         if(updated){
           wvTitle.value = updated.title || '';
           wvLines.value = updated.body || '';
-          wvTag.value = ['Journal','Script','Essay','Idea','Draft','Letter'].includes(updated.tag) ? updated.tag : 'Journal';
+          if(updated.tag && !getCategories().includes(updated.tag)){
+            const opt = document.createElement('option');
+            opt.value = updated.tag;
+            opt.textContent = updated.tag;
+            wvTag.prepend(opt);
+          }
+          wvTag.value = updated.tag || getCategories()[0];
           wvStar.classList.toggle('on', !!updated.starred);
           wvPin.classList.toggle('on', !!updated.pinnedToday);
           CURRENT_PAPER = updated.paper || DEFAULT_PAPER;
@@ -2153,9 +2354,7 @@ $('fab-new').addEventListener('click',()=>openWriting(null));
 
 /* ─── Startup ─── */
 function boot(){
-  document.querySelectorAll('.chip').forEach(c=>{
-    c.classList.toggle('on', c.getAttribute('data-chip')===STATE.settings.filter);
-  });
+  rebuildCategoryUI();
   $('search-input').value = STATE.settings.search || '';
   renderBoard();
 }
