@@ -705,13 +705,19 @@
 
   /* Category management */
   .chip-edit{
-    padding:10px 10px;min-height:38px;
-    opacity:0.45;
-    border:1.5px dashed rgba(28,20,16,0.35) !important;
-    background:transparent !important;
-    box-shadow:none !important;
+    padding:10px 14px;min-height:38px;
+    gap:6px;
+    display:inline-flex;align-items:center;
+    font-size:10px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.12em;
+    opacity:0.7;
+    border:2px solid var(--ink) !important;
+    background:var(--white) !important;
+    box-shadow:2px 2px 0 var(--ink) !important;
+    border-radius:999px;
+    cursor:pointer;
   }
-  .chip-edit:hover{opacity:1;border-color:var(--ink) !important}
+  .chip-edit:hover{opacity:1;transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink) !important}
   .cat-item{
     display:flex;align-items:center;gap:10px;
     padding:12px 0;
@@ -724,6 +730,16 @@
     text-transform:uppercase;letter-spacing:0.08em;
   }
   .cat-item .cat-count{font-size:11px;font-weight:600;opacity:0.5}
+  .cat-name{cursor:pointer;border-bottom:1px dashed transparent;transition:border-color 0.15s}
+  .cat-name:hover{border-color:var(--pink-main)}
+  .cat-rename-input{
+    flex:1;font-weight:700;font-size:14px;
+    text-transform:uppercase;letter-spacing:0.08em;
+    border:none;border-bottom:2px solid var(--pink-main);
+    outline:none;background:transparent;
+    font-family:'DM Sans',sans-serif;
+    padding:2px 0;
+  }
   .cat-del-btn{
     width:28px;height:28px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
@@ -955,7 +971,7 @@
         <span>Title</span>
         <span>Category</span>
         <span>Updated</span>
-        <span style="text-align:right">Words</span>
+        <span></span>
       </div>
       <div id="list-rows"></div>
       <div class="list-new" id="list-new-btn">
@@ -1113,7 +1129,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.8</h3>
+    <h3>The Notebook v2.9</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1639,7 +1655,6 @@ function renderBoard(){
 function buildListRow(e){
   const row = document.createElement('div');
   row.className = 'list-row';
-  const words = e.wordCount ?? countWords(e.body);
   const sub = (e.body||'').replace(/\s+/g,' ').slice(0,120);
   const paperBg = e.paper || '#FFFFFF';
   row.innerHTML = `
@@ -1651,7 +1666,7 @@ function buildListRow(e){
     </span>
     <span class="list-tag">${escapeHtml(e.tag||'')}</span>
     <span class="list-date">${fmtDateLong(e.updatedAt)}</span>
-    <span class="list-wc">${words} W ${e.starred?'<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>':''}</span>
+    <span class="list-wc">${e.starred?'<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>':''}</span>
   `;
   row.addEventListener('click',()=>openWriting(e.id));
   return row;
@@ -1679,14 +1694,13 @@ function buildCard(e){
   const card = document.createElement('div');
   card.className = 'note';
   card.style.background = e.paper || DEFAULT_PAPER;
-  const words = e.wordCount ?? countWords(e.body);
   const today = isSameDay(e.updatedAt, Date.now());
   card.innerHTML = `
     <div class="tag">${escapeHtml(e.tag)}${today?' · Today':''}</div>
     <div class="n-title">${highlightTitle(e.title || 'Untitled page')}</div>
     <div class="n-excerpt">${escapeHtml((e.body||'').slice(0,220))}</div>
     <div class="n-foot">
-      <span>${fmtDate(e.updatedAt)} · ${words} W</span>
+      <span>${fmtDate(e.updatedAt)}</span>
       <span class="${e.starred?'star':'dot'}">${e.starred?'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>':''}</span>
     </div>
     ${e.pinnedToday?'<span class="sticker today">pinned today</span>':''}
@@ -1744,9 +1758,9 @@ function rebuildCategoryUI(){
   const editChip = document.createElement('button');
   editChip.className = 'chip chip-edit';
   editChip.title = 'Edit categories';
-  editChip.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  editChip.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit';
   editChip.addEventListener('click',(e)=>{ e.stopPropagation(); openCatModal(); });
-  container.appendChild(editChip);
+  container.prepend(editChip);  // prepend so it's right after "All", always visible on mobile
 
   // Dynamic tag <select> in writing view
   const sel = $('wv-tag');
@@ -1786,7 +1800,7 @@ function paintCatList(){
     const item = document.createElement('div');
     item.className = 'cat-item';
     item.innerHTML = `
-      <span class="cat-name">${escapeHtml(cat)}</span>
+      <span class="cat-name" data-cat-idx="${i}" title="Tap to rename">${escapeHtml(cat)}</span>
       <span class="cat-count">${count} page${count!==1?'s':''}</span>
       <button class="cat-del-btn" title="Remove ${escapeHtml(cat)}" data-cat-idx="${i}">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1794,6 +1808,44 @@ function paintCatList(){
     `;
     list.appendChild(item);
   });
+
+  // Wire rename — tap name to edit inline
+  list.querySelectorAll('.cat-name').forEach(nameEl=>{
+    nameEl.addEventListener('click',()=>{
+      const idx = parseInt(nameEl.getAttribute('data-cat-idx'));
+      const oldName = getCategories()[idx];
+      // Replace span with input
+      const input = document.createElement('input');
+      input.className = 'cat-rename-input';
+      input.type = 'text';
+      input.value = oldName;
+      input.maxLength = 30;
+      nameEl.replaceWith(input);
+      input.focus();
+      input.select();
+
+      const commitRename = ()=>{
+        const newName = input.value.trim();
+        if(!newName || newName === oldName){
+          paintCatList(); return;  // revert
+        }
+        if(newName.toLowerCase()==='all' || newName.toLowerCase()==='starred'){
+          showToast('That name is reserved'); paintCatList(); return;
+        }
+        const cats = getCategories();
+        if(cats.some((c,ci)=>ci!==idx && c.toLowerCase()===newName.toLowerCase())){
+          showToast('Category already exists'); paintCatList(); return;
+        }
+        renameCategory(idx, newName);
+      };
+      input.addEventListener('keydown',(e)=>{
+        if(e.key==='Enter'){ e.preventDefault(); commitRename(); }
+        if(e.key==='Escape'){ paintCatList(); }
+      });
+      input.addEventListener('blur', commitRename);
+    });
+  });
+
   // Wire delete buttons
   list.querySelectorAll('.cat-del-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -1828,6 +1880,22 @@ function doRemoveCategory(idx){
   saveState(STATE);
   rebuildCategoryUI();
   renderBoard();
+}
+
+function renameCategory(idx, newName){
+  const cats = getCategories();
+  const oldName = cats[idx];
+  cats[idx] = newName;
+  STATE.settings.categories = cats;
+  // Update all entries tagged with the old name
+  STATE.entries.forEach(e=>{ if(e.tag===oldName) e.tag = newName; });
+  // Update filter if it was the old name
+  if(STATE.settings.filter===oldName) STATE.settings.filter = newName;
+  saveState(STATE);
+  rebuildCategoryUI();
+  renderBoard();
+  paintCatList();
+  showToast(`Renamed to "${newName}"`);
 }
 
 function addCategory(name){
