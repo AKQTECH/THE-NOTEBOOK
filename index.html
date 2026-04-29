@@ -341,12 +341,13 @@
   .board{
     position:relative;
     flex:1;overflow-y:auto;
-    padding:10px 44px 80px;
+    padding:26px 44px 80px;
   }
   .grid{
     display:grid;
     grid-template-columns:repeat(12,1fr);
     gap:26px;
+    overflow:visible;
   }
 
   .note{
@@ -368,8 +369,8 @@
     z-index:10;
   }
   .note-pin{
-    position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-    width:20px;height:24px;pointer-events:none;z-index:2;
+    position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+    width:26px;height:32px;pointer-events:none;z-index:2;
     filter:drop-shadow(0px 1px 1px rgba(0,0,0,0.2));
   }
   .note .tag{
@@ -580,8 +581,12 @@
      rule at 25-26px so letters sit on it instead of floating. */
   .wv-lines{
     width:100%;min-height:62vh;
-    border:none;outline:none;resize:vertical;
+    border:none;outline:none;
     background-color:transparent;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    white-space:pre-wrap;
+    word-wrap:break-word;
     background-image:repeating-linear-gradient(
       to bottom,
       transparent 0,
@@ -611,60 +616,28 @@
   }
   .wv-foot .star{color:var(--pink-main);opacity:1;font-size:14px}
 
-  /* ── Checklist ── */
-  .wv-checklist{
-    margin-top:18px;padding-top:14px;
-    border-top:1.5px dashed rgba(28,20,16,0.12);
+  /* ── Inline checklist lines (Apple Notes style) ── */
+  .wv-lines .cl-line{
+    display:flex;align-items:flex-start;gap:8px;
+    min-height:34px;line-height:34px;
   }
-  .wv-checklist.hidden{display:none !important}
-  .cl-header{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-bottom:10px;
-  }
-  .cl-title{
-    font-family:'Antonio',sans-serif;
-    font-size:11px;font-weight:700;
-    text-transform:uppercase;letter-spacing:0.16em;
-    color:var(--ink);opacity:0.6;
-  }
-  .cl-add{
-    font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;
-    color:var(--pink-main);cursor:pointer;padding:6px 12px;
-    border-radius:999px;border:1.5px solid var(--pink-main);
-    background:none;min-height:32px;
-  }
-  .cl-add:active{opacity:0.7}
-  .cl-item{
-    display:flex;align-items:flex-start;gap:10px;
-    padding:6px 0;
-  }
-  .cl-box{
-    width:22px;height:22px;border-radius:4px;
-    border:2px solid rgba(28,20,16,0.35);
+  .wv-lines .cl-line .cl-box{
+    width:20px;height:20px;border-radius:50%;
+    border:2px solid var(--pink-main);
     background:none;cursor:pointer;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    margin-top:2px;padding:0;
+    display:inline-flex;align-items:center;justify-content:center;
+    margin-top:7px;padding:0;
   }
-  .cl-box svg{display:none;width:14px;height:14px;stroke:var(--pink-main);stroke-width:2.5;fill:none}
-  .cl-item.done .cl-box{border-color:var(--pink-main);background:rgba(230,104,167,0.1)}
-  .cl-item.done .cl-box svg{display:block}
-  .cl-item.done .cl-text{text-decoration:line-through;opacity:0.45}
-  .cl-text{
-    flex:1;font-size:14px;line-height:1.5;color:var(--ink);
-    border:none;outline:none;background:none;
-    font-family:'DM Sans',sans-serif;
-    padding:2px 0;min-width:0;
+  .wv-lines .cl-line .cl-box svg{display:none;width:12px;height:12px;stroke:var(--white);stroke-width:2.5;fill:none}
+  .wv-lines .cl-line.done .cl-box{background:var(--pink-main);border-color:var(--pink-main)}
+  .wv-lines .cl-line.done .cl-box svg{display:block}
+  .wv-lines .cl-line .cl-txt{
+    flex:1;outline:none;min-width:0;
   }
-  .cl-text::placeholder{opacity:0.35}
-  .cl-del{
-    width:22px;height:22px;border-radius:50%;
-    border:none;background:none;cursor:pointer;
-    color:var(--ink);opacity:0.25;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    margin-top:2px;padding:0;
+  .wv-lines .cl-line.done .cl-txt{text-decoration:line-through;opacity:0.4}
+  .wv-lines [data-ph]:empty::before{
+    content:attr(data-ph);color:var(--pink-main);opacity:0.35;pointer-events:none;
   }
-  .cl-del:hover{opacity:0.6}
-  .cl-del svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
 
   /* ── In-writing-view paper + pin pickers ── */
   .wv-picker-row{
@@ -701,8 +674,8 @@
 
   /* Push pin on top of the writing page — shows pin color live */
   .wv-pin{
-    position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-    width:20px;height:24px;pointer-events:none;z-index:1;
+    position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+    width:26px;height:32px;pointer-events:none;z-index:1;
     filter:drop-shadow(0px 1px 1px rgba(0,0,0,0.2));
   }
   /* Card-color tint ribbon on the wv-page so you see the paper color
@@ -807,7 +780,7 @@
     .wv-bar,.c-top,.c-filters,.board,.toast,.wv-picker-row{display:none !important}
     .writing-view{position:static;background:var(--white)}
     .wv-page{box-shadow:none;border:none;margin:0;padding:40px 60px}
-    .wv-lines{background-image:none;resize:none}
+    .wv-lines{background-image:none}
     .wv-pin{display:none}
     .wv-foot{border-color:#ddd}
   }
@@ -1127,14 +1100,7 @@
     </svg>
     <div class="wv-paper-ribbon" id="wv-paper-ribbon"></div>
     <textarea class="wv-title" id="wv-title" rows="1" placeholder="Untitled page…"></textarea>
-    <textarea class="wv-lines" id="wv-lines" placeholder="Start writing. The lines will hold you."></textarea>
-    <div class="wv-checklist hidden" id="wv-cl">
-      <div class="cl-header">
-        <span class="cl-title">Checklist</span>
-        <button class="cl-add" id="cl-add-btn">+ Add item</button>
-      </div>
-      <div id="cl-items"></div>
-    </div>
+    <div class="wv-lines" id="wv-lines" contenteditable="true" data-ph="Start writing. The lines will hold you."></div>
     <div class="wv-foot">
       <span id="wv-foot-left">Draft</span>
       <span id="wv-foot-right">—</span>
@@ -1193,7 +1159,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.11</h3>
+    <h3>The Notebook v2.12</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1572,6 +1538,14 @@ function loadState(){
       categories: DEFAULT_CATEGORIES.slice()
     }, parsed.settings || {});
     parsed.lastModified = parsed.lastModified ?? Date.now();
+    // Migrate v2 checklist arrays into body text (one-time)
+    parsed.entries.forEach(e => {
+      if(e.checklist && e.checklist.length){
+        const clText = e.checklist.map(it => (it.done ? '[x] ' : '[ ] ') + (it.text||'')).join('\n');
+        e.body = (e.body || '') + (e.body ? '\n' : '') + clText;
+        delete e.checklist;
+      }
+    });
     return parsed;
   }catch(e){
     console.error('Failed to parse state:',e);
@@ -1619,7 +1593,9 @@ function saveStateLocal(state){
 
 function countWords(s){
   if(!s) return 0;
-  return s.trim().split(/\s+/).filter(Boolean).length;
+  // Strip checklist markers so [x] and [ ] don't inflate word count
+  const clean = s.replace(/^\[([ x])\] /gim, '');
+  return clean.trim().split(/\s+/).filter(Boolean).length;
 }
 function fmtDate(ts){
   const d = new Date(ts);
@@ -1772,7 +1748,7 @@ function buildCard(e){
   card.innerHTML = `
     <div class="tag">${escapeHtml(e.tag)}${today?' · Today':''}</div>
     <div class="n-title">${highlightTitle(e.title || 'Untitled page')}</div>
-    <div class="n-excerpt">${formatExcerpt(e.body, e.checklist)}</div>
+    <div class="n-excerpt">${formatExcerpt(e.body)}</div>
     <div class="n-foot">
       <span>${fmtDate(e.updatedAt)}</span>
       <span class="${e.starred?'star':'dot'}">${e.starred?'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>':''}</span>
@@ -1792,22 +1768,28 @@ function buildCard(e){
   return card;
 }
 
-function formatExcerpt(s, checklist){
-  let t = escapeHtml((s||'').slice(0,220));
-  // Append checklist preview if any
-  if(checklist && checklist.length){
-    const clHtml = checklist.slice(0,4).map(it => {
-      const checked = it.done;
+function formatExcerpt(s){
+  const raw = (s||'');
+  const lines = raw.slice(0,400).split('\n');
+  let out = '';
+  let clCount = 0;
+  for(let i=0; i<lines.length && out.length<260; i++){
+    const clMatch = lines[i].match(/^\[([ x])\] (.*)$/i);
+    if(clMatch){
+      clCount++;
+      if(clCount > 4) continue;
+      const checked = clMatch[1].toLowerCase() === 'x';
       const box = checked
-        ? '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><polyline points="4 8 7 11 12 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
-        : '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+        ? '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><circle cx="8" cy="8" r="6" fill="var(--pink-main)" stroke="none"/><polyline points="4 8 7 11 12 5" fill="none" stroke="white" stroke-width="1.5"/></svg>'
+        : '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><circle cx="8" cy="8" r="6" fill="none" stroke="var(--pink-main)" stroke-width="1.5"/></svg>';
       const style = checked ? 'opacity:0.45;text-decoration:line-through' : '';
-      return `<span style="display:block;font-size:12px;line-height:1.6;${style}">${box}${escapeHtml(it.text || '')}</span>`;
-    }).join('');
-    const more = checklist.length > 4 ? `<span style="font-size:11px;opacity:0.4">+${checklist.length - 4} more</span>` : '';
-    t += (t.trim() ? '<br>' : '') + clHtml + more;
+      out += `<span style="display:block;font-size:12px;line-height:1.6;${style}">${box}${escapeHtml(clMatch[2])}</span>`;
+    } else {
+      out += escapeHtml(lines[i]);
+    }
   }
-  return t;
+  if(clCount > 4) out += `<span style="font-size:11px;opacity:0.4">+${clCount - 4} more</span>`;
+  return out;
 }
 function escapeHtml(s){
   return (s||'').replace(/[&<>"']/g,ch=>({
@@ -2075,6 +2057,54 @@ const boardView   = $('board-view');
 const writingView = $('writing-view');
 const wvTitle = $('wv-title');
 const wvLines = $('wv-lines');
+
+/* ─── Contenteditable ↔ plain text with checklist markers ─── */
+function serializeBody(){
+  // Walk child nodes of wvLines, produce plain text
+  const lines = [];
+  wvLines.childNodes.forEach(node => {
+    if(node.nodeType === 3){ // text node
+      const t = node.textContent;
+      if(t.trim()) lines.push(t);
+    } else if(node.nodeType === 1){ // element
+      if(node.classList && node.classList.contains('cl-line')){
+        const done = node.classList.contains('done');
+        const txt = (node.querySelector('.cl-txt')||{}).textContent || '';
+        lines.push((done ? '[x] ' : '[ ] ') + txt);
+      } else {
+        // Strip zero-width spaces used for empty line placeholders
+        const txt = (node.textContent || '').replace(/\u200B/g, '');
+        lines.push(txt);
+      }
+    }
+  });
+  return lines.join('\n');
+}
+
+function deserializeBody(text){
+  wvLines.innerHTML = '';
+  if(!text){ return; }
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    const clMatch = line.match(/^\[([ x])\] (.*)$/i);
+    if(clMatch){
+      const done = clMatch[1].toLowerCase() === 'x';
+      const txt = clMatch[2];
+      wvLines.appendChild(makeClLine(txt, done));
+    } else {
+      const div = document.createElement('div');
+      div.textContent = line || '\u200B'; // zero-width space for empty lines
+      wvLines.appendChild(div);
+    }
+  });
+}
+
+function makeClLine(text, done){
+  const row = document.createElement('div');
+  row.className = 'cl-line' + (done ? ' done' : '');
+  row.innerHTML = `<button class="cl-box" contenteditable="false"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></button><span class="cl-txt">${escapeHtml(text)}</span>`;
+  return row;
+}
 const wvTag   = $('wv-tag');
 const wvWc    = $('wv-wc');
 const wvDate  = $('wv-date');
@@ -2102,7 +2132,7 @@ function openWriting(id){
     };
   }
   wvTitle.value = entry.title || '';
-  wvLines.value = entry.body || '';
+  deserializeBody(entry.body || '');
   // If the entry's tag isn't in the current category list (orphaned after
   // category deletion), add it as a temporary option so the user sees the
   // real tag and can choose to re-tag or leave it.
@@ -2126,10 +2156,6 @@ function openWriting(id){
   wvSave.disabled = true;
   wvDelete.style.display = id ? '' : 'none';
 
-  // Load checklist
-  CURRENT_CHECKLIST = (entry.checklist || []).map(it => ({...it}));
-  renderChecklist();
-
   boardView.classList.add('hidden');
   writingView.classList.remove('hidden');
   window.scrollTo(0,0);
@@ -2151,7 +2177,7 @@ function closeWriting(save=true){
 }
 
 function updateWc(){
-  wvWc.textContent = countWords(wvLines.value) + ' W';
+  wvWc.textContent = countWords(serializeBody()) + ' W';
 }
 
 function markDirty(){
@@ -2175,7 +2201,7 @@ function autosizeTitle(){
 
 function persistCurrent(explicit){
   const title = wvTitle.value.trim();
-  const body  = wvLines.value;
+  const body  = serializeBody();
   if(!title && !body.trim()){
     if(!CURRENT_ID){
       wvSaved.textContent = '· empty';
@@ -2209,8 +2235,6 @@ function persistCurrent(explicit){
   entry.wordCount   = countWords(body);
   entry.paper = CURRENT_PAPER || STATE.settings.defaultPaper || DEFAULT_PAPER;
   entry.tape  = CURRENT_TAPE  || STATE.settings.defaultTape  || DEFAULT_TAPE;
-  entry.checklist = CURRENT_CHECKLIST.length > 0 ? CURRENT_CHECKLIST.map(it=>({...it})) : undefined;
-
   saveState(STATE);
   DIRTY = false;
   wvSave.disabled = true;
@@ -2241,10 +2265,10 @@ function currentEntryForExport(){
   if(CURRENT_ID) return STATE.entries.find(e=>e.id===CURRENT_ID);
   return {
     title: wvTitle.value.trim() || 'Untitled page',
-    body: wvLines.value,
+    body: serializeBody(),
     tag: wvTag.value,
     updatedAt: Date.now(), createdAt: Date.now(),
-    wordCount: countWords(wvLines.value),
+    wordCount: countWords(serializeBody()),
     starred: wvStar.classList.contains('on'),
     pinnedToday: wvPin.classList.contains('on')
   };
@@ -2266,100 +2290,101 @@ $('wv-export-pdf').addEventListener('click',()=>{
   window.print();
 });
 
-/* ─── Checklist ─── */
-let CURRENT_CHECKLIST = [];
-const clContainer = $('cl-items');
-const clSection = $('wv-cl');
+/* ─── Inline checklist (Apple Notes style) ─── */
 
-function renderChecklist(){
-  clContainer.innerHTML = '';
-  CURRENT_CHECKLIST.forEach((item, i) => {
-    const row = document.createElement('div');
-    row.className = 'cl-item' + (item.done ? ' done' : '');
-    row.innerHTML = `
-      <button class="cl-box" data-cl-i="${i}"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></button>
-      <input class="cl-text" type="text" value="${escapeHtml(item.text)}" placeholder="Type here..." data-cl-i="${i}">
-      <button class="cl-del" data-cl-del="${i}"><svg viewBox="0 0 14 14"><line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/></svg></button>
-    `;
-    clContainer.appendChild(row);
-  });
-  // Show/hide section
-  clSection.classList.toggle('hidden', CURRENT_CHECKLIST.length === 0);
-}
-
-// Toggle checkbox
-clContainer.addEventListener('click',(e)=>{
+// Click checkbox to toggle done
+wvLines.addEventListener('click',(e)=>{
   const box = e.target.closest('.cl-box');
-  if(box){
-    const i = parseInt(box.getAttribute('data-cl-i'));
-    CURRENT_CHECKLIST[i].done = !CURRENT_CHECKLIST[i].done;
+  if(!box) return;
+  const line = box.closest('.cl-line');
+  if(!line) return;
+  line.classList.toggle('done');
+  markDirty();
+});
+
+// Toolbar button — toggle selected lines to/from checklist
+$('wv-checklist').addEventListener('click',()=>{
+  const sel = window.getSelection();
+  if(!sel.rangeCount){ return; }
+
+  // Find which lines are selected
+  const range = sel.getRangeAt(0);
+  const nodes = [];
+  wvLines.childNodes.forEach(n => {
+    if(n.nodeType === 1 && range.intersectsNode(n)) nodes.push(n);
+  });
+  // If nothing selected (cursor in empty area), just operate on current line
+  if(nodes.length === 0){
+    let node = sel.anchorNode;
+    while(node && node !== wvLines && node.parentNode !== wvLines) node = node.parentNode;
+    if(node && node !== wvLines) nodes.push(node);
+  }
+  if(nodes.length === 0){
+    // Empty editor — add a checklist line
+    const cl = makeClLine('', false);
+    wvLines.appendChild(cl);
+    const txt = cl.querySelector('.cl-txt');
+    if(txt){ txt.focus(); }
     markDirty();
-    renderChecklist();
     return;
   }
-  const del = e.target.closest('.cl-del');
-  if(del){
-    const i = parseInt(del.getAttribute('data-cl-del'));
-    CURRENT_CHECKLIST.splice(i, 1);
-    markDirty();
-    renderChecklist();
-  }
-});
-// Edit text
-clContainer.addEventListener('input',(e)=>{
-  if(e.target.classList.contains('cl-text')){
-    const i = parseInt(e.target.getAttribute('data-cl-i'));
-    CURRENT_CHECKLIST[i].text = e.target.value;
-    markDirty();
-  }
-});
-// Enter on a checklist input adds new item below
-clContainer.addEventListener('keydown',(e)=>{
-  if(e.key === 'Enter' && e.target.classList.contains('cl-text')){
-    e.preventDefault();
-    const i = parseInt(e.target.getAttribute('data-cl-i'));
-    CURRENT_CHECKLIST.splice(i + 1, 0, {id: Date.now(), text: '', done: false});
-    markDirty();
-    renderChecklist();
-    // Focus the new input
-    const inputs = clContainer.querySelectorAll('.cl-text');
-    if(inputs[i + 1]) inputs[i + 1].focus();
-  }
-  // Backspace on empty item removes it
-  if(e.key === 'Backspace' && e.target.classList.contains('cl-text') && e.target.value === ''){
-    e.preventDefault();
-    const i = parseInt(e.target.getAttribute('data-cl-i'));
-    if(CURRENT_CHECKLIST.length <= 1){ return; }
-    CURRENT_CHECKLIST.splice(i, 1);
-    markDirty();
-    renderChecklist();
-    const inputs = clContainer.querySelectorAll('.cl-text');
-    const focusI = Math.max(0, i - 1);
-    if(inputs[focusI]) inputs[focusI].focus();
-  }
-});
 
-// Toolbar button — toggle or add first item
-$('wv-checklist').addEventListener('click',()=>{
-  if(CURRENT_CHECKLIST.length === 0){
-    CURRENT_CHECKLIST.push({id: Date.now(), text: '', done: false});
-    markDirty();
-    renderChecklist();
-    const firstInput = clContainer.querySelector('.cl-text');
-    if(firstInput) firstInput.focus();
-  } else {
-    // If checklist exists, scroll to it
-    clSection.scrollIntoView({behavior:'smooth', block:'nearest'});
-  }
-});
-
-// Add item button
-$('cl-add-btn').addEventListener('click',()=>{
-  CURRENT_CHECKLIST.push({id: Date.now(), text: '', done: false});
+  // Toggle: if ALL are already checklist lines, convert back to plain text
+  const allCl = nodes.every(n => n.classList && n.classList.contains('cl-line'));
+  nodes.forEach(n => {
+    if(allCl){
+      // Convert checklist → plain div
+      const text = (n.querySelector('.cl-txt')||{}).textContent || n.textContent || '';
+      const div = document.createElement('div');
+      div.textContent = text || '\u200B';
+      n.replaceWith(div);
+    } else if(!n.classList || !n.classList.contains('cl-line')){
+      // Convert plain div → checklist
+      const text = n.textContent || '';
+      const cl = makeClLine(text === '\u200B' ? '' : text, false);
+      n.replaceWith(cl);
+    }
+  });
   markDirty();
-  renderChecklist();
-  const inputs = clContainer.querySelectorAll('.cl-text');
-  if(inputs.length) inputs[inputs.length - 1].focus();
+});
+
+// Enter key: continue checklist on next line
+wvLines.addEventListener('keydown',(e)=>{
+  if(e.key === 'Enter'){
+    const sel = window.getSelection();
+    let node = sel.anchorNode;
+    while(node && node !== wvLines && node.parentNode !== wvLines) node = node.parentNode;
+    if(node && node.classList && node.classList.contains('cl-line')){
+      const txt = node.querySelector('.cl-txt');
+      // If empty checklist item, convert to plain line (escape hatch)
+      if(txt && txt.textContent.trim() === ''){
+        e.preventDefault();
+        const div = document.createElement('div');
+        div.innerHTML = '<br>';
+        node.replaceWith(div);
+        const r = document.createRange();
+        r.setStart(div, 0);
+        r.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(r);
+        markDirty();
+        return;
+      }
+      // Otherwise, insert new checklist line after
+      e.preventDefault();
+      const cl = makeClLine('', false);
+      node.after(cl);
+      const newTxt = cl.querySelector('.cl-txt');
+      if(newTxt){
+        const r = document.createRange();
+        r.setStart(newTxt, 0);
+        r.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+      markDirty();
+    }
+  }
 });
 
 /* ─── Toast + modal ─── */
@@ -2518,7 +2543,7 @@ async function dbxPull(silent=false){
         const updated = STATE.entries.find(e=>e.id===CURRENT_ID);
         if(updated){
           wvTitle.value = updated.title || '';
-          wvLines.value = updated.body || '';
+          deserializeBody(updated.body || '');
           if(updated.tag && !getCategories().includes(updated.tag)){
             const opt = document.createElement('option');
             opt.value = updated.tag;
@@ -2530,8 +2555,6 @@ async function dbxPull(silent=false){
           wvPin.classList.toggle('on', !!updated.pinnedToday);
           CURRENT_PAPER = updated.paper || DEFAULT_PAPER;
           CURRENT_TAPE  = updated.tape  || DEFAULT_TAPE;
-          CURRENT_CHECKLIST = (updated.checklist || []).map(it=>({...it}));
-          renderChecklist();
           paintWvPickers();
           updateWc();
           wvFootRight.textContent = `${fmtDate(updated.updatedAt)} · ${updated.wordCount||0} W`;
