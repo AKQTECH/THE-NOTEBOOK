@@ -622,7 +622,7 @@
     min-height:34px;line-height:34px;
   }
   .wv-lines .cl-line .cl-box{
-    width:20px;height:20px;border-radius:50%;
+    width:20px;height:20px;border-radius:3px;
     border:2px solid var(--pink-main);
     background:none;cursor:pointer;flex-shrink:0;
     display:inline-flex;align-items:center;justify-content:center;
@@ -634,7 +634,7 @@
   .wv-lines .cl-line .cl-txt{
     flex:1;outline:none;min-width:0;
   }
-  .wv-lines .cl-line.done .cl-txt{text-decoration:line-through;opacity:0.4}
+  .wv-lines .cl-line.done .cl-txt{text-decoration:line-through;color:var(--pink-main);opacity:0.7}
   .wv-lines [data-ph]:empty::before{
     content:attr(data-ph);color:var(--pink-main);opacity:0.35;pointer-events:none;
   }
@@ -1780,9 +1780,9 @@ function formatExcerpt(s){
       if(clCount > 4) continue;
       const checked = clMatch[1].toLowerCase() === 'x';
       const box = checked
-        ? '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><circle cx="8" cy="8" r="6" fill="var(--pink-main)" stroke="none"/><polyline points="4 8 7 11 12 5" fill="none" stroke="white" stroke-width="1.5"/></svg>'
-        : '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><circle cx="8" cy="8" r="6" fill="none" stroke="var(--pink-main)" stroke-width="1.5"/></svg>';
-      const style = checked ? 'opacity:0.45;text-decoration:line-through' : '';
+        ? '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><rect x="1" y="1" width="14" height="14" rx="2" fill="var(--pink-main)" stroke="none"/><polyline points="4 8 7 11 12 5" fill="none" stroke="white" stroke-width="1.5"/></svg>'
+        : '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="var(--pink-main)" stroke-width="1.5"/></svg>';
+      const style = checked ? 'color:var(--pink-main);opacity:0.7;text-decoration:line-through' : '';
       out += `<span style="display:block;font-size:12px;line-height:1.6;${style}">${box}${escapeHtml(clMatch[2])}</span>`;
     } else {
       out += escapeHtml(lines[i]);
