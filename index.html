@@ -367,14 +367,9 @@
       0 18px 32px rgba(28,20,16,0.14);
     z-index:10;
   }
-  .note::before{
-    content:'';position:absolute;
-    top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
-    width:72px;height:20px;
-    background:var(--pink-soft);
-    border-left:1.5px dashed rgba(28,20,16,0.2);
-    border-right:1.5px dashed rgba(28,20,16,0.2);
-    box-shadow:0 1px 2px rgba(0,0,0,0.05);
+  .note-pin{
+    position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+    width:20px;height:24px;pointer-events:none;z-index:2;
   }
   .note .tag{
     font-family:'DM Sans',sans-serif;
@@ -596,6 +591,7 @@
       transparent 34px
     );
     background-repeat:repeat-y;
+    background-attachment:local;
     font-family:'DM Sans',sans-serif;
     font-size:15px;line-height:34px;
     color:var(--ink);
@@ -614,7 +610,7 @@
   }
   .wv-foot .star{color:var(--pink-main);opacity:1;font-size:14px}
 
-  /* ── In-writing-view paper + tape pickers ── */
+  /* ── In-writing-view paper + pin pickers ── */
   .wv-picker-row{
     max-width:1080px;width:100%;margin:0 auto;
     padding:14px 64px 0;
@@ -639,23 +635,18 @@
   }
   .wv-swatch:hover{transform:translateY(-2px)}
   .wv-swatch.picked{outline:2px solid var(--pink-main);outline-offset:3px}
-  .wv-tape-sw{
-    width:40px;height:18px;border-radius:3px;
-    border:1.5px dashed rgba(28,20,16,0.4);
+  .wv-pin-sw{
+    width:26px;height:26px;border-radius:50%;
+    border:1.5px solid var(--ink);
     cursor:pointer;position:relative;transition:transform 0.15s;
   }
-  .wv-tape-sw:hover{transform:translateY(-2px)}
-  .wv-tape-sw.picked{outline:2px solid var(--pink-main);outline-offset:3px}
+  .wv-pin-sw:hover{transform:translateY(-2px)}
+  .wv-pin-sw.picked{outline:2px solid var(--pink-main);outline-offset:3px}
 
-  /* Tape strip on top of the writing page — shows tape color live */
-  .wv-tape-strip{
-    position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-2deg);
-    width:140px;height:24px;
-    background:var(--pink-soft);
-    border-left:1.5px dashed rgba(28,20,16,0.25);
-    border-right:1.5px dashed rgba(28,20,16,0.25);
-    box-shadow:0 1px 2px rgba(0,0,0,0.05);
-    z-index:1;
+  /* Push pin on top of the writing page — shows pin color live */
+  .wv-pin{
+    position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+    width:24px;height:28px;pointer-events:none;z-index:1;
   }
   /* Card-color tint ribbon on the wv-page so you see the paper color
      without losing readability of the main writing surface. */
@@ -760,6 +751,7 @@
     .writing-view{position:static;background:var(--white)}
     .wv-page{box-shadow:none;border:none;margin:0;padding:40px 60px}
     .wv-lines{background-image:none;resize:none}
+    .wv-pin{display:none}
     .wv-foot{border-color:#ddd}
   }
 
@@ -905,7 +897,7 @@
     }
     .wv-pick-group::-webkit-scrollbar{display:none}
     .wv-swatch{width:28px;height:28px;flex-shrink:0}
-    .wv-tape-sw{width:36px;height:18px;flex-shrink:0}
+    .wv-pin-sw{width:28px;height:28px;flex-shrink:0}
     .wv-pick-label{flex-shrink:0}
   }
 
@@ -1007,6 +999,10 @@
       <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 2.24v3H7v-3z"/></svg>
       <span>Pin today</span>
     </button>
+    <button class="wv-btn ghost" id="wv-checklist" title="Insert checklist item">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><path d="M5 7l1.5 1.5L9 5"/><line x1="13" y1="6" x2="21" y2="6"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
+      <span>Checklist</span>
+    </button>
 
     <div class="wv-meta">
       <span id="wv-date">—</span>
@@ -1031,7 +1027,7 @@
     <button class="wv-btn primary" id="wv-save">Save page</button>
   </div>
 
-  <!-- Per-entry paper + tape pickers -->
+  <!-- Per-entry paper + pin pickers -->
   <div class="wv-picker-row">
     <div class="wv-pick-group" id="wv-paper-group">
       <span class="wv-pick-label">Paper</span>
@@ -1048,26 +1044,32 @@
       <div class="wv-swatch" style="background:#f39bc9" title="Soft rose" data-paper="#f39bc9"></div>
       <div class="wv-swatch" style="background:#FFAD8F" title="Salmon" data-paper="#FFAD8F"></div>
     </div>
-    <div class="wv-pick-group" id="wv-tape-group">
-      <span class="wv-pick-label">Tape</span>
-      <div class="wv-tape-sw" style="background:#E668A7" title="Medium pink" data-tape="#E668A7"></div>
-      <div class="wv-tape-sw" style="background:#DA005F" title="Hot pink" data-tape="#DA005F"></div>
-      <div class="wv-tape-sw" style="background:#F1BCD7" title="Millennial pink" data-tape="#F1BCD7"></div>
-      <div class="wv-tape-sw" style="background:#f39bc9" title="Soft rose" data-tape="#f39bc9"></div>
-      <div class="wv-tape-sw" style="background:#ab5a81" title="Berry" data-tape="#ab5a81"></div>
-      <div class="wv-tape-sw" style="background:#c55c6b" title="Deep rose" data-tape="#c55c6b"></div>
-      <div class="wv-tape-sw" style="background:#ec8f2c" title="Orange" data-tape="#ec8f2c"></div>
-      <div class="wv-tape-sw" style="background:#e36d61" title="Coral" data-tape="#e36d61"></div>
-      <div class="wv-tape-sw" style="background:#ea876b" title="Terracotta" data-tape="#ea876b"></div>
-      <div class="wv-tape-sw" style="background:#B8B959" title="Olive yellow" data-tape="#B8B959"></div>
-      <div class="wv-tape-sw" style="background:#90BBB1" title="Sage" data-tape="#90BBB1"></div>
-      <div class="wv-tape-sw" style="background:#b2c0f9" title="Soft periwinkle" data-tape="#b2c0f9"></div>
+    <div class="wv-pick-group" id="wv-pin-group">
+      <span class="wv-pick-label">Pin</span>
+      <div class="wv-pin-sw" style="background:#E668A7" title="Medium pink" data-tape="#E668A7"></div>
+      <div class="wv-pin-sw" style="background:#DA005F" title="Hot pink" data-tape="#DA005F"></div>
+      <div class="wv-pin-sw" style="background:#F1BCD7" title="Millennial pink" data-tape="#F1BCD7"></div>
+      <div class="wv-pin-sw" style="background:#f39bc9" title="Soft rose" data-tape="#f39bc9"></div>
+      <div class="wv-pin-sw" style="background:#ab5a81" title="Berry" data-tape="#ab5a81"></div>
+      <div class="wv-pin-sw" style="background:#c55c6b" title="Deep rose" data-tape="#c55c6b"></div>
+      <div class="wv-pin-sw" style="background:#ec8f2c" title="Orange" data-tape="#ec8f2c"></div>
+      <div class="wv-pin-sw" style="background:#e36d61" title="Coral" data-tape="#e36d61"></div>
+      <div class="wv-pin-sw" style="background:#ea876b" title="Terracotta" data-tape="#ea876b"></div>
+      <div class="wv-pin-sw" style="background:#B8B959" title="Olive yellow" data-tape="#B8B959"></div>
+      <div class="wv-pin-sw" style="background:#90BBB1" title="Sage" data-tape="#90BBB1"></div>
+      <div class="wv-pin-sw" style="background:#b2c0f9" title="Soft periwinkle" data-tape="#b2c0f9"></div>
     </div>
   </div>
 
   <div class="wv-page">
-    <!-- Live tape strip + paper ribbon so you see the card's colors while writing -->
-    <div class="wv-tape-strip" id="wv-tape-strip"></div>
+    <!-- Live push pin + paper ribbon so you see the card's colors while writing -->
+    <svg class="wv-pin" id="wv-pin-svg" viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="12" cy="24" rx="5" ry="1.8" fill="rgba(0,0,0,0.07)"/>
+      <line x1="12" y1="24" x2="12.5" y2="17" stroke-width="1.5" stroke-linecap="round" class="pin-needle"/>
+      <circle cx="12" cy="13" r="4.5" class="pin-body"/>
+      <ellipse cx="12" cy="12" rx="7" ry="5" class="pin-head"/>
+      <ellipse cx="10.5" cy="10.5" rx="3.5" ry="2" fill="rgba(255,255,255,0.3)" transform="rotate(-15,10.5,10.5)"/>
+    </svg>
     <div class="wv-paper-ribbon" id="wv-paper-ribbon"></div>
     <textarea class="wv-title" id="wv-title" rows="1" placeholder="Untitled page…"></textarea>
     <textarea class="wv-lines" id="wv-lines" placeholder="Start writing. The lines will hold you."></textarea>
@@ -1129,7 +1131,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.9</h3>
+    <h3>The Notebook v2.10</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1147,6 +1149,16 @@ const STORAGE_KEY = 'akq_notebook_v2';
 const DEFAULT_PAPER = '#f6d0f6';
 const DEFAULT_TAPE  = '#E668A7';
 const DEFAULT_CATEGORIES = ['Journal','Script','Essay','Idea','Draft','Letter'];
+
+/* Darken a hex color by a fraction (0-1) for pin needle/shadow */
+function darkenColor(hex, amount){
+  hex = hex.replace('#','');
+  if(hex.length===3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  const r = Math.max(0, Math.round(parseInt(hex.slice(0,2),16)*(1-amount)));
+  const g = Math.max(0, Math.round(parseInt(hex.slice(2,4),16)*(1-amount)));
+  const b = Math.max(0, Math.round(parseInt(hex.slice(4,6),16)*(1-amount)));
+  return `rgb(${r},${g},${b})`;
+}
 
 /* ═══════════════ DROPBOX API MODULE ═══════════════════════════
    OAuth PKCE flow. No client secret needed — safe for a static
@@ -1698,7 +1710,7 @@ function buildCard(e){
   card.innerHTML = `
     <div class="tag">${escapeHtml(e.tag)}${today?' · Today':''}</div>
     <div class="n-title">${highlightTitle(e.title || 'Untitled page')}</div>
-    <div class="n-excerpt">${escapeHtml((e.body||'').slice(0,220))}</div>
+    <div class="n-excerpt">${formatExcerpt(e.body)}</div>
     <div class="n-foot">
       <span>${fmtDate(e.updatedAt)}</span>
       <span class="${e.starred?'star':'dot'}">${e.starred?'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>':''}</span>
@@ -1706,18 +1718,25 @@ function buildCard(e){
     ${e.pinnedToday?'<span class="sticker today">pinned today</span>':''}
     ${e.starred && !e.pinnedToday?'<span class="sticker starred">starred</span>':''}
   `;
-  // Tape color via dynamic ::before
-  if(e.tape){
-    const uid = 'c'+e.id.replace(/-/g,'').slice(0,10);
-    card.id = uid;
-    const style = document.createElement('style');
-    style.textContent = `#${uid}::before{background:${e.tape}}`;
-    card.appendChild(style);
-  }
+  // Push pin SVG — color from entry.tape
+  const pinColor = e.tape || DEFAULT_TAPE;
+  const darkerPin = darkenColor(pinColor, 0.25);
+  const pin = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  pin.setAttribute('class','note-pin');
+  pin.setAttribute('viewBox','0 0 20 24');
+  pin.innerHTML = `<ellipse cx="10" cy="21" rx="4" ry="1.5" fill="rgba(0,0,0,0.06)"/><line x1="10" y1="21" x2="10.3" y2="15" stroke="${darkerPin}" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="11.5" r="3.5" fill="${darkerPin}"/><ellipse cx="10" cy="10.5" rx="5.5" ry="4" fill="${pinColor}"/><ellipse cx="9" cy="9.2" rx="2.8" ry="1.6" fill="rgba(255,255,255,0.3)" transform="rotate(-15,9,9.2)"/>`;
+  card.appendChild(pin);
   card.addEventListener('click',()=>openWriting(e.id));
   return card;
 }
 
+function formatExcerpt(s){
+  let t = escapeHtml((s||'').slice(0,220));
+  // Render checklist items with SVG checkboxes
+  t = t.replace(/^\[x\] (.*)$/gim, '<span style="opacity:0.5;text-decoration:line-through"><svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-1px;margin-right:3px"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><polyline points="4 8 7 11 12 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>$1</span>');
+  t = t.replace(/^\[ \] (.*)$/gim, '<span><svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-1px;margin-right:3px"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>$1</span>');
+  return t;
+}
 function escapeHtml(s){
   return (s||'').replace(/[&<>"']/g,ch=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -1940,15 +1959,23 @@ $('search-input').addEventListener('input',(e)=>{
   renderBoard();
 });
 
-/* ─── Per-entry paper + tape pickers ─── */
+/* ─── Per-entry paper + pin pickers ─── */
 function paintWvPickers(){
   document.querySelectorAll('#wv-paper-group .wv-swatch').forEach(sw=>{
     sw.classList.toggle('picked', sw.getAttribute('data-paper')===CURRENT_PAPER);
   });
-  document.querySelectorAll('#wv-tape-group .wv-tape-sw').forEach(sw=>{
+  document.querySelectorAll('#wv-pin-group .wv-pin-sw').forEach(sw=>{
     sw.classList.toggle('picked', sw.getAttribute('data-tape')===CURRENT_TAPE);
   });
-  $('wv-tape-strip').style.background = CURRENT_TAPE || DEFAULT_TAPE;
+  // Update SVG pin colors in writing view
+  const pinColor = CURRENT_TAPE || DEFAULT_TAPE;
+  const pinDark = darkenColor(pinColor, 0.25);
+  const pinSvg = $('wv-pin-svg');
+  if(pinSvg){
+    pinSvg.querySelector('.pin-head').setAttribute('fill', pinColor);
+    pinSvg.querySelector('.pin-body').setAttribute('fill', pinDark);
+    pinSvg.querySelector('.pin-needle').setAttribute('stroke', pinDark);
+  }
   $('wv-paper-ribbon').style.background = CURRENT_PAPER || DEFAULT_PAPER;
 }
 
@@ -1961,7 +1988,7 @@ document.querySelectorAll('#wv-paper-group .wv-swatch').forEach(sw=>{
     markDirty();
   });
 });
-document.querySelectorAll('#wv-tape-group .wv-tape-sw').forEach(sw=>{
+document.querySelectorAll('#wv-pin-group .wv-pin-sw').forEach(sw=>{
   sw.addEventListener('click',()=>{
     CURRENT_TAPE = sw.getAttribute('data-tape');
     STATE.settings.defaultTape = CURRENT_TAPE;
@@ -2160,6 +2187,66 @@ $('wv-export-txt').addEventListener('click',()=>{
 $('wv-export-pdf').addEventListener('click',()=>{
   if(DIRTY) persistCurrent(false);
   window.print();
+});
+
+/* ─── Checklist ─── */
+$('wv-checklist').addEventListener('click',()=>{
+  const ta = wvLines;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const val = ta.value;
+  // Find the start of the current line
+  const lineStart = val.lastIndexOf('\n', start - 1) + 1;
+  const lineEnd = val.indexOf('\n', start);
+  const line = val.substring(lineStart, lineEnd === -1 ? val.length : lineEnd);
+  // If line already has a checkbox, toggle it
+  if(line.match(/^\[x\] /i)){
+    // checked → unchecked
+    ta.value = val.substring(0, lineStart) + '[ ] ' + line.slice(4) + val.substring(lineEnd === -1 ? val.length : lineEnd);
+    ta.selectionStart = ta.selectionEnd = start;
+  } else if(line.match(/^\[ \] /)){
+    // unchecked → checked
+    ta.value = val.substring(0, lineStart) + '[x] ' + line.slice(4) + val.substring(lineEnd === -1 ? val.length : lineEnd);
+    ta.selectionStart = ta.selectionEnd = start;
+  } else if(line.trim() === ''){
+    // Empty line — insert checkbox prefix
+    const insert = '[ ] ';
+    ta.value = val.substring(0, start) + insert + val.substring(end);
+    ta.selectionStart = ta.selectionEnd = start + insert.length;
+  } else {
+    // Existing text — prepend checkbox to current line
+    ta.value = val.substring(0, lineStart) + '[ ] ' + val.substring(lineStart);
+    ta.selectionStart = ta.selectionEnd = start + 4;
+  }
+  ta.focus();
+  markDirty();
+  ta.dispatchEvent(new Event('input'));
+});
+// Auto-continue checklist on Enter
+wvLines.addEventListener('keydown',(e)=>{
+  if(e.key !== 'Enter') return;
+  const ta = e.target;
+  const pos = ta.selectionStart;
+  const val = ta.value;
+  const lineStart = val.lastIndexOf('\n', pos - 1) + 1;
+  const line = val.substring(lineStart, pos);
+  // If current line starts with [ ] or [x], continue the pattern
+  const match = line.match(/^(\[[ x]\] )/i);
+  if(match){
+    // If the line is ONLY the checkbox prefix (empty item), remove it instead
+    if(line.trim() === match[1].trim()){
+      e.preventDefault();
+      ta.value = val.substring(0, lineStart) + val.substring(pos);
+      ta.selectionStart = ta.selectionEnd = lineStart;
+      ta.dispatchEvent(new Event('input'));
+      return;
+    }
+    e.preventDefault();
+    const insert = '\n[ ] ';
+    ta.value = val.substring(0, pos) + insert + val.substring(ta.selectionEnd);
+    ta.selectionStart = ta.selectionEnd = pos + insert.length;
+    ta.dispatchEvent(new Event('input'));
+  }
 });
 
 /* ─── Toast + modal ─── */
