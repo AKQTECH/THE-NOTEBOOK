@@ -673,9 +673,8 @@
   .wv-pin-sw.picked{outline:2px solid var(--pink-main);outline-offset:3px}
 
   /* Push pin on top of the writing page — shows pin color live */
-  .wv-pin{
-    position:absolute;top:-16px;left:50%;transform:translateX(-50%);
-    width:26px;height:32px;pointer-events:none;z-index:1;
+  .wv-pin-preview{
+    width:22px;height:28px;flex-shrink:0;
     filter:drop-shadow(0px 1px 1px rgba(0,0,0,0.2));
   }
   /* Card-color tint ribbon on the wv-page so you see the paper color
@@ -781,7 +780,7 @@
     .writing-view{position:static;background:var(--white)}
     .wv-page{box-shadow:none;border:none;margin:0;padding:40px 60px}
     .wv-lines{background-image:none}
-    .wv-pin{display:none}
+    .wv-pin-preview{display:none}
     .wv-foot{border-color:#ddd}
   }
 
@@ -1076,6 +1075,11 @@
     </div>
     <div class="wv-pick-group" id="wv-pin-group">
       <span class="wv-pick-label">Pin</span>
+      <svg class="wv-pin-preview" id="wv-pin-svg" viewBox="0 0 20 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="10" cy="10" r="7" stroke-width="1" class="pin-head"/>
+        <circle cx="8" cy="8" r="2.5" fill="rgba(255,255,255,0.35)"/>
+        <line x1="10" y1="17" x2="10" y2="23" stroke-width="1.8" stroke-linecap="round" class="pin-needle"/>
+      </svg>
       <div class="wv-pin-sw" style="background:#E668A7" title="Medium pink" data-tape="#E668A7"></div>
       <div class="wv-pin-sw" style="background:#DA005F" title="Hot pink" data-tape="#DA005F"></div>
       <div class="wv-pin-sw" style="background:#F1BCD7" title="Millennial pink" data-tape="#F1BCD7"></div>
@@ -1092,12 +1096,6 @@
   </div>
 
   <div class="wv-page">
-    <!-- Live push pin + paper ribbon so you see the card's colors while writing -->
-    <svg class="wv-pin" id="wv-pin-svg" viewBox="0 0 20 24" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="7" stroke-width="1" class="pin-head"/>
-      <circle cx="8" cy="8" r="2.5" fill="rgba(255,255,255,0.35)"/>
-      <line x1="10" y1="17" x2="10" y2="23" stroke-width="1.8" stroke-linecap="round" class="pin-needle"/>
-    </svg>
     <div class="wv-paper-ribbon" id="wv-paper-ribbon"></div>
     <textarea class="wv-title" id="wv-title" rows="1" placeholder="Untitled page…"></textarea>
     <div class="wv-lines" id="wv-lines" contenteditable="true" data-ph="Start writing. The lines will hold you."></div>
