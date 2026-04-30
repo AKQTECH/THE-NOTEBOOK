@@ -373,8 +373,8 @@
   }
   .note .n-title{
     font-family:'Antonio',sans-serif;
-    font-weight:700;font-size:20px;line-height:1.15;text-transform:uppercase;
-    color:var(--ink);letter-spacing:-0.01em;
+    font-weight:700;font-size:36px;line-height:1.0;text-transform:uppercase;
+    color:var(--ink);letter-spacing:-0.02em;
     margin-bottom:12px;
   }
   .note .n-title em{font-style:italic;color:var(--pink-main)}
@@ -500,9 +500,10 @@
     min-height:42px;
   }
   .wv-btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-  .wv-btn.primary{background:var(--white);color:var(--pink-main);border-color:var(--pink-main);font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:13px;text-transform:none;letter-spacing:0;transition:background 0.3s,color 0.3s}
-  .wv-btn.primary.saved{background:var(--white);color:var(--pink-main);border-color:var(--pink-main);box-shadow:none;transform:none !important}
-  .wv-btn.primary.flash{background:var(--pink-main);color:var(--white);border-color:var(--pink-main)}
+  .wv-btn.primary{background:#FFD4F4;color:var(--ink);border:2px solid var(--pink-main);font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:13px;text-transform:none;letter-spacing:0;transition:background 0.3s,color 0.3s,border-color 0.3s;box-shadow:3px 3px 0 var(--pink-main)}
+  .wv-btn.primary:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink-main)}
+  .wv-btn.primary.saved{background:var(--salmon);color:var(--white);border-color:var(--salmon);box-shadow:none}
+  .wv-btn.primary.saved:active{transform:translate(1px,1px)}
   .wv-btn.ghost[disabled]{opacity:0.4}
   .wv-btn.ghost{background:transparent;box-shadow:none}
   .wv-btn.ghost:hover{background:var(--white);box-shadow:2px 2px 0 var(--ink);transform:none}
@@ -865,7 +866,7 @@
     .note:nth-child(6n+5){transform:rotate(-0.6deg)}
     .note:nth-child(6n+6){transform:rotate(0.5deg)}
     .note:hover{transform:none !important}
-    .note .n-title{font-size:18px}
+    .note .n-title{font-size:28px}
     .note .n-excerpt{font-size:13px}
     .new-sticker{grid-column:1 / -1;min-height:200px;padding:26px 22px;transform:rotate(-0.8deg)}
     .new-sticker .ns-b{font-size:26px}
@@ -1150,7 +1151,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.19</h3>
+    <h3>The Notebook v2.27</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1584,7 +1585,6 @@ function saveStateLocal(state){
 
 function countWords(s){
   if(!s) return 0;
-  // Strip checklist markers so [x] and [ ] don't inflate word count
   const clean = s.replace(/^\[([ x])\] /gim, '');
   return clean.trim().split(/\s+/).filter(Boolean).length;
 }
@@ -1611,6 +1611,18 @@ function txtOf(e){
 
 /* ─── State + rendering ─── */
 let STATE = loadState();
+// One-time cleanup: strip {html} markers from corrupted entries
+let didClean = false;
+STATE.entries.forEach(e => {
+  if(e.body && e.body.includes('{html}')){
+    e.body = e.body.replace(/\{html\}/g, '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '');
+    didClean = true;
+  }
+});
+if(didClean){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  setTimeout(()=>{ if(typeof scheduleDropboxPush === 'function') scheduleDropboxPush(); }, 3000);
+}
 let CURRENT_ID = null;
 let DIRTY = false;
 let AUTOSAVE_TIMER = null;
@@ -2047,30 +2059,19 @@ const wvLines = $('wv-lines');
 
 /* ─── Contenteditable ↔ plain text with checklist markers ─── */
 function serializeBody(){
-  // Walk child nodes of wvLines, produce plain text
   const lines = [];
   wvLines.childNodes.forEach(node => {
-    if(node.nodeType === 3){ // text node
+    if(node.nodeType === 3){
       const t = node.textContent;
       if(t.trim()) lines.push(t);
-    } else if(node.nodeType === 1){ // element
+    } else if(node.nodeType === 1){
       if(node.classList && node.classList.contains('cl-line')){
         const done = node.classList.contains('done');
         const txt = (node.querySelector('.cl-txt')||{}).textContent || '';
         lines.push((done ? '[x] ' : '[ ] ') + txt);
-      } else if(node.tagName === 'DIV' && node.querySelector('img')){
-        // Image wrapper div
-        const img = node.querySelector('img');
-        if(img && img.src) lines.push('[img:' + img.src + ']');
       } else {
-        // Check for inline images inside this div
-        const innerImg = node.querySelector && node.querySelector('img');
-        if(innerImg && innerImg.src){
-          lines.push('[img:' + innerImg.src + ']');
-        }
-        // Strip zero-width spaces used for empty line placeholders
         const txt = (node.textContent || '').replace(/\u200B/g, '');
-        if(txt) lines.push(txt);
+        lines.push(txt);
       }
     }
   });
@@ -2083,15 +2084,7 @@ function deserializeBody(text){
   const lines = text.split('\n');
   lines.forEach(line => {
     const clMatch = line.match(/^\[([ x])\] (.*)$/i);
-    const imgMatch = line.match(/^\[img:(data:.+)\]$/);
-    if(imgMatch){
-      const div = document.createElement('div');
-      const img = document.createElement('img');
-      img.src = imgMatch[1];
-      img.setAttribute('contenteditable','false');
-      div.appendChild(img);
-      wvLines.appendChild(div);
-    } else if(clMatch){
+    if(clMatch){
       const done = clMatch[1].toLowerCase() === 'x';
       const txt = clMatch[2];
       wvLines.appendChild(makeClLine(txt, done));
@@ -2109,6 +2102,7 @@ function makeClLine(text, done){
   row.innerHTML = `<button class="cl-box" contenteditable="false"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></button><span class="cl-txt"></span>`;
   const txt = row.querySelector('.cl-txt');
   txt.appendChild(document.createTextNode(text || ''));
+  if(!txt.firstChild) txt.appendChild(document.createTextNode(''));
   return row;
 }
 const wvTag   = $('wv-tag');
@@ -2244,11 +2238,7 @@ function persistCurrent(explicit){
   wvFootRight.textContent = `${fmtDate(entry.updatedAt)} · ${entry.wordCount} W`;
   wvFootLeft.innerHTML    = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>' : 'Draft';
 
-  if(explicit){
-    showToast('Saved');
-    wvSave.classList.add('flash');
-    setTimeout(()=> wvSave.classList.remove('flash'), 400);
-  }
+  if(explicit) showToast('Saved');
   // Note: Dropbox push is scheduled by saveState → scheduleDropboxPush
 }
 
