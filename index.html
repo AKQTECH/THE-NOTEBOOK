@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Antonio:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Antonio:wght@400;700;800;900&family=Caprasimo&display=swap" rel="stylesheet">
 <style>
   :root{
     /* AKQ palette (sourced from Visual Brand Guide v14) */
@@ -102,8 +102,8 @@
     transform:rotate(-1.2deg);
   }
   .masthead .title{
-    font-family:'Fraunces',serif;
-    font-style:italic;font-weight:900;
+    font-family:'Caprasimo',cursive;
+    font-weight:400;
     font-size:56px;line-height:0.95;
     color:var(--ink);letter-spacing:-0.02em;
   }
@@ -368,12 +368,12 @@
     font-family:'DM Sans',sans-serif;
     font-size:10px;font-weight:800;
     text-transform:uppercase;letter-spacing:0.14em;
-    color:var(--ink);opacity:0.55;
+    color:var(--pink-main);opacity:1;
     margin-bottom:14px;
   }
   .note .n-title{
     font-family:'Antonio',sans-serif;
-    font-weight:700;font-size:24px;line-height:1.1;text-transform:uppercase;
+    font-weight:700;font-size:28px;line-height:1.05;text-transform:uppercase;letter-spacing:-0.02em;
     color:var(--ink);letter-spacing:-0.015em;
     margin-bottom:12px;
   }
@@ -388,9 +388,9 @@
     margin-top:18px;
     font-size:10px;font-weight:800;
     text-transform:uppercase;letter-spacing:0.08em;
-    color:var(--ink);opacity:0.55;
+    color:var(--pink-main);opacity:1;
   }
-  .note .n-foot .star{color:var(--pink-main);opacity:1;font-size:13px}
+  .note .n-foot .star{color:var(--pink-main);font-size:13px}
   .note .n-foot .dot{
     display:none;
   }
@@ -617,6 +617,10 @@
   .wv-lines .cl-line .cl-box svg{display:none;width:8px;height:8px;stroke:var(--white);stroke-width:2.5;fill:none}
   .wv-lines .cl-line.done .cl-box{background:var(--pink-main);border-color:var(--pink-main)}
   .wv-lines .cl-line.done .cl-box svg{display:block}
+  .wv-lines img{
+    max-width:100%;height:auto;border-radius:4px;
+    margin:8px 0;display:block;cursor:default;
+  }
   .wv-lines .cl-line .cl-txt{
     flex:1;outline:none;min-width:0;
   }
@@ -934,7 +938,7 @@
       </svg>
     </div>
     <div class="masthead">
-      <span class="title">The <u>Notebook</u></span>
+      <span class="title">the <u>notebook</u></span>
     </div>
     <div class="mast-right">
       <button class="dbx-btn" id="btn-dropbox" title="Connect Dropbox so your pages sync across devices">
@@ -1145,7 +1149,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.15</h3>
+    <h3>The Notebook v2.17</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -2053,10 +2057,19 @@ function serializeBody(){
         const done = node.classList.contains('done');
         const txt = (node.querySelector('.cl-txt')||{}).textContent || '';
         lines.push((done ? '[x] ' : '[ ] ') + txt);
+      } else if(node.tagName === 'DIV' && node.querySelector('img')){
+        // Image wrapper div
+        const img = node.querySelector('img');
+        if(img && img.src) lines.push('[img:' + img.src + ']');
       } else {
+        // Check for inline images inside this div
+        const innerImg = node.querySelector && node.querySelector('img');
+        if(innerImg && innerImg.src){
+          lines.push('[img:' + innerImg.src + ']');
+        }
         // Strip zero-width spaces used for empty line placeholders
         const txt = (node.textContent || '').replace(/\u200B/g, '');
-        lines.push(txt);
+        if(txt) lines.push(txt);
       }
     }
   });
@@ -2069,13 +2082,21 @@ function deserializeBody(text){
   const lines = text.split('\n');
   lines.forEach(line => {
     const clMatch = line.match(/^\[([ x])\] (.*)$/i);
-    if(clMatch){
+    const imgMatch = line.match(/^\[img:(data:.+)\]$/);
+    if(imgMatch){
+      const div = document.createElement('div');
+      const img = document.createElement('img');
+      img.src = imgMatch[1];
+      img.setAttribute('contenteditable','false');
+      div.appendChild(img);
+      wvLines.appendChild(div);
+    } else if(clMatch){
       const done = clMatch[1].toLowerCase() === 'x';
       const txt = clMatch[2];
       wvLines.appendChild(makeClLine(txt, done));
     } else {
       const div = document.createElement('div');
-      div.textContent = line || '\u200B'; // zero-width space for empty lines
+      div.textContent = line || '\u200B';
       wvLines.appendChild(div);
     }
   });
@@ -2282,6 +2303,59 @@ $('wv-redo').addEventListener('click',()=>{
   document.execCommand('redo');
   updateWc();
   markDirty();
+});
+
+/* ─── Image drop & paste ─── */
+function insertImageFile(file){
+  if(!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = document.createElement('img');
+    img.src = ev.target.result;
+    img.setAttribute('contenteditable','false');
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(img);
+    const sel = window.getSelection();
+    if(sel.rangeCount){
+      const range = sel.getRangeAt(0);
+      range.collapse(false);
+      range.insertNode(wrapper);
+      range.setStartAfter(wrapper);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else {
+      wvLines.appendChild(wrapper);
+    }
+    markDirty();
+  };
+  reader.readAsDataURL(file);
+}
+
+wvLines.addEventListener('drop',(e)=>{
+  const files = e.dataTransfer && e.dataTransfer.files;
+  if(files && files.length){
+    for(let i=0; i<files.length; i++){
+      if(files[i].type.startsWith('image/')){
+        e.preventDefault();
+        insertImageFile(files[i]);
+      }
+    }
+  }
+});
+wvLines.addEventListener('dragover',(e)=>{
+  if(e.dataTransfer && e.dataTransfer.types.includes('Files')) e.preventDefault();
+});
+wvLines.addEventListener('paste',(e)=>{
+  const items = e.clipboardData && e.clipboardData.items;
+  if(!items) return;
+  for(let i=0; i<items.length; i++){
+    if(items[i].type.startsWith('image/')){
+      e.preventDefault();
+      insertImageFile(items[i].getAsFile());
+      return;
+    }
+  }
 });
 
 /* ─── Inline checklist (Apple Notes style) ─── */
