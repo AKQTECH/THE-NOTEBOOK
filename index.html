@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Antonio:wght@400;700;800;900&family=Caprasimo&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Antonio:wght@400;700&family=Host+Grotesk:wght@700;800&family=Caprasimo&display=swap" rel="stylesheet">
 <style>
   :root{
     /* AKQ palette (sourced from Visual Brand Guide v14) */
@@ -339,6 +339,8 @@
     grid-template-columns:repeat(12,1fr);
     gap:26px;
     overflow:visible;
+    padding-top:20px;
+    align-items:start;
   }
 
   .note{
@@ -346,6 +348,8 @@
     padding:28px 28px 24px;
     border-radius:2px;
     grid-column:span 4;
+    aspect-ratio:1 / 1;
+    overflow:visible;
     box-shadow:
       2px 4px 0 rgba(28,20,16,0.08),
       0 10px 24px rgba(28,20,16,0.06);
@@ -372,15 +376,15 @@
     margin-bottom:14px;
   }
   .note .n-title{
-    font-family:'Antonio',sans-serif;
-    font-weight:700;font-size:36px;line-height:1.0;text-transform:uppercase;
+    font-family:'Host Grotesk',sans-serif;
+    font-weight:800;font-size:40px;line-height:0.95;text-transform:uppercase;
     color:var(--ink);letter-spacing:-0.02em;
     margin-bottom:12px;
   }
   .note .n-title em{font-style:italic;color:var(--pink-main)}
   .note .n-excerpt{
     font-size:13px;line-height:1.6;color:var(--ink);opacity:0.82;
-    display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
     overflow:hidden;white-space:pre-wrap;
   }
   .note .n-foot{
@@ -853,10 +857,11 @@
     .btn-new-badge{display:none}
 
     .board{padding:4px 16px 100px}
-    .grid{gap:20px;grid-template-columns:1fr}
+    .grid{gap:20px;grid-template-columns:1fr 1fr;padding-top:20px}
     .note{
-      grid-column:1 / -1;
+      grid-column:span 1;
       padding:22px 22px 20px;
+      aspect-ratio:1 / 1;
     }
     /* Gentler rotations on mobile */
     .note:nth-child(6n+1){transform:rotate(-0.5deg)}
@@ -866,9 +871,9 @@
     .note:nth-child(6n+5){transform:rotate(-0.6deg)}
     .note:nth-child(6n+6){transform:rotate(0.5deg)}
     .note:hover{transform:none !important}
-    .note .n-title{font-size:28px}
+    .note .n-title{font-size:24px}
     .note .n-excerpt{font-size:13px}
-    .new-sticker{grid-column:1 / -1;min-height:200px;padding:26px 22px;transform:rotate(-0.8deg)}
+    .new-sticker{grid-column:span 1;aspect-ratio:1 / 1;min-height:auto;padding:26px 22px;transform:rotate(-0.8deg)}
     .new-sticker .ns-b{font-size:26px}
 
     /* FAB for new page on mobile */
@@ -1151,7 +1156,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.27</h3>
+    <h3>The Notebook v2.37</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
