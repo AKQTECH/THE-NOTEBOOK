@@ -1034,6 +1034,12 @@
       <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><path d="M5 7l1.5 1.5L9 5"/><line x1="13" y1="6" x2="21" y2="6"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
       <span>Checklist</span>
     </button>
+    <button class="wv-btn ghost" id="wv-undo" title="Undo">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    </button>
+    <button class="wv-btn ghost" id="wv-redo" title="Redo">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
+    </button>
 
     <div class="wv-meta">
       <span id="wv-date">—</span>
@@ -2290,6 +2296,20 @@ $('wv-export-pdf').addEventListener('click',()=>{
   window.print();
 });
 
+/* ─── Undo / Redo ─── */
+$('wv-undo').addEventListener('click',()=>{
+  wvLines.focus();
+  document.execCommand('undo');
+  updateWc();
+  markDirty();
+});
+$('wv-redo').addEventListener('click',()=>{
+  wvLines.focus();
+  document.execCommand('redo');
+  updateWc();
+  markDirty();
+});
+
 /* ─── Inline checklist (Apple Notes style) ─── */
 
 // Click checkbox to toggle done
@@ -2307,27 +2327,27 @@ $('wv-checklist').addEventListener('click',()=>{
   const sel = window.getSelection();
   if(!sel.rangeCount){ return; }
 
-  // Find which lines are selected — use anchor/focus to avoid grabbing adjacent lines
-  const range = sel.getRangeAt(0);
-  const nodes = [];
-  // Walk from anchor to focus within wvLines children
-  let anchorLine = sel.anchorNode;
-  while(anchorLine && anchorLine !== wvLines && anchorLine.parentNode !== wvLines) anchorLine = anchorLine.parentNode;
-  let focusLine = sel.focusNode;
-  while(focusLine && focusLine !== wvLines && focusLine.parentNode !== wvLines) focusLine = focusLine.parentNode;
-  if(anchorLine && anchorLine !== wvLines){
-    // Collect lines between anchor and focus (inclusive)
-    const children = Array.from(wvLines.childNodes).filter(n => n.nodeType === 1);
-    let ai = children.indexOf(anchorLine);
-    let fi = focusLine && focusLine !== wvLines ? children.indexOf(focusLine) : ai;
-    if(ai > fi){ const tmp = ai; ai = fi; fi = tmp; }
-    for(let i = ai; i <= fi; i++){ if(children[i]) nodes.push(children[i]); }
-  }
-  // If nothing selected (cursor in empty area), just operate on current line
-  if(nodes.length === 0){
-    let node = sel.anchorNode;
+  // Resolve anchor and focus to their top-level line divs inside wvLines
+  function lineOf(node){
     while(node && node !== wvLines && node.parentNode !== wvLines) node = node.parentNode;
-    if(node && node !== wvLines) nodes.push(node);
+    return (node && node !== wvLines) ? node : null;
+  }
+  const anchorLine = lineOf(sel.anchorNode);
+  const focusLine  = lineOf(sel.focusNode);
+
+  const nodes = [];
+  if(anchorLine){
+    if(!focusLine || focusLine === anchorLine){
+      // Single-line selection or cursor — only operate on that one line
+      nodes.push(anchorLine);
+    } else {
+      // Multi-line: walk only the lines between anchor and focus
+      const children = Array.from(wvLines.children);
+      let ai = children.indexOf(anchorLine);
+      let fi = children.indexOf(focusLine);
+      if(ai > fi){ const tmp = ai; ai = fi; fi = tmp; }
+      for(let i = ai; i <= fi; i++) nodes.push(children[i]);
+    }
   }
   if(nodes.length === 0){
     // Empty editor — add a checklist line
