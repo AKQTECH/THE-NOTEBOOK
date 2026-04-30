@@ -302,15 +302,6 @@
     display:flex;align-items:center;justify-content:flex-end;gap:6px;
   }
   .list-wc .star{color:var(--pink-main);font-size:13px;opacity:1}
-  .list-pinned{
-    display:inline-block;
-    background:var(--pink-main);color:var(--white);
-    font-family:'Antonio',sans-serif;
-    font-size:9px;font-weight:700;
-    text-transform:uppercase;letter-spacing:0.16em;
-    padding:2px 6px;border-radius:4px;
-    margin-left:8px;vertical-align:middle;
-  }
   .list-new{
     display:flex;align-items:center;gap:12px;
     padding:18px 20px;
@@ -381,8 +372,8 @@
     margin-bottom:14px;
   }
   .note .n-title{
-    font-family:'Fraunces',serif;
-    font-weight:700;font-size:24px;line-height:1.1;
+    font-family:'Antonio',sans-serif;
+    font-weight:700;font-size:24px;line-height:1.1;text-transform:uppercase;
     color:var(--ink);letter-spacing:-0.015em;
     margin-bottom:12px;
   }
@@ -401,8 +392,7 @@
   }
   .note .n-foot .star{color:var(--pink-main);opacity:1;font-size:13px}
   .note .n-foot .dot{
-    width:7px;height:7px;border-radius:50%;
-    background:var(--ink);opacity:0.35;display:inline-block;
+    display:none;
   }
   .sticker{
     position:absolute;bottom:-12px;right:-10px;
@@ -442,11 +432,7 @@
     cursor:pointer;
   }
   .new-sticker::before{
-    content:'';position:absolute;
-    top:-16px;right:24px;
-    width:72px;height:22px;
-    background:var(--butter);
-    transform:rotate(8deg);
+    display:none;
     border-left:1.5px dashed rgba(28,20,16,0.3);
     border-right:1.5px dashed rgba(28,20,16,0.3);
   }
@@ -515,13 +501,11 @@
   }
   .wv-btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
   .wv-btn.primary{background:var(--pink-main);color:var(--white);font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:13px;text-transform:none;letter-spacing:0}
-  .wv-btn[disabled]{cursor:not-allowed;box-shadow:none;transform:none !important}
-  .wv-btn.primary[disabled]{opacity:1;background:#FFAD8F;color:var(--white);border-color:#FFAD8F}
+  .wv-btn.primary.saved{background:#FFAD8F;color:var(--white);border-color:#FFAD8F;box-shadow:none;transform:none !important}
   .wv-btn.ghost[disabled]{opacity:0.4}
   .wv-btn.ghost{background:transparent;box-shadow:none}
   .wv-btn.ghost:hover{background:var(--white);box-shadow:2px 2px 0 var(--ink);transform:none}
   .wv-btn.star.on{background:var(--butter)}
-  .wv-btn.pin.on{background:var(--pink-soft)}
   .wv-btn.danger:hover{background:#ffe0e0}
 
   .wv-meta{
@@ -569,8 +553,8 @@
     background:var(--pink-main);opacity:0.45;
   }
   .wv-title{
-    font-family:'Fraunces',serif;
-    font-weight:900;font-size:44px;line-height:1.05;
+    font-family:'Antonio',sans-serif;
+    font-weight:700;font-size:44px;line-height:1.05;text-transform:uppercase;
     letter-spacing:-0.02em;color:var(--ink);
     margin-bottom:24px;
     width:100%;border:none;outline:none;
@@ -1026,10 +1010,6 @@
       <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
       <span>Star</span>
     </button>
-    <button class="wv-btn ghost pin" id="wv-pin" title="Pin to today">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 2.24v3H7v-3z"/></svg>
-      <span>Pin today</span>
-    </button>
     <button class="wv-btn ghost" id="wv-checklist" title="Insert checklist item">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><path d="M5 7l1.5 1.5L9 5"/><line x1="13" y1="6" x2="21" y2="6"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
       <span>Checklist</span>
@@ -1165,7 +1145,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.12</h3>
+    <h3>The Notebook v2.15</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -1569,12 +1549,12 @@ function seedIfFirstRun(state){
       body:
         "Welcome. This is the Notebook — a quiet place for morning pages, scripts, essays, and ideas.\n\n" +
         "Click a card to open it full-screen. The lined page holds your words.\n\n" +
-        "Star anything you want to come back to. Pin today's page. Export any entry as .txt or PDF.\n\n" +
+        "Star anything you want to come back to. Export any entry as .txt or PDF.\n\n" +
         "Connect Dropbox (top right) and every page syncs across your devices — desktop, iPhone, anywhere.",
       paper: '#f6d0f6',
       tape:  '#E668A7',
       starred: true,
-      pinnedToday: true,
+      pinnedToday: false,
       createdAt: now,
       updatedAt: now,
       wordCount: 0,
@@ -1654,7 +1634,6 @@ function renderBoard(){
     }
     return true;
   }).sort((a,b)=>{
-    if(a.pinnedToday!==b.pinnedToday) return a.pinnedToday?-1:1;
     return b.updatedAt - a.updatedAt;
   });
 
@@ -1717,7 +1696,6 @@ function buildListRow(e){
     <span class="list-paper-dot" style="background:${paperBg}"></span>
     <span class="list-title">
       ${highlightTitle(e.title || 'Untitled page')}
-      ${e.pinnedToday ? '<span class="list-pinned">Pinned today</span>' : ''}
       <span class="sub">${escapeHtml(sub)}</span>
     </span>
     <span class="list-tag">${escapeHtml(e.tag||'')}</span>
@@ -1757,10 +1735,8 @@ function buildCard(e){
     <div class="n-excerpt">${formatExcerpt(e.body)}</div>
     <div class="n-foot">
       <span>${fmtDate(e.updatedAt)}</span>
-      <span class="${e.starred?'star':'dot'}">${e.starred?'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>':''}</span>
+      ${e.starred?'<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>':''}
     </div>
-    ${e.pinnedToday?'<span class="sticker today">pinned today</span>':''}
-    ${e.starred && !e.pinnedToday?'<span class="sticker starred">starred</span>':''}
   `;
   // Push pin SVG — color from entry.tape
   const pinColor = e.tape || DEFAULT_TAPE;
@@ -2108,7 +2084,9 @@ function deserializeBody(text){
 function makeClLine(text, done){
   const row = document.createElement('div');
   row.className = 'cl-line' + (done ? ' done' : '');
-  row.innerHTML = `<button class="cl-box" contenteditable="false"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></button><span class="cl-txt">${escapeHtml(text)}</span>`;
+  row.innerHTML = `<button class="cl-box" contenteditable="false"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></button><span class="cl-txt"></span>`;
+  const txt = row.querySelector('.cl-txt');
+  txt.appendChild(document.createTextNode(text || ''));
   return row;
 }
 const wvTag   = $('wv-tag');
@@ -2116,7 +2094,6 @@ const wvWc    = $('wv-wc');
 const wvDate  = $('wv-date');
 const wvSaved = $('wv-saved');
 const wvStar  = $('wv-star');
-const wvPin   = $('wv-pin');
 const wvSave  = $('wv-save');
 const wvDelete= $('wv-delete');
 const wvFootLeft = $('wv-foot-left');
@@ -2150,16 +2127,15 @@ function openWriting(id){
   }
   wvTag.value = entry.tag || getCategories()[0];
   wvStar.classList.toggle('on', !!entry.starred);
-  wvPin.classList.toggle('on',  !!entry.pinnedToday);
   CURRENT_PAPER = entry.paper || STATE.settings.defaultPaper || DEFAULT_PAPER;
   CURRENT_TAPE  = entry.tape  || STATE.settings.defaultTape  || DEFAULT_TAPE;
   paintWvPickers();
   wvDate.textContent = fmtDateLong(entry.createdAt || Date.now());
   updateWc();
   wvSaved.textContent = id ? '· saved' : '· new';
-  wvFootLeft.innerHTML = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span> starred' : 'Draft';
+  wvFootLeft.innerHTML = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>' : 'Draft';
   wvFootRight.textContent = `${fmtDate(entry.updatedAt||Date.now())} · ${entry.wordCount||0} W`;
-  wvSave.disabled = true;
+  wvSave.classList.add('saved');
   wvDelete.style.display = id ? '' : 'none';
 
   boardView.classList.add('hidden');
@@ -2188,7 +2164,7 @@ function updateWc(){
 
 function markDirty(){
   DIRTY = true;
-  wvSave.disabled = false;
+  wvSave.classList.remove('saved');
   wvSaved.textContent = '· unsaved…';
   clearTimeout(AUTOSAVE_TIMER);
   AUTOSAVE_TIMER = setTimeout(()=>persistCurrent(false), 1400);
@@ -2198,7 +2174,6 @@ wvTitle.addEventListener('input',()=>{autosizeTitle();markDirty()});
 wvLines.addEventListener('input',()=>{updateWc();markDirty()});
 wvTag.addEventListener('change',markDirty);
 wvStar.addEventListener('click',()=>{wvStar.classList.toggle('on');markDirty()});
-wvPin.addEventListener('click', ()=>{wvPin.classList.toggle('on'); markDirty()});
 
 function autosizeTitle(){
   wvTitle.style.height = 'auto';
@@ -2211,7 +2186,7 @@ function persistCurrent(explicit){
   if(!title && !body.trim()){
     if(!CURRENT_ID){
       wvSaved.textContent = '· empty';
-      wvSave.disabled = true;
+      wvSave.classList.add('saved');
       DIRTY = false;
       return;
     }
@@ -2236,17 +2211,16 @@ function persistCurrent(explicit){
   entry.body  = body;
   entry.tag   = wvTag.value;
   entry.starred     = wvStar.classList.contains('on');
-  entry.pinnedToday = wvPin.classList.contains('on');
   entry.updatedAt   = now;
   entry.wordCount   = countWords(body);
   entry.paper = CURRENT_PAPER || STATE.settings.defaultPaper || DEFAULT_PAPER;
   entry.tape  = CURRENT_TAPE  || STATE.settings.defaultTape  || DEFAULT_TAPE;
   saveState(STATE);
   DIRTY = false;
-  wvSave.disabled = true;
+  wvSave.classList.add('saved');
   wvSaved.textContent = explicit ? '· saved' : '· autosaved';
   wvFootRight.textContent = `${fmtDate(entry.updatedAt)} · ${entry.wordCount} W`;
-  wvFootLeft.innerHTML    = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span> starred' : 'Draft';
+  wvFootLeft.innerHTML    = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>' : 'Draft';
 
   if(explicit) showToast('Saved');
   // Note: Dropbox push is scheduled by saveState → scheduleDropboxPush
@@ -2276,7 +2250,7 @@ function currentEntryForExport(){
     updatedAt: Date.now(), createdAt: Date.now(),
     wordCount: countWords(serializeBody()),
     starred: wvStar.classList.contains('on'),
-    pinnedToday: wvPin.classList.contains('on')
+    pinnedToday: false
   };
 }
 $('wv-export-txt').addEventListener('click',()=>{
@@ -2378,41 +2352,158 @@ $('wv-checklist').addEventListener('click',()=>{
   markDirty();
 });
 
-// Enter key: continue checklist on next line
+// Checklist keyboard handling (Enter, Backspace)
 wvLines.addEventListener('keydown',(e)=>{
-  if(e.key === 'Enter'){
-    const sel = window.getSelection();
-    let node = sel.anchorNode;
-    while(node && node !== wvLines && node.parentNode !== wvLines) node = node.parentNode;
-    if(node && node.classList && node.classList.contains('cl-line')){
-      const txt = node.querySelector('.cl-txt');
-      // If empty checklist item, convert to plain line (escape hatch)
-      if(txt && txt.textContent.trim() === ''){
-        e.preventDefault();
-        const div = document.createElement('div');
-        div.innerHTML = '<br>';
-        node.replaceWith(div);
-        const r = document.createRange();
-        r.setStart(div, 0);
-        r.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(r);
-        markDirty();
-        return;
+  const sel = window.getSelection();
+  if(!sel.rangeCount) return;
+
+  // Find the top-level line div the cursor is in
+  function lineOf(n){ while(n && n !== wvLines && n.parentNode !== wvLines) n = n.parentNode; return (n && n !== wvLines) ? n : null; }
+  const line = lineOf(sel.anchorNode);
+  const isCl = line && line.classList && line.classList.contains('cl-line');
+
+  if(e.key === 'Enter' && isCl){
+    e.preventDefault();
+    const txt = line.querySelector('.cl-txt');
+    const content = txt ? txt.textContent : '';
+
+    // Empty checklist → escape to plain line
+    if(content.trim() === ''){
+      const div = document.createElement('div');
+      div.innerHTML = '<br>';
+      line.replaceWith(div);
+      const r = document.createRange();
+      r.setStart(div, 0); r.collapse(true);
+      sel.removeAllRanges(); sel.addRange(r);
+      markDirty();
+      return;
+    }
+
+    // Split text at cursor position
+    const r = sel.getRangeAt(0);
+    let offset = r.startOffset;
+    // If cursor is in a text node inside .cl-txt, calculate offset
+    let cursorNode = sel.anchorNode;
+    if(cursorNode !== txt && cursorNode.nodeType === 3){
+      // Walk text nodes in .cl-txt to find absolute offset
+      let found = false;
+      const walker = document.createTreeWalker(txt, NodeFilter.SHOW_TEXT);
+      let absOffset = 0;
+      while(walker.nextNode()){
+        if(walker.currentNode === cursorNode){ absOffset += offset; found = true; break; }
+        absOffset += walker.currentNode.length;
       }
-      // Otherwise, insert new checklist line after
+      if(found) offset = absOffset; else offset = content.length;
+    }
+
+    const before = content.slice(0, offset);
+    const after = content.slice(offset);
+
+    // Update current line text
+    if(txt) txt.textContent = before || '';
+
+    // Create new checklist line with the text after cursor
+    const cl = makeClLine(after, false);
+    line.after(cl);
+    const newTxt = cl.querySelector('.cl-txt');
+    if(newTxt){
+      if(!newTxt.firstChild) newTxt.appendChild(document.createTextNode(''));
+      const nr = document.createRange();
+      nr.setStart(newTxt.firstChild, 0); nr.collapse(true);
+      sel.removeAllRanges(); sel.addRange(nr);
+    }
+    markDirty();
+    return;
+  }
+
+  if(e.key === 'Backspace' && isCl){
+    const txt = line.querySelector('.cl-txt');
+    const content = txt ? txt.textContent : '';
+    const r = sel.getRangeAt(0);
+
+    // Only intercept when cursor is at the very start of the checklist text
+    let atStart = false;
+    if(r.collapsed){
+      if(sel.anchorNode === txt && r.startOffset === 0) atStart = true;
+      else if(sel.anchorNode.nodeType === 3){
+        // Check if we're in the first text node at offset 0
+        const walker = document.createTreeWalker(txt, NodeFilter.SHOW_TEXT);
+        const firstText = walker.nextNode();
+        if(sel.anchorNode === firstText && r.startOffset === 0) atStart = true;
+      }
+    }
+
+    if(atStart){
       e.preventDefault();
-      const cl = makeClLine('', false);
-      node.after(cl);
-      const newTxt = cl.querySelector('.cl-txt');
-      if(newTxt){
-        const r = document.createRange();
-        r.setStart(newTxt, 0);
-        r.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(r);
+      const prev = line.previousElementSibling;
+      if(prev && prev.classList && prev.classList.contains('cl-line')){
+        // Merge into previous checklist line
+        const prevTxt = prev.querySelector('.cl-txt');
+        const prevContent = prevTxt ? prevTxt.textContent : '';
+        const cursorPos = prevContent.length;
+        if(prevTxt) prevTxt.textContent = prevContent + content;
+        line.remove();
+        // Place cursor at merge point
+        if(prevTxt && prevTxt.firstChild){
+          const nr = document.createRange();
+          nr.setStart(prevTxt.firstChild, cursorPos); nr.collapse(true);
+          sel.removeAllRanges(); sel.addRange(nr);
+        }
+      } else if(prev){
+        // Merge into previous plain div
+        const prevContent = prev.textContent.replace(/\u200B/g, '');
+        const cursorPos = prevContent.length;
+        prev.textContent = prevContent + content;
+        line.remove();
+        if(prev.firstChild){
+          const nr = document.createRange();
+          nr.setStart(prev.firstChild, cursorPos); nr.collapse(true);
+          sel.removeAllRanges(); sel.addRange(nr);
+        }
+      } else {
+        // First line — convert to plain div
+        const div = document.createElement('div');
+        div.textContent = content || '\u200B';
+        line.replaceWith(div);
+        if(div.firstChild){
+          const nr = document.createRange();
+          nr.setStart(div.firstChild, 0); nr.collapse(true);
+          sel.removeAllRanges(); sel.addRange(nr);
+        }
       }
       markDirty();
+      return;
+    }
+  }
+
+  // Backspace from start of plain line into a checklist line above
+  if(e.key === 'Backspace' && line && !isCl){
+    const r = sel.getRangeAt(0);
+    if(!r.collapsed) return; // let browser handle range deletion
+    let atStart = false;
+    if(sel.anchorNode === line && r.startOffset === 0) atStart = true;
+    else if(sel.anchorNode.nodeType === 3){
+      const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
+      const firstText = walker.nextNode();
+      if(sel.anchorNode === firstText && r.startOffset === 0) atStart = true;
+    }
+    if(atStart){
+      const prev = line.previousElementSibling;
+      if(prev && prev.classList && prev.classList.contains('cl-line')){
+        e.preventDefault();
+        const prevTxt = prev.querySelector('.cl-txt');
+        const prevContent = prevTxt ? prevTxt.textContent : '';
+        const cursorPos = prevContent.length;
+        const myContent = line.textContent.replace(/\u200B/g, '');
+        if(prevTxt) prevTxt.textContent = prevContent + myContent;
+        line.remove();
+        if(prevTxt && prevTxt.firstChild){
+          const nr = document.createRange();
+          nr.setStart(prevTxt.firstChild, cursorPos); nr.collapse(true);
+          sel.removeAllRanges(); sel.addRange(nr);
+        }
+        markDirty();
+      }
     }
   }
 });
@@ -2582,7 +2673,6 @@ async function dbxPull(silent=false){
           }
           wvTag.value = updated.tag || getCategories()[0];
           wvStar.classList.toggle('on', !!updated.starred);
-          wvPin.classList.toggle('on', !!updated.pinnedToday);
           CURRENT_PAPER = updated.paper || DEFAULT_PAPER;
           CURRENT_TAPE  = updated.tape  || DEFAULT_TAPE;
           paintWvPickers();
