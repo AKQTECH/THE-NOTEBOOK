@@ -610,27 +610,26 @@
 
   /* ── Inline checklist lines (Apple Notes style) ── */
   .wv-lines .cl-line{
-    display:flex;align-items:flex-start;gap:8px;
+    display:block;position:relative;
     min-height:34px;line-height:34px;
+    padding-left:24px;
   }
-  .wv-lines .cl-line .cl-box{
+  .wv-lines .cl-line::before{
+    content:'';position:absolute;left:0;top:11px;
     width:12px;height:12px;border-radius:2px;
     border:1.5px solid var(--pink-main);
-    background:none;cursor:pointer;flex-shrink:0;
-    display:inline-flex;align-items:center;justify-content:center;
-    margin-top:11px;padding:0;
+    background:none;box-sizing:border-box;cursor:pointer;
   }
-  .wv-lines .cl-line .cl-box svg{display:none;width:8px;height:8px;stroke:var(--white);stroke-width:2.5;fill:none}
-  .wv-lines .cl-line.done .cl-box{background:var(--pink-main);border-color:var(--pink-main)}
-  .wv-lines .cl-line.done .cl-box svg{display:block}
+  .wv-lines .cl-line.done::before{
+    background:var(--pink-main);border-color:var(--pink-main);
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='2 7 5.5 10.5 12 3.5' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E");
+    background-size:contain;background-repeat:no-repeat;
+  }
   .wv-lines img{
     max-width:100%;height:auto;border-radius:4px;
     margin:8px 0;display:block;cursor:default;
   }
-  .wv-lines .cl-line .cl-txt{
-    flex:1;outline:none;min-width:0;
-  }
-  .wv-lines .cl-line.done .cl-txt{text-decoration:line-through;color:var(--pink-main);opacity:0.7}
+  .wv-lines .cl-line.done{text-decoration:line-through;color:var(--pink-main);opacity:0.7}
   .wv-lines [data-ph]:empty::before{
     content:attr(data-ph);color:var(--pink-main);opacity:0.35;pointer-events:none;
   }
@@ -1021,7 +1020,7 @@
       <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
       <span>Star</span>
     </button>
-    <button class="wv-btn ghost" id="wv-checklist" title="Insert checklist item">
+    <button class="wv-btn ghost" id="wv-checklist" title="Insert checklist item" tabindex="-1">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><path d="M5 7l1.5 1.5L9 5"/><line x1="13" y1="6" x2="21" y2="6"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
       <span>Checklist</span>
     </button>
@@ -1156,7 +1155,7 @@
 
 <div class="modal hidden" id="about-modal">
   <div class="modal-card">
-    <h3>The Notebook v2.37</h3>
+    <h3>The Notebook v2.42</h3>
     <p class="nobreak">Built for April Korto Quioh</p>
     <div class="modal-actions">
       <button class="wv-btn primary" id="about-close">Done</button>
@@ -2072,7 +2071,7 @@ function serializeBody(){
     } else if(node.nodeType === 1){
       if(node.classList && node.classList.contains('cl-line')){
         const done = node.classList.contains('done');
-        const txt = (node.querySelector('.cl-txt')||{}).textContent || '';
+        const txt = (node.textContent || '').replace(/​/g,'');
         lines.push((done ? '[x] ' : '[ ] ') + txt);
       } else {
         const txt = (node.textContent || '').replace(/\u200B/g, '');
@@ -2104,11 +2103,18 @@ function deserializeBody(text){
 function makeClLine(text, done){
   const row = document.createElement('div');
   row.className = 'cl-line' + (done ? ' done' : '');
-  row.innerHTML = `<button class="cl-box" contenteditable="false"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></button><span class="cl-txt"></span>`;
-  const txt = row.querySelector('.cl-txt');
-  txt.appendChild(document.createTextNode(text || ''));
-  if(!txt.firstChild) txt.appendChild(document.createTextNode(''));
+  row.textContent = text || '';
   return row;
+}
+function placeCursor(el, offset){
+  wvLines.focus();
+  if(!el.firstChild) el.appendChild(document.createTextNode(''));
+  const node = el.firstChild;
+  const safeOff = Math.min(offset, node.length || 0);
+  const nr = document.createRange();
+  nr.setStart(node, safeOff); nr.collapse(true);
+  const s = window.getSelection();
+  s.removeAllRanges(); s.addRange(nr);
 }
 const wvTag   = $('wv-tag');
 const wvWc    = $('wv-wc');
@@ -2360,22 +2366,24 @@ wvLines.addEventListener('paste',(e)=>{
 
 /* ─── Inline checklist (Apple Notes style) ─── */
 
-// Click checkbox to toggle done
+// Click in the left 22px (checkbox area) to toggle done
 wvLines.addEventListener('click',(e)=>{
-  const box = e.target.closest('.cl-box');
-  if(!box) return;
-  const line = box.closest('.cl-line');
+  const line = e.target.closest('.cl-line');
   if(!line) return;
-  line.classList.toggle('done');
-  markDirty();
+  if(e.clientX - line.getBoundingClientRect().left < 22){
+    e.preventDefault();
+    line.classList.toggle('done');
+    markDirty();
+  }
 });
 
 // Toolbar button — toggle selected lines to/from checklist
+// tabindex="-1" on the button keeps focus in the editor on click
 $('wv-checklist').addEventListener('click',()=>{
+  wvLines.focus();
   const sel = window.getSelection();
-  if(!sel.rangeCount){ return; }
+  if(!sel.rangeCount || !wvLines.contains(sel.anchorNode)) return;
 
-  // Resolve anchor and focus to their top-level line divs inside wvLines
   function lineOf(node){
     while(node && node !== wvLines && node.parentNode !== wvLines) node = node.parentNode;
     return (node && node !== wvLines) ? node : null;
@@ -2386,46 +2394,35 @@ $('wv-checklist').addEventListener('click',()=>{
   const nodes = [];
   if(anchorLine){
     if(!focusLine || focusLine === anchorLine){
-      // Single-line selection or cursor — only operate on that one line
       nodes.push(anchorLine);
     } else {
-      // Multi-line: walk only the lines between anchor and focus
       const children = Array.from(wvLines.children);
-      let ai = children.indexOf(anchorLine);
-      let fi = children.indexOf(focusLine);
-      if(ai > fi){ const tmp = ai; ai = fi; fi = tmp; }
-      for(let i = ai; i <= fi; i++) nodes.push(children[i]);
+      let ai = children.indexOf(anchorLine), fi = children.indexOf(focusLine);
+      if(ai > fi){ const t=ai; ai=fi; fi=t; }
+      for(let i=ai;i<=fi;i++) nodes.push(children[i]);
     }
   }
   if(nodes.length === 0){
-    // Empty editor — add a checklist line
     const cl = makeClLine('', false);
     wvLines.appendChild(cl);
-    const txt = cl.querySelector('.cl-txt');
-    if(txt){ txt.focus(); }
+    placeCursor(cl, 0);
     markDirty();
     return;
   }
 
-  // Toggle: if ALL are already checklist lines, convert back to plain text
   const allCl = nodes.every(n => n.classList && n.classList.contains('cl-line'));
+  // Toggle class only — no replaceWith, so selection is never disrupted
   nodes.forEach(n => {
     if(allCl){
-      // Convert checklist → plain div
-      const text = (n.querySelector('.cl-txt')||{}).textContent || n.textContent || '';
-      const div = document.createElement('div');
-      div.textContent = text || '\u200B';
-      n.replaceWith(div);
-    } else if(!n.classList || !n.classList.contains('cl-line')){
-      // Convert plain div → checklist
-      const text = n.textContent || '';
-      const cl = makeClLine(text === '\u200B' ? '' : text, false);
-      n.replaceWith(cl);
+      n.classList.remove('cl-line','done');
+      if(!n.textContent) n.textContent = '​';
+    } else if(!n.classList.contains('cl-line')){
+      if(n.textContent === '​') n.textContent = '';
+      n.classList.add('cl-line');
     }
   });
   markDirty();
 });
-
 // Checklist keyboard handling (Enter, Backspace)
 wvLines.addEventListener('keydown',(e)=>{
   const sel = window.getSelection();
@@ -2438,30 +2435,24 @@ wvLines.addEventListener('keydown',(e)=>{
 
   if(e.key === 'Enter' && isCl){
     e.preventDefault();
-    const txt = line.querySelector('.cl-txt');
-    const content = txt ? txt.textContent : '';
+    const content = line.textContent;
 
-    // Empty checklist → escape to plain line
+    // Empty checklist → remove cl-line class (escape to plain line, no replaceWith)
     if(content.trim() === ''){
-      const div = document.createElement('div');
-      div.innerHTML = '<br>';
-      line.replaceWith(div);
-      const r = document.createRange();
-      r.setStart(div, 0); r.collapse(true);
-      sel.removeAllRanges(); sel.addRange(r);
+      line.classList.remove('cl-line','done');
+      line.textContent = '\u200B';
+      placeCursor(line, 0);
       markDirty();
       return;
     }
 
-    // Split text at cursor position
+    // Split at cursor
     const r = sel.getRangeAt(0);
     let offset = r.startOffset;
-    // If cursor is in a text node inside .cl-txt, calculate offset
-    let cursorNode = sel.anchorNode;
-    if(cursorNode !== txt && cursorNode.nodeType === 3){
-      // Walk text nodes in .cl-txt to find absolute offset
+    const cursorNode = sel.anchorNode;
+    if(cursorNode !== line && cursorNode.nodeType === 3){
       let found = false;
-      const walker = document.createTreeWalker(txt, NodeFilter.SHOW_TEXT);
+      const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
       let absOffset = 0;
       while(walker.nextNode()){
         if(walker.currentNode === cursorNode){ absOffset += offset; found = true; break; }
@@ -2471,37 +2462,25 @@ wvLines.addEventListener('keydown',(e)=>{
     }
 
     const before = content.slice(0, offset);
-    const after = content.slice(offset);
+    const after  = content.slice(offset);
+    line.textContent = before || '';
 
-    // Update current line text
-    if(txt) txt.textContent = before || '';
-
-    // Create new checklist line with the text after cursor
     const cl = makeClLine(after, false);
     line.after(cl);
-    const newTxt = cl.querySelector('.cl-txt');
-    if(newTxt){
-      if(!newTxt.firstChild) newTxt.appendChild(document.createTextNode(''));
-      const nr = document.createRange();
-      nr.setStart(newTxt.firstChild, 0); nr.collapse(true);
-      sel.removeAllRanges(); sel.addRange(nr);
-    }
+    placeCursor(cl, 0);
     markDirty();
     return;
   }
 
   if(e.key === 'Backspace' && isCl){
-    const txt = line.querySelector('.cl-txt');
-    const content = txt ? txt.textContent : '';
+    const content = line.textContent;
     const r = sel.getRangeAt(0);
 
-    // Only intercept when cursor is at the very start of the checklist text
     let atStart = false;
     if(r.collapsed){
-      if(sel.anchorNode === txt && r.startOffset === 0) atStart = true;
+      if(sel.anchorNode === line && r.startOffset === 0) atStart = true;
       else if(sel.anchorNode.nodeType === 3){
-        // Check if we're in the first text node at offset 0
-        const walker = document.createTreeWalker(txt, NodeFilter.SHOW_TEXT);
+        const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
         const firstText = walker.nextNode();
         if(sel.anchorNode === firstText && r.startOffset === 0) atStart = true;
       }
@@ -2511,39 +2490,22 @@ wvLines.addEventListener('keydown',(e)=>{
       e.preventDefault();
       const prev = line.previousElementSibling;
       if(prev && prev.classList && prev.classList.contains('cl-line')){
-        // Merge into previous checklist line
-        const prevTxt = prev.querySelector('.cl-txt');
-        const prevContent = prevTxt ? prevTxt.textContent : '';
-        const cursorPos = prevContent.length;
-        if(prevTxt) prevTxt.textContent = prevContent + content;
-        line.remove();
-        // Place cursor at merge point
-        if(prevTxt && prevTxt.firstChild){
-          const nr = document.createRange();
-          nr.setStart(prevTxt.firstChild, cursorPos); nr.collapse(true);
-          sel.removeAllRanges(); sel.addRange(nr);
-        }
-      } else if(prev){
-        // Merge into previous plain div
-        const prevContent = prev.textContent.replace(/\u200B/g, '');
+        const prevContent = prev.textContent;
         const cursorPos = prevContent.length;
         prev.textContent = prevContent + content;
         line.remove();
-        if(prev.firstChild){
-          const nr = document.createRange();
-          nr.setStart(prev.firstChild, cursorPos); nr.collapse(true);
-          sel.removeAllRanges(); sel.addRange(nr);
-        }
+        placeCursor(prev, cursorPos);
+      } else if(prev){
+        const prevContent = prev.textContent.replace(/\u200B/g,'');
+        const cursorPos = prevContent.length;
+        prev.textContent = prevContent + content;
+        line.remove();
+        placeCursor(prev, cursorPos);
       } else {
-        // First line — convert to plain div
-        const div = document.createElement('div');
-        div.textContent = content || '\u200B';
-        line.replaceWith(div);
-        if(div.firstChild){
-          const nr = document.createRange();
-          nr.setStart(div.firstChild, 0); nr.collapse(true);
-          sel.removeAllRanges(); sel.addRange(nr);
-        }
+        // First line — remove checklist class, no replaceWith
+        line.classList.remove('cl-line','done');
+        if(!line.textContent) line.textContent = '\u200B';
+        placeCursor(line, 0);
       }
       markDirty();
       return;
@@ -2553,7 +2515,7 @@ wvLines.addEventListener('keydown',(e)=>{
   // Backspace from start of plain line into a checklist line above
   if(e.key === 'Backspace' && line && !isCl){
     const r = sel.getRangeAt(0);
-    if(!r.collapsed) return; // let browser handle range deletion
+    if(!r.collapsed) return;
     let atStart = false;
     if(sel.anchorNode === line && r.startOffset === 0) atStart = true;
     else if(sel.anchorNode.nodeType === 3){
@@ -2565,17 +2527,11 @@ wvLines.addEventListener('keydown',(e)=>{
       const prev = line.previousElementSibling;
       if(prev && prev.classList && prev.classList.contains('cl-line')){
         e.preventDefault();
-        const prevTxt = prev.querySelector('.cl-txt');
-        const prevContent = prevTxt ? prevTxt.textContent : '';
+        const prevContent = prev.textContent;
         const cursorPos = prevContent.length;
-        const myContent = line.textContent.replace(/\u200B/g, '');
-        if(prevTxt) prevTxt.textContent = prevContent + myContent;
+        prev.textContent = prevContent + line.textContent.replace(/\u200B/g,'');
         line.remove();
-        if(prevTxt && prevTxt.firstChild){
-          const nr = document.createRange();
-          nr.setStart(prevTxt.firstChild, cursorPos); nr.collapse(true);
-          sel.removeAllRanges(); sel.addRange(nr);
-        }
+        placeCursor(prev, cursorPos);
         markDirty();
       }
     }
