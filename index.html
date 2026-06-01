@@ -14,7 +14,10 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700;1,9..144,900&family=Antonio:wght@400;700&family=Host+Grotesk:wght@700;800&family=Caprasimo&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@100;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     /* AKQ palette (sourced from Visual Brand Guide v14) */
@@ -504,7 +507,7 @@
     min-height:42px;
   }
   .wv-btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-  .wv-btn.primary{background:#FFD4F4;color:var(--ink);border:2px solid var(--pink-main);font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:13px;text-transform:none;letter-spacing:0;transition:background 0.3s,color 0.3s,border-color 0.3s;box-shadow:3px 3px 0 var(--pink-main)}
+  .wv-btn.primary{background:#FFD4F4;color:var(--ink);border:2px solid var(--pink-main);font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:13px;text-transform:none;letter-spacing:0}
   .wv-btn.primary:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink-main)}
   .wv-btn.primary.saved{background:var(--salmon);color:var(--white);border-color:var(--salmon);box-shadow:none}
   .wv-btn.primary.saved:active{transform:translate(1px,1px)}
@@ -532,7 +535,7 @@
     box-shadow:3px 3px 0 var(--ink);
     cursor:pointer;outline:none;
     appearance:none;-webkit-appearance:none;
-    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231C1410' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231C1410' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat:no-repeat;
     background-position:right 10px center;
     background-size:12px;
@@ -568,16 +571,12 @@
   }
   .wv-title::placeholder{color:var(--pink-main);font-style:italic;opacity:0.5}
 
-  /* Lined surface: font 15px, line-height 34px (rule grid).
-     DM Sans baseline sits ~24-25px from top of line-box, so we draw the
-     rule at 25-26px so letters sit on it instead of floating. */
   .wv-lines{
     width:100%;min-height:62vh;
     border:none;outline:none;
     background-color:transparent;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
-    white-space:pre-wrap;
     word-wrap:break-word;
     background-image:repeating-linear-gradient(
       to bottom,
@@ -596,7 +595,12 @@
     padding:0 2px;
     letter-spacing:0.005em;
     display:block;
+    contenteditable:true;
   }
+  .wv-lines a{color:var(--pink-main);text-decoration:underline;cursor:pointer}
+  .wv-lines b{font-weight:700}
+  .wv-lines i{font-style:italic}
+  .wv-lines u{text-decoration:underline}
   .wv-foot{
     margin-top:30px;padding-top:18px;
     border-top:1.5px dashed rgba(28,20,16,0.15);
@@ -607,78 +611,6 @@
     flex-wrap:wrap;gap:8px;
   }
   .wv-foot .star{color:var(--pink-main);opacity:1;font-size:14px}
-
-  /* ── Inline checklist lines (Apple Notes style) ── */
-  .wv-lines .cl-line{
-    display:block;position:relative;
-    min-height:34px;line-height:34px;
-    padding-left:24px;
-  }
-  .wv-lines .cl-line::before{
-    content:'';position:absolute;left:0;top:11px;
-    width:12px;height:12px;border-radius:2px;
-    border:1.5px solid var(--pink-main);
-    background:none;box-sizing:border-box;cursor:pointer;
-  }
-  .wv-lines .cl-line.done::before{
-    background:var(--pink-main);border-color:var(--pink-main);
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='2 7 5.5 10.5 12 3.5' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E");
-    background-size:contain;background-repeat:no-repeat;
-  }
-  .wv-lines img{
-    max-width:100%;height:auto;border-radius:4px;
-    margin:8px 0;display:block;cursor:default;
-  }
-  .wv-lines .cl-line.done{text-decoration:line-through;color:var(--pink-main);opacity:0.7}
-  .wv-lines [data-ph]:empty::before{
-    content:attr(data-ph);color:var(--pink-main);opacity:0.35;pointer-events:none;
-  }
-
-  /* ── In-writing-view paper + pin pickers ── */
-  .wv-picker-row{
-    max-width:1080px;width:100%;margin:0 auto;
-    padding:14px 64px 0;
-    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
-  }
-  .wv-pick-group{
-    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-    padding:8px 14px;border-radius:18px;
-    background:var(--white);
-    border:1.5px dashed rgba(28,20,16,0.25);
-  }
-  .wv-pick-label{
-    font-family:'Antonio',sans-serif;
-    font-size:10px;font-weight:700;
-    text-transform:uppercase;letter-spacing:0.22em;
-    color:var(--ink);opacity:0.7;margin-right:4px;
-  }
-  .wv-swatch{
-    width:26px;height:26px;border-radius:50%;
-    border:1.5px solid var(--ink);cursor:pointer;
-    position:relative;transition:transform 0.15s;
-  }
-  .wv-swatch:hover{transform:translateY(-2px)}
-  .wv-swatch.picked{outline:2px solid var(--pink-main);outline-offset:3px}
-  .wv-pin-sw{
-    width:26px;height:26px;border-radius:50%;
-    border:1.5px solid var(--ink);
-    cursor:pointer;position:relative;transition:transform 0.15s;
-  }
-  .wv-pin-sw:hover{transform:translateY(-2px)}
-  .wv-pin-sw.picked{outline:2px solid var(--pink-main);outline-offset:3px}
-
-  /* Push pin on top of the writing page — shows pin color live */
-  .wv-pin-preview{
-    width:22px;height:28px;flex-shrink:0;
-    filter:drop-shadow(0px 1px 1px rgba(0,0,0,0.2));
-  }
-  /* Card-color tint ribbon on the wv-page so you see the paper color
-     without losing readability of the main writing surface. */
-  .wv-paper-ribbon{
-    position:absolute;top:0;left:0;right:0;height:8px;
-    background:var(--pink-soft);
-    border-top-left-radius:4px;border-top-right-radius:4px;
-  }
 
   /* Toast */
   .toast{
@@ -771,11 +703,9 @@
   .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
 
   @media print{
-    .wv-bar,.c-top,.c-filters,.board,.toast,.wv-picker-row{display:none !important}
+    .wv-bar,.c-top,.c-filters,.board,.toast{display:none !important}
     .writing-view{position:static;background:var(--white)}
     .wv-page{box-shadow:none;border:none;margin:0;padding:40px 60px}
-    .wv-lines{background-image:none}
-    .wv-pin-preview{display:none}
     .wv-foot{border-color:#ddd}
   }
 
@@ -786,7 +716,6 @@
     .masthead .title{font-size:44px}
     .wv-page{padding:32px 28px 48px;margin:18px 14px 60px}
     .wv-page::before{left:22px}
-    .wv-picker-row{padding:14px 22px 0}
   }
 
   /* TABLET / small tablet */
@@ -798,7 +727,6 @@
     .c-filters{padding:0 20px 14px;gap:8px}
     .board{padding:8px 20px 100px}
     .grid{gap:18px}
-    /* List view on narrower screens: tag + date on row 2 beneath title */
     .list-head{display:none}
     .list-row{
       grid-template-columns:12px 1fr auto 60px;
@@ -816,7 +744,6 @@
     .only-mobile{display:initial}
     .only-desktop{display:none}
 
-    /* Masthead — compact, 2 rows: logo + title, then Dropbox button */
     .c-top{
       padding:16px 16px 8px;
       flex-wrap:wrap;gap:12px;
@@ -829,7 +756,6 @@
     .mast-right{width:100%;margin-left:0}
     .dbx-btn{width:100%;justify-content:center;font-size:11px;padding:11px 14px}
 
-    /* Filters — horizontal scroll row */
     .c-filters{
       padding:0 16px 8px;
       flex-wrap:nowrap;
@@ -844,7 +770,6 @@
     .view-toggle{margin-left:0;flex-shrink:0}
     .view-toggle button{padding:8px 12px;font-size:10px}
 
-    /* Search — full-width row below filters */
     .c-search{
       order:10;
       margin-left:0;
@@ -852,7 +777,6 @@
       flex:1 1 100%;
     }
 
-    /* Hide desktop new button, show FAB instead */
     .btn-new-badge{display:none}
 
     .board{padding:4px 16px 100px}
@@ -862,7 +786,6 @@
       padding:22px 22px 20px;
       aspect-ratio:1 / 1;
     }
-    /* Gentler rotations on mobile */
     .note:nth-child(6n+1){transform:rotate(-0.5deg)}
     .note:nth-child(6n+2){transform:rotate(0.4deg)}
     .note:nth-child(6n+3){transform:rotate(-0.3deg)}
@@ -875,7 +798,6 @@
     .new-sticker{grid-column:span 1;aspect-ratio:1 / 1;min-height:auto;padding:26px 22px;transform:rotate(-0.8deg)}
     .new-sticker .ns-b{font-size:26px}
 
-    /* FAB for new page on mobile */
     .fab-new{
       display:flex;
       position:fixed;bottom:24px;right:20px;
@@ -889,7 +811,6 @@
     }
     .fab-new svg{width:26px;height:26px;stroke-width:2.4;stroke:var(--white);fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-    /* Writing view — full bleed */
     .wv-bar{
       padding:12px 14px;
       gap:6px;
@@ -908,25 +829,8 @@
     .wv-page::before{left:18px}
     .wv-title{font-size:30px;margin-bottom:16px}
     .wv-lines{min-height:calc(100vh - 280px)}
-
-    .wv-picker-row{
-      padding:10px 14px 0;
-      gap:8px;
-    }
-    .wv-pick-group{
-      padding:8px 10px;flex:1;min-width:0;
-      overflow-x:auto;
-      flex-wrap:nowrap;
-      -webkit-overflow-scrolling:touch;
-      scrollbar-width:none;
-    }
-    .wv-pick-group::-webkit-scrollbar{display:none}
-    .wv-swatch{width:28px;height:28px;flex-shrink:0}
-    .wv-pin-sw{width:28px;height:28px;flex-shrink:0}
-    .wv-pick-label{flex-shrink:0}
   }
 
-  /* FAB hidden by default, shown on mobile */
   .fab-new{display:none}
 </style>
 </head>
@@ -999,1811 +903,335 @@
     </div>
   </div>
 
-  <!-- Mobile FAB -->
-  <button class="fab-new" id="fab-new" aria-label="Start a new page">
-    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  </button>
-
 </div>
 
-<!-- ─────────── WRITING VIEW ─────────── -->
 <div class="writing-view hidden" id="writing-view">
   <div class="wv-bar">
-    <button class="wv-btn" id="wv-back">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      Board
+    <button class="wv-btn ghost" id="btn-close" title="Close editor">
+      <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-
-    <select class="wv-tag-select" id="wv-tag"></select>
-
-    <button class="wv-btn ghost star" id="wv-star" title="Star this page">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
-      <span>Star</span>
-    </button>
-    <button class="wv-btn ghost" id="wv-checklist" title="Insert checklist item" tabindex="-1">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><path d="M5 7l1.5 1.5L9 5"/><line x1="13" y1="6" x2="21" y2="6"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
-      <span>Checklist</span>
-    </button>
-    <button class="wv-btn ghost" id="wv-undo" title="Undo">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-    </button>
-    <button class="wv-btn ghost" id="wv-redo" title="Redo">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
-    </button>
-
-    <div class="wv-meta">
-      <span id="wv-date">—</span>
-      <span>·</span>
-      <span id="wv-wc">0 W</span>
-      <span id="wv-saved" style="color:var(--pink-main)"></span>
-    </div>
-
+    <span class="wv-meta" id="wv-meta"></span>
     <div class="wv-spacer"></div>
-
-    <button class="wv-btn ghost" id="wv-export-txt" title="Download .txt">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="14 3 14 9 20 9"/></svg>
-      <span>TXT</span>
-    </button>
-    <button class="wv-btn ghost" id="wv-export-pdf" title="Print / save as PDF">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      <span>PDF</span>
-    </button>
-    <button class="wv-btn ghost danger" id="wv-delete" title="Delete this page">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-    </button>
-    <button class="wv-btn primary" id="wv-save">Save page</button>
+    <button class="wv-btn primary" id="btn-save">Save</button>
   </div>
-
-  <!-- Per-entry paper + pin pickers -->
-  <div class="wv-picker-row">
-    <div class="wv-pick-group" id="wv-paper-group">
-      <span class="wv-pick-label">Paper</span>
-      <div class="wv-swatch" style="background:#fff2f1" title="Warm white" data-paper="#fff2f1"></div>
-      <div class="wv-swatch" style="background:#F5F0C8" title="Butter" data-paper="#F5F0C8"></div>
-      <div class="wv-swatch" style="background:#EFFBD5" title="Celery" data-paper="#EFFBD5"></div>
-      <div class="wv-swatch" style="background:#bbe4c6" title="Mint" data-paper="#bbe4c6"></div>
-      <div class="wv-swatch" style="background:#cfd8ff" title="Pale periwinkle" data-paper="#cfd8ff"></div>
-      <div class="wv-swatch" style="background:#b2c0f9" title="Periwinkle" data-paper="#b2c0f9"></div>
-      <div class="wv-swatch" style="background:#f6d0f6" title="Soft pink" data-paper="#f6d0f6"></div>
-      <div class="wv-swatch" style="background:#FFD4F4" title="Pale blush" data-paper="#FFD4F4"></div>
-      <div class="wv-swatch" style="background:#F1BCD7" title="Millennial pink" data-paper="#F1BCD7"></div>
-      <div class="wv-swatch" style="background:#FFAEF7" title="Light pink" data-paper="#FFAEF7"></div>
-      <div class="wv-swatch" style="background:#f39bc9" title="Soft rose" data-paper="#f39bc9"></div>
-      <div class="wv-swatch" style="background:#FFAD8F" title="Salmon" data-paper="#FFAD8F"></div>
-    </div>
-    <div class="wv-pick-group" id="wv-pin-group">
-      <span class="wv-pick-label">Pin</span>
-      <svg class="wv-pin-preview" id="wv-pin-svg" viewBox="0 0 20 24" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="10" cy="10" r="7" stroke-width="1" class="pin-head"/>
-        <circle cx="8" cy="8" r="2.5" fill="rgba(255,255,255,0.35)"/>
-        <line x1="10" y1="17" x2="10" y2="23" stroke-width="1.8" stroke-linecap="round" class="pin-needle"/>
-      </svg>
-      <div class="wv-pin-sw" style="background:#E668A7" title="Medium pink" data-tape="#E668A7"></div>
-      <div class="wv-pin-sw" style="background:#DA005F" title="Hot pink" data-tape="#DA005F"></div>
-      <div class="wv-pin-sw" style="background:#F1BCD7" title="Millennial pink" data-tape="#F1BCD7"></div>
-      <div class="wv-pin-sw" style="background:#f39bc9" title="Soft rose" data-tape="#f39bc9"></div>
-      <div class="wv-pin-sw" style="background:#ab5a81" title="Berry" data-tape="#ab5a81"></div>
-      <div class="wv-pin-sw" style="background:#c55c6b" title="Deep rose" data-tape="#c55c6b"></div>
-      <div class="wv-pin-sw" style="background:#ec8f2c" title="Orange" data-tape="#ec8f2c"></div>
-      <div class="wv-pin-sw" style="background:#e36d61" title="Coral" data-tape="#e36d61"></div>
-      <div class="wv-pin-sw" style="background:#ea876b" title="Terracotta" data-tape="#ea876b"></div>
-      <div class="wv-pin-sw" style="background:#B8B959" title="Olive yellow" data-tape="#B8B959"></div>
-      <div class="wv-pin-sw" style="background:#90BBB1" title="Sage" data-tape="#90BBB1"></div>
-      <div class="wv-pin-sw" style="background:#b2c0f9" title="Soft periwinkle" data-tape="#b2c0f9"></div>
-    </div>
-  </div>
-
   <div class="wv-page">
     <div class="wv-paper-ribbon" id="wv-paper-ribbon"></div>
-    <textarea class="wv-title" id="wv-title" rows="1" placeholder="Untitled page…"></textarea>
-    <div class="wv-lines" id="wv-lines" contenteditable="true" data-ph="Start writing. The lines will hold you."></div>
+    <input class="wv-title" id="wv-title" placeholder="Untitled page" />
+    <div class="wv-lines" id="wv-lines"></div>
     <div class="wv-foot">
-      <span id="wv-foot-left">Draft</span>
-      <span id="wv-foot-right">—</span>
+      <span id="wv-word-count">0 words</span>
+      <button class="wv-btn star" id="btn-star">
+        <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 10.26 24 10.35 17.77 16.01 20.16 24.27 12 18.46 3.84 24.27 6.23 16.01 0 10.35 8.91 10.26 12 2"/></svg>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- Toast + confirm modal + Dropbox setup modal -->
-<div class="toast" id="toast">Saved</div>
-<div class="modal hidden" id="confirm-modal">
-  <div class="modal-card">
-    <h3 id="confirm-title">Delete this page?</h3>
-    <p id="confirm-body">This removes the page from your Notebook. This can't be undone.</p>
-    <div class="modal-actions">
-      <button class="wv-btn ghost" id="confirm-cancel">Cancel</button>
-      <button class="wv-btn primary" id="confirm-ok" style="background:#d94545">Delete</button>
-    </div>
-  </div>
+<div class="modal hidden" id="modal">
+  <div class="modal-card" id="modal-card"></div>
 </div>
 
-<div class="modal hidden" id="dbx-modal">
-  <div class="modal-card">
-    <h3>Connect Dropbox</h3>
-    <p class="nobreak">Sync your Notebook across devices through your Dropbox account. Your pages will live in a <strong>/The Notebook/</strong> folder. You can move it anywhere — it'll still find them.</p>
-    <div id="dbx-connected-panel" class="hidden">
-      <p style="margin-top:4px;margin-bottom:12px;font-size:13px"><strong>Connected as</strong> <span id="dbx-acct" style="color:var(--pink-main)">—</span></p>
-      <div class="modal-actions">
-        <button class="wv-btn ghost" id="dbx-pull">Pull from Dropbox</button>
-        <button class="wv-btn ghost danger" id="dbx-disconnect">Disconnect</button>
-        <button class="wv-btn primary" id="dbx-close">Done</button>
-      </div>
-    </div>
-    <div id="dbx-disconnected-panel">
-      <div class="modal-actions">
-        <button class="wv-btn ghost" id="dbx-cancel">Cancel</button>
-        <button class="wv-btn primary" id="dbx-connect">Connect Dropbox</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
-<div class="modal hidden" id="cat-modal">
-  <div class="modal-card">
-    <h3>Categories</h3>
-    <p>Add or remove the tags you use to organize your pages.</p>
-    <div id="cat-list"></div>
-    <div class="cat-add-row">
-      <input type="text" id="cat-new-input" placeholder="New category name..." maxlength="30">
-      <button class="wv-btn primary" id="cat-add-btn">Add</button>
-    </div>
-    <div class="modal-actions">
-      <button class="wv-btn primary" id="cat-done">Done</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal hidden" id="about-modal">
-  <div class="modal-card">
-    <h3>The Notebook v2.42</h3>
-    <p class="nobreak">Built for April Korto Quioh</p>
-    <div class="modal-actions">
-      <button class="wv-btn primary" id="about-close">Done</button>
-    </div>
-  </div>
-</div>
+<button class="fab-new" id="btn-fab-new" title="Create new page">
+  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
 
 <script>
-/* ──────────────────────────────────────────────────────────────
-   THE NOTEBOOK — working app
-   Storage: localStorage key "akq_notebook_v2"
-   ────────────────────────────────────────────────────────────── */
+const $ = (id) => document.getElementById(id);
+const STATE = {
+  notes: [],
+  settings: {search: '', filter: 'all', view: 'board'},
+  currentNote: null
+};
 
-const STORAGE_KEY = 'akq_notebook_v2';
-const DEFAULT_PAPER = '#f6d0f6';
-const DEFAULT_TAPE  = '#E668A7';
-const DEFAULT_CATEGORIES = ['Journal','Script','Essay','Idea','Draft','Letter'];
-
-/* Darken a hex color by a fraction (0-1) for pin needle/shadow */
-function darkenColor(hex, amount){
-  hex = hex.replace('#','');
-  if(hex.length===3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-  const r = Math.max(0, Math.round(parseInt(hex.slice(0,2),16)*(1-amount)));
-  const g = Math.max(0, Math.round(parseInt(hex.slice(2,4),16)*(1-amount)));
-  const b = Math.max(0, Math.round(parseInt(hex.slice(4,6),16)*(1-amount)));
-  return `rgb(${r},${g},${b})`;
-}
-
-/* ═══════════════ DROPBOX API MODULE ═══════════════════════════
-   OAuth PKCE flow. No client secret needed — safe for a static
-   browser app. App key is public info. Tokens are stored in
-   localStorage.
-
-   Files: a single file at /The Notebook/notebook.json holding the
-   full state. Lookups use Dropbox file IDs so moves and renames
-   don't break anything.
-   ────────────────────────────────────────────────────────────── */
-const DBX = (() => {
-  // ⚠️ REPLACE this with your Dropbox App Key after registering
-  //    at https://www.dropbox.com/developers/apps  (see DEPLOY doc).
-  const APP_KEY = 'tcsdxfbdfianv6i';
-
-  const KEY_TOKENS = 'akq_notebook_dbx_tokens';
-  const KEY_PKCE   = 'akq_notebook_dbx_pkce';
-  const KEY_NBID   = 'akq_notebook_dbx_nbid'; // notebook.json file id
-
-  let state = {
-    accessToken: null,
-    refreshToken: null,
-    expiresAt: 0,
-    account: null,
-    notebookFileId: null
-  };
-
-  // ── PKCE helpers ──
-  function b64url(buf){
-    return btoa(String.fromCharCode(...new Uint8Array(buf)))
-      .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  }
-  async function sha256(str){
-    const data = new TextEncoder().encode(str);
-    return b64url(await crypto.subtle.digest('SHA-256', data));
-  }
-  function randVerifier(len=64){
-    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-    let s='';
-    const arr=new Uint8Array(len);
-    crypto.getRandomValues(arr);
-    for(let i=0;i<len;i++) s+=chars[arr[i]%chars.length];
-    return s;
-  }
-
-  function getRedirectUri(){
-    // Use the current origin + path (without query/hash)
-    const u = new URL(location.href);
-    u.search=''; u.hash='';
-    return u.href;
-  }
-
-  function loadFromStorage(){
-    try{
-      const raw = localStorage.getItem(KEY_TOKENS);
-      if(raw){
-        const t = JSON.parse(raw);
-        state.accessToken = t.accessToken || null;
-        state.refreshToken = t.refreshToken || null;
-        state.expiresAt = t.expiresAt || 0;
-        state.account = t.account || null;
-      }
-      state.notebookFileId = localStorage.getItem(KEY_NBID) || null;
-    }catch(e){ console.warn('DBX load failed:',e); }
-  }
-  function saveTokens(){
-    localStorage.setItem(KEY_TOKENS, JSON.stringify({
-      accessToken:state.accessToken,
-      refreshToken:state.refreshToken,
-      expiresAt:state.expiresAt,
-      account:state.account
-    }));
-    if(state.notebookFileId) localStorage.setItem(KEY_NBID, state.notebookFileId);
-  }
-  function clearTokens(){
-    localStorage.removeItem(KEY_TOKENS);
-    localStorage.removeItem(KEY_NBID);
-    state = {accessToken:null,refreshToken:null,expiresAt:0,account:null,notebookFileId:null};
-  }
-
-  function isConfigured(){
-    return APP_KEY && APP_KEY !== '__DROPBOX_APP_KEY__';
-  }
-  function isConnected(){
-    return !!state.refreshToken;
-  }
-  function account(){ return state.account; }
-
-  // ── OAuth flow ──
-  async function startOAuth(){
-    if(!isConfigured()){
-      alert(
-        "Dropbox isn't set up yet.\n\n"+
-        "You need to:\n"+
-        "1. Register an app at https://www.dropbox.com/developers/apps\n"+
-        "2. Paste its App Key into THE_NOTEBOOK.html (search for __DROPBOX_APP_KEY__)\n\n"+
-        "See the deployment walkthrough for step-by-step instructions."
-      );
-      return;
-    }
-    const verifier  = randVerifier();
-    const challenge = await sha256(verifier);
-    sessionStorage.setItem(KEY_PKCE, verifier);
-
-    const params = new URLSearchParams({
-      response_type:'code',
-      client_id:APP_KEY,
-      code_challenge:challenge,
-      code_challenge_method:'S256',
-      redirect_uri:getRedirectUri(),
-      token_access_type:'offline' // gives us a refresh_token too
-    });
-    location.href = `https://www.dropbox.com/oauth2/authorize?${params.toString()}`;
-  }
-
-  async function handleCallback(){
-    const url = new URL(location.href);
-    const code = url.searchParams.get('code');
-    const error = url.searchParams.get('error');
-    if(error){
-      url.searchParams.delete('error');
-      url.searchParams.delete('error_description');
-      history.replaceState(null,'',url.href);
-      alert('Dropbox connection cancelled: ' + error);
-      return false;
-    }
-    if(!code) return false;
-
-    const verifier = sessionStorage.getItem(KEY_PKCE);
-    sessionStorage.removeItem(KEY_PKCE);
-    if(!verifier){
-      console.warn('No PKCE verifier in session. Ignoring code.');
-      url.searchParams.delete('code'); url.searchParams.delete('state');
-      history.replaceState(null,'',url.href);
-      return false;
-    }
-    // clean URL right away
-    url.searchParams.delete('code');
-    url.searchParams.delete('state');
-    history.replaceState(null,'',url.href);
-
-    const body = new URLSearchParams({
-      code,
-      grant_type:'authorization_code',
-      client_id:APP_KEY,
-      redirect_uri:getRedirectUri(),
-      code_verifier:verifier
-    });
-    const r = await fetch('https://api.dropbox.com/oauth2/token',{
-      method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body
-    });
-    if(!r.ok){
-      const txt = await r.text();
-      console.error('DBX token exchange failed',txt);
-      alert('Could not finish Dropbox connection. Try again.');
-      return false;
-    }
-    const t = await r.json();
-    state.accessToken  = t.access_token;
-    state.refreshToken = t.refresh_token;
-    state.expiresAt    = Date.now() + (t.expires_in||14400)*1000;
-    try{
-      const acct = await apiCall('/users/get_current_account', null);
-      state.account = { name: acct.name?.display_name || '—', email: acct.email || '' };
-    }catch(e){ state.account = null; }
-    saveTokens();
-    return true;
-  }
-
-  async function refreshIfNeeded(){
-    if(!state.refreshToken) throw new Error('Not connected');
-    if(state.accessToken && Date.now() < state.expiresAt - 30000) return;
-    const body = new URLSearchParams({
-      grant_type:'refresh_token',
-      refresh_token:state.refreshToken,
-      client_id:APP_KEY
-    });
-    const r = await fetch('https://api.dropbox.com/oauth2/token',{
-      method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body
-    });
-    if(!r.ok){
-      // refresh failed — force re-connect
-      clearTokens();
-      throw new Error('Dropbox session expired — please reconnect');
-    }
-    const t = await r.json();
-    state.accessToken = t.access_token;
-    state.expiresAt   = Date.now() + (t.expires_in||14400)*1000;
-    saveTokens();
-  }
-
-  // ── API calls ──
-  async function apiCall(endpoint, argsObj){
-    await refreshIfNeeded();
-    const headers = {
-      'Authorization':'Bearer ' + state.accessToken,
-      'Content-Type':'application/json'
-    };
-    const r = await fetch('https://api.dropboxapi.com/2'+endpoint,{
-      method:'POST',
-      headers,
-      body: argsObj ? JSON.stringify(argsObj) : 'null'
-    });
-    if(!r.ok){
-      const txt = await r.text();
-      throw new Error(`DBX ${endpoint} ${r.status}: ${txt}`);
-    }
-    return r.json();
-  }
-
-  // Upload to an explicit path (creates or overwrites)
-  async function uploadPath(path, content){
-    await refreshIfNeeded();
-    const arg = {
-      path,
-      mode: {'.tag':'overwrite'},
-      autorename:false,
-      mute:true,
-      strict_conflict:false
-    };
-    const r = await fetch('https://content.dropboxapi.com/2/files/upload',{
-      method:'POST',
-      headers:{
-        'Authorization':'Bearer ' + state.accessToken,
-        'Dropbox-API-Arg': JSON.stringify(arg),
-        'Content-Type':'application/octet-stream'
-      },
-      body: typeof content==='string' ? new Blob([content]) : content
-    });
-    if(!r.ok){
-      const txt = await r.text();
-      throw new Error(`DBX upload ${path} ${r.status}: ${txt}`);
-    }
-    return r.json(); // { id, path_display, content_hash, ... }
-  }
-
-  // Resolve an id to its current path, so we can overwrite it even
-  // if the user moved the folder.
-  async function getPathById(id){
-    try{
-      const meta = await apiCall('/files/get_metadata', { path: id });
-      return meta.path_display || null;
-    }catch(e){
-      return null;
-    }
-  }
-
-  // Smart upload: if we have a saved id, write to that current path;
-  // otherwise write to the given fallback path. Update the id map.
-  async function uploadSmart(idCell, fallbackPath, content){
-    let path = fallbackPath;
-    if(idCell.id){
-      const cur = await getPathById(idCell.id);
-      if(cur) path = cur;
-    }
-    const res = await uploadPath(path, content);
-    idCell.id = res.id;
-    idCell.path = res.path_display;
-    return res;
-  }
-
-  async function downloadPath(path){
-    await refreshIfNeeded();
-    const r = await fetch('https://content.dropboxapi.com/2/files/download',{
-      method:'POST',
-      headers:{
-        'Authorization':'Bearer ' + state.accessToken,
-        'Dropbox-API-Arg': JSON.stringify({path})
-      }
-    });
-    if(r.status===409){
-      try{
-        const errBody = await r.json();
-        const tag = errBody?.error?.['.tag'] || errBody?.error_summary || '';
-        if(tag.includes('not_found')) return null;
-        console.warn('DBX downloadPath 409:', JSON.stringify(errBody));
-        throw new Error('DBX download 409: ' + (errBody?.error_summary || 'unknown'));
-      }catch(parseErr){
-        if(parseErr.message?.startsWith('DBX download 409')) throw parseErr;
-        console.warn('DBX downloadPath 409 (unparseable):', parseErr);
-        return null;
-      }
-    }
-    if(!r.ok){
-      const txt = await r.text();
-      throw new Error(`DBX download ${path} ${r.status}: ${txt}`);
-    }
-    return r.text();
-  }
-
-  async function downloadById(id){
-    const p = await getPathById(id);
-    if(!p){
-      // Stale file ID — clear it so we don't keep trying a dead reference
-      state.notebookFileId = null;
-      localStorage.removeItem(KEY_NBID);
-      return null;
-    }
-    return downloadPath(p);
-  }
-
-  async function disconnect(){
-    try{ await apiCall('/auth/token/revoke', null); }catch(e){}
-    clearTokens();
-  }
-
-  return {
-    load: loadFromStorage,
-    isConfigured, isConnected, account,
-    startOAuth, handleCallback, refreshIfNeeded, disconnect,
-    uploadPath, uploadSmart, downloadPath, downloadById, getPathById,
-    // expose for notebook-level storage
-    getNotebookId: ()=>state.notebookFileId,
-    setNotebookId: (id)=>{ state.notebookFileId = id; localStorage.setItem(KEY_NBID, id); }
-  };
-})();
-
-/* ═══════════════ NOTEBOOK STATE ═══════════════════════════════ */
-function emptyState(){
-  return {
-    version: 2,
-    entries: [],
-    settings: {
-      defaultPaper: DEFAULT_PAPER,
-      defaultTape:  DEFAULT_TAPE,
-      filter: 'all',
-      search: '',
-      view: 'board',
-      categories: DEFAULT_CATEGORIES.slice()
-    },
-    lastModified: 0  // Zero so any Dropbox data always wins over a fresh empty state
-  };
-}
-
+// ── LOAD / SAVE STATE ──
 function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return seedIfFirstRun(emptyState());
-    const parsed = JSON.parse(raw);
-    if(!parsed.entries) return seedIfFirstRun(emptyState());
-    parsed.settings = Object.assign({
-      defaultPaper: DEFAULT_PAPER,
-      defaultTape:  DEFAULT_TAPE,
-      filter:'all',search:'',view:'board',
-      categories: DEFAULT_CATEGORIES.slice()
-    }, parsed.settings || {});
-    parsed.lastModified = parsed.lastModified ?? Date.now();
-    // Migrate v2 checklist arrays into body text (one-time)
-    parsed.entries.forEach(e => {
-      if(e.checklist && e.checklist.length){
-        const clText = e.checklist.map(it => (it.done ? '[x] ' : '[ ] ') + (it.text||'')).join('\n');
-        e.body = (e.body || '') + (e.body ? '\n' : '') + clText;
-        delete e.checklist;
-      }
+  const saved = localStorage.getItem('notebook-state');
+  if(saved){
+    const parsed = JSON.parse(saved);
+    STATE.notes = parsed.notes || [];
+    STATE.settings = parsed.settings || STATE.settings;
+  }
+  console.log('Loaded', STATE.notes.length, 'notes');
+}
+
+function saveState(){
+  localStorage.setItem('notebook-state', JSON.stringify(STATE));
+}
+
+function loadNote(id){
+  return STATE.notes.find(n => n.id === id);
+}
+
+function saveNote(id, title, content, category, starred){
+  const note = loadNote(id);
+  if(note){
+    note.title = title;
+    note.content = content;
+    note.category = category;
+    note.starred = starred;
+    note.updated = new Date().toISOString();
+  } else {
+    STATE.notes.unshift({
+      id, title, content, category, starred,
+      created: new Date().toISOString(),
+      updated: new Date().toISOString()
     });
-    return parsed;
-  }catch(e){
-    console.error('Failed to parse state:',e);
-    return emptyState();
   }
+  saveState();
 }
 
-function seedIfFirstRun(state){
-  if(!localStorage.getItem(STORAGE_KEY+'_seeded')){
-    const now = Date.now();
-    state.entries = [{
-      id: crypto.randomUUID(),
-      title: 'A note from The Notebook',
-      tag: 'Journal',
-      body:
-        "Welcome. This is the Notebook — a quiet place for morning pages, scripts, essays, and ideas.\n\n" +
-        "Click a card to open it full-screen. The lined page holds your words.\n\n" +
-        "Star anything you want to come back to. Export any entry as .txt or PDF.\n\n" +
-        "Connect Dropbox (top right) and every page syncs across your devices — desktop, iPhone, anywhere.",
-      paper: '#f6d0f6',
-      tape:  '#E668A7',
-      starred: true,
-      pinnedToday: false,
-      createdAt: now,
-      updatedAt: now,
-      wordCount: 0,
-      dbxTextId: null   // Dropbox file id for the .txt backup
-    }];
-    state.entries[0].wordCount = countWords(state.entries[0].body);
-    localStorage.setItem(STORAGE_KEY+'_seeded','1');
-  }
-  return state;
+function deleteNote(id){
+  STATE.notes = STATE.notes.filter(n => n.id !== id);
+  saveState();
 }
 
-function saveState(state){
-  state.lastModified = Date.now();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  scheduleDropboxPush();
-}
-/* Save to localStorage only — no Dropbox push.
-   Use for local-only UI state (search, filter, view toggle). */
-function saveStateLocal(state){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+// ── UI HELPERS ──
+function $(id) { return document.getElementById(id); }
+
+function show(el){ el.classList.remove('hidden'); }
+function hide(el){ el.classList.add('hidden'); }
+function cleanText(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent.substring(0, 100);
 }
 
-function countWords(s){
-  if(!s) return 0;
-  const clean = s.replace(/^\[([ x])\] /gim, '');
-  return clean.trim().split(/\s+/).filter(Boolean).length;
-}
-function fmtDate(ts){
-  const d = new Date(ts);
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${months[d.getMonth()]} ${d.getDate()}`;
-}
-function fmtDateLong(ts){
-  const d = new Date(ts);
-  return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
-}
-function isSameDay(a,b){
-  const da=new Date(a),db=new Date(b);
-  return da.getFullYear()===db.getFullYear()&&da.getMonth()===db.getMonth()&&da.getDate()===db.getDate();
-}
-function safeFilename(s){
-  return (s||'untitled').replace(/[^\w\- ]+/g,'').replace(/\s+/g,'-').slice(0,60) || 'untitled';
-}
-function txtOf(e){
-  const header = `${e.title}\n${'='.repeat(Math.max(1,e.title.length))}\n${e.tag} · ${fmtDateLong(e.updatedAt)} · ${e.wordCount} W${e.starred?' · starred':''}\n\n`;
-  return header + (e.body||'');
-}
-
-/* ─── State + rendering ─── */
-let STATE = loadState();
-// One-time cleanup: strip {html} markers from corrupted entries
-let didClean = false;
-STATE.entries.forEach(e => {
-  if(e.body && e.body.includes('{html}')){
-    e.body = e.body.replace(/\{html\}/g, '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '');
-    didClean = true;
-  }
-});
-if(didClean){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
-  setTimeout(()=>{ if(typeof scheduleDropboxPush === 'function') scheduleDropboxPush(); }, 3000);
-}
-let CURRENT_ID = null;
-let DIRTY = false;
-let AUTOSAVE_TIMER = null;
-let CURRENT_PAPER = null;
-let CURRENT_TAPE  = null;
-
-const $ = (id)=>document.getElementById(id);
-
+// ── RENDER BOARD ──
 function renderBoard(){
   const grid = $('grid');
-  const listWrap = $('list-wrap');
-  const listRows = $('list-rows');
   grid.innerHTML = '';
-  listRows.innerHTML = '';
-
-  const filter = STATE.settings.filter;
-  const q = (STATE.settings.search||'').trim().toLowerCase();
-
-  const filtered = STATE.entries.filter(e=>{
-    if(filter === 'all') { /* keep */ }
-    else if(filter === 'Starred') { if(!e.starred) return false; }
-    else { if(e.tag !== filter) return false; }
-    if(q){
-      const hay = (e.title+' '+e.body+' '+e.tag).toLowerCase();
-      if(!hay.includes(q)) return false;
-    }
-    return true;
-  }).sort((a,b)=>{
-    return b.updatedAt - a.updatedAt;
-  });
-
-  const counts = { all: STATE.entries.length, Starred: 0 };
-  (STATE.settings.categories||DEFAULT_CATEGORIES).forEach(c=>counts[c]=0);
-  STATE.entries.forEach(e=>{
-    if(counts[e.tag]!==undefined) counts[e.tag]++;
-    if(e.starred) counts.Starred++;
-  });
-  document.querySelectorAll('[data-count]').forEach(el=>{
-    const k = el.getAttribute('data-count');
-    el.textContent = counts[k] ?? 0;
-  });
-
-  // ── BOARD ──
-  if(filtered.length===0){
-    const msg = document.createElement('div');
-    msg.className='empty-state';
-    if(q) msg.innerHTML = `Nothing matches <em>"${escapeHtml(q)}"</em>.`;
-    else if(filter!=='all') msg.innerHTML = `No pages under <em>${filter}</em> yet.`;
-    else msg.innerHTML = `A blank board. <em>Start a page.</em>`;
-    grid.appendChild(msg);
-  } else {
-    filtered.forEach(e=>grid.appendChild(buildCard(e)));
+  
+  let notes = STATE.notes;
+  const {search, filter} = STATE.settings;
+  
+  // Filter
+  if(filter !== 'all'){
+    if(filter === 'Starred') notes = notes.filter(n => n.starred);
+    else notes = notes.filter(n => n.category === filter);
   }
-  const nsWrap = document.createElement('div');
-  nsWrap.className = 'new-sticker';
-  nsWrap.id = 'new-sticker';
-  nsWrap.innerHTML = `
-    <div class="circle">
-      <svg class="icon icon-xl" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-    <div class="ns-a">blank page</div>
-    <div class="ns-b">Start <em>something new</em></div>
-    <div class="ns-c"><kbd>⌘N</kbd></div>`;
-  nsWrap.addEventListener('click',()=>openWriting(null));
-  grid.appendChild(nsWrap);
-
-  // ── LIST VIEW ──
-  if(filtered.length===0){
-    const msg = document.createElement('div');
-    msg.className='empty-state';
-    msg.style.gridColumn='1 / -1';
-    if(q) msg.innerHTML = `Nothing matches <em>"${escapeHtml(q)}"</em>.`;
-    else if(filter!=='all') msg.innerHTML = `No pages under <em>${filter}</em> yet.`;
-    else msg.innerHTML = `A blank page awaits. <em>Start one.</em>`;
-    listRows.appendChild(msg);
-  } else {
-    filtered.forEach(e=>listRows.appendChild(buildListRow(e)));
+  
+  // Search
+  if(search) notes = notes.filter(n => n.title.toLowerCase().includes(search) || cleanText(n.content).toLowerCase().includes(search));
+  
+  if(notes.length === 0){
+    grid.innerHTML = '<div class="empty-state">No notes found. <em>Start one now!</em></div>';
+    return;
   }
-  paintViewToggle();
-}
-
-function buildListRow(e){
-  const row = document.createElement('div');
-  row.className = 'list-row';
-  const sub = (e.body||'').replace(/\s+/g,' ').slice(0,120);
-  const paperBg = e.paper || '#FFFFFF';
-  row.innerHTML = `
-    <span class="list-paper-dot" style="background:${paperBg}"></span>
-    <span class="list-title">
-      ${highlightTitle(e.title || 'Untitled page')}
-      <span class="sub">${escapeHtml(sub)}</span>
-    </span>
-    <span class="list-tag">${escapeHtml(e.tag||'')}</span>
-    <span class="list-date">${fmtDateLong(e.updatedAt)}</span>
-    <span class="list-wc">${e.starred?'<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>':''}</span>
-  `;
-  row.addEventListener('click',()=>openWriting(e.id));
-  return row;
-}
-
-function paintViewToggle(){
-  const view = STATE.settings.view || 'board';
-  document.querySelectorAll('#view-toggle button').forEach(b=>{
-    b.classList.toggle('on', b.getAttribute('data-view')===view);
-  });
-  $('grid').classList.toggle('hidden', view!=='board');
-  $('list-wrap').classList.toggle('hidden', view!=='list');
-}
-
-document.querySelectorAll('#view-toggle button').forEach(b=>{
-  b.addEventListener('click',()=>{
-    STATE.settings.view = b.getAttribute('data-view');
-    saveStateLocal(STATE);
-    paintViewToggle();
-  });
-});
-$('list-new-btn').addEventListener('click',()=>openWriting(null));
-
-function buildCard(e){
-  const card = document.createElement('div');
-  card.className = 'note';
-  card.style.background = e.paper || DEFAULT_PAPER;
-  const today = isSameDay(e.updatedAt, Date.now());
-  card.innerHTML = `
-    <div class="tag">${escapeHtml(e.tag)}${today?' · Today':''}</div>
-    <div class="n-title">${highlightTitle(e.title || 'Untitled page')}</div>
-    <div class="n-excerpt">${formatExcerpt(e.body)}</div>
-    <div class="n-foot">
-      <span>${fmtDate(e.updatedAt)}</span>
-      ${e.starred?'<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>':''}
-    </div>
-  `;
-  // Push pin SVG — color from entry.tape
-  const pinColor = e.tape || DEFAULT_TAPE;
-  const darkerPin = darkenColor(pinColor, 0.25);
-  const pin = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  pin.setAttribute('class','note-pin');
-  pin.setAttribute('viewBox','0 0 20 24');
-  pin.innerHTML = `<circle cx="10" cy="10" r="7" fill="${pinColor}" stroke="${darkerPin}" stroke-width="1"/><circle cx="8" cy="8" r="2.5" fill="rgba(255,255,255,0.35)"/><line x1="10" y1="17" x2="10" y2="23" stroke="${darkerPin}" stroke-width="1.8" stroke-linecap="round"/>`;
-  card.appendChild(pin);
-  card.addEventListener('click',()=>openWriting(e.id));
-  return card;
-}
-
-function formatExcerpt(s){
-  const raw = (s||'');
-  const lines = raw.slice(0,400).split('\n');
-  let out = '';
-  let clCount = 0;
-  for(let i=0; i<lines.length && out.length<260; i++){
-    const clMatch = lines[i].match(/^\[([ x])\] (.*)$/i);
-    if(clMatch){
-      clCount++;
-      if(clCount > 4) continue;
-      const checked = clMatch[1].toLowerCase() === 'x';
-      const box = checked
-        ? '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><rect x="1" y="1" width="14" height="14" rx="2" fill="var(--pink-main)" stroke="none"/><polyline points="4 8 7 11 12 5" fill="none" stroke="white" stroke-width="1.5"/></svg>'
-        : '<svg viewBox="0 0 16 16" width="12" height="12" style="vertical-align:-2px;margin-right:4px"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="var(--pink-main)" stroke-width="1.5"/></svg>';
-      const style = checked ? 'color:var(--pink-main);opacity:0.7;text-decoration:line-through' : '';
-      out += `<span style="display:block;font-size:12px;line-height:1.6;${style}">${box}${escapeHtml(clMatch[2])}</span>`;
-    } else {
-      out += escapeHtml(lines[i]);
-    }
-  }
-  if(clCount > 4) out += `<span style="font-size:11px;opacity:0.4">+${clCount - 4} more</span>`;
-  return out;
-}
-function escapeHtml(s){
-  return (s||'').replace(/[&<>"']/g,ch=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[ch]));
-}
-function highlightTitle(t){
-  return escapeHtml(t).replace(/\*([^*]+)\*/g,'<em>$1</em>');
-}
-
-/* ─── Filter chips (event delegation — works with dynamic category chips) ─── */
-document.querySelector('.c-filters').addEventListener('click',(e)=>{
-  const chip = e.target.closest('[data-chip]');
-  if(!chip) return;
-  document.querySelectorAll('[data-chip]').forEach(c=>c.classList.remove('on'));
-  chip.classList.add('on');
-  STATE.settings.filter = chip.getAttribute('data-chip');
-  saveStateLocal(STATE);
-  renderBoard();
-});
-
-/* ─── Category helpers ─── */
-function getCategories(){
-  return STATE.settings.categories || DEFAULT_CATEGORIES;
-}
-
-function rebuildCategoryUI(){
-  // Dynamic filter chips
-  const container = $('cat-chips');
-  container.innerHTML = '';
-  getCategories().forEach(cat=>{
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.setAttribute('data-chip', cat);
-    chip.innerHTML = `${escapeHtml(cat)} <span class="chip-count" data-count="${escapeHtml(cat)}">0</span>`;
-    container.appendChild(chip);
-  });
-  // Edit button
-  const editChip = document.createElement('button');
-  editChip.className = 'chip chip-edit';
-  editChip.title = 'Edit categories';
-  editChip.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit';
-  editChip.addEventListener('click',(e)=>{ e.stopPropagation(); openCatModal(); });
-  container.prepend(editChip);  // prepend so it's right after "All", always visible on mobile
-
-  // Dynamic tag <select> in writing view
-  const sel = $('wv-tag');
-  const curVal = sel.value;
-  sel.innerHTML = '';
-  getCategories().forEach(cat=>{
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    sel.appendChild(opt);
-  });
-  if(curVal && getCategories().includes(curVal)) sel.value = curVal;
-
-  // Re-apply active chip
-  document.querySelectorAll('[data-chip]').forEach(c=>{
-    c.classList.toggle('on', c.getAttribute('data-chip')===STATE.settings.filter);
-  });
-}
-
-/* ─── Category management modal ─── */
-function openCatModal(){
-  const modal = $('cat-modal');
-  paintCatList();
-  $('cat-new-input').value = '';
-  modal.classList.remove('hidden');
-}
-function closeCatModal(){
-  $('cat-modal').classList.add('hidden');
-}
-
-function paintCatList(){
-  const list = $('cat-list');
-  list.innerHTML = '';
-  const cats = getCategories();
-  cats.forEach((cat,i)=>{
-    const count = STATE.entries.filter(e=>e.tag===cat).length;
-    const item = document.createElement('div');
-    item.className = 'cat-item';
-    item.innerHTML = `
-      <span class="cat-name" data-cat-idx="${i}" title="Tap to rename">${escapeHtml(cat)}</span>
-      <span class="cat-count">${count} page${count!==1?'s':''}</span>
-      <button class="cat-del-btn" title="Remove ${escapeHtml(cat)}" data-cat-idx="${i}">
-        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+  
+  notes.forEach(note => {
+    const noteEl = document.createElement('div');
+    noteEl.className = 'note';
+    const color = note.color || '#f6d0f6';
+    noteEl.style.background = color;
+    noteEl.innerHTML = `
+      <div class="note-pin"><svg viewBox="0 0 24 24" style="width:100%;height:100%;fill:${note.pinColor||'#DA005F'}" preserveAspectRatio="none"><path d="M12,2C6.5,2 2,6.5 2,12S6.5,22 12,22S22,17.5 22,12S17.5,2 12,2Z"/></svg></div>
+      <div class="tag">${note.category || 'General'}</div>
+      <div class="n-title">${note.title || 'Untitled'}</div>
+      <div class="n-excerpt">${cleanText(note.content)}</div>
+      <div class="n-foot">
+        <span>${note.updated ? new Date(note.updated).toLocaleDateString() : ''}</span>
+        ${note.starred ? '<span class="star">★</span>' : ''}
+      </div>
+      ${note.updated && isToday(note.updated) ? '<div class="sticker today">Today</div>' : ''}
+      ${note.starred ? '<div class="sticker starred">Starred</div>' : ''}
     `;
-    list.appendChild(item);
-  });
-
-  // Wire rename — tap name to edit inline
-  list.querySelectorAll('.cat-name').forEach(nameEl=>{
-    nameEl.addEventListener('click',()=>{
-      const idx = parseInt(nameEl.getAttribute('data-cat-idx'));
-      const oldName = getCategories()[idx];
-      // Replace span with input
-      const input = document.createElement('input');
-      input.className = 'cat-rename-input';
-      input.type = 'text';
-      input.value = oldName;
-      input.maxLength = 30;
-      nameEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      const commitRename = ()=>{
-        const newName = input.value.trim();
-        if(!newName || newName === oldName){
-          paintCatList(); return;  // revert
-        }
-        if(newName.toLowerCase()==='all' || newName.toLowerCase()==='starred'){
-          showToast('That name is reserved'); paintCatList(); return;
-        }
-        const cats = getCategories();
-        if(cats.some((c,ci)=>ci!==idx && c.toLowerCase()===newName.toLowerCase())){
-          showToast('Category already exists'); paintCatList(); return;
-        }
-        renameCategory(idx, newName);
-      };
-      input.addEventListener('keydown',(e)=>{
-        if(e.key==='Enter'){ e.preventDefault(); commitRename(); }
-        if(e.key==='Escape'){ paintCatList(); }
-      });
-      input.addEventListener('blur', commitRename);
-    });
-  });
-
-  // Wire delete buttons
-  list.querySelectorAll('.cat-del-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const idx = parseInt(btn.getAttribute('data-cat-idx'));
-      const cats = getCategories();
-      if(cats.length<=1){ showToast('Need at least one category'); return; }
-      const removed = cats[idx];
-      const count = STATE.entries.filter(e=>e.tag===removed).length;
-      if(count>0){
-        openConfirm(
-          `Remove "${removed}"?`,
-          `${count} page${count!==1?'s':''} tagged "${removed}" will keep their content but show as uncategorized until you re-tag them.`,
-          ()=>{
-            doRemoveCategory(idx);
-            openCatModal(); // re-open to show updated list
-          }
-        );
-      } else {
-        doRemoveCategory(idx);
-        paintCatList();
-      }
-    });
+    noteEl.addEventListener('click', () => editNote(note.id));
+    grid.appendChild(noteEl);
   });
 }
 
-function doRemoveCategory(idx){
-  const cats = getCategories();
-  const removed = cats.splice(idx,1)[0];
-  STATE.settings.categories = cats;
-  // If current filter was the deleted category, reset to all
-  if(STATE.settings.filter===removed) STATE.settings.filter = 'all';
-  saveState(STATE);
-  rebuildCategoryUI();
-  renderBoard();
+function isToday(dateStr){
+  const date = new Date(dateStr);
+  const today = new Date();
+  return date.toDateString() === today.toDateString();
 }
 
-function renameCategory(idx, newName){
-  const cats = getCategories();
-  const oldName = cats[idx];
-  cats[idx] = newName;
-  STATE.settings.categories = cats;
-  // Update all entries tagged with the old name
-  STATE.entries.forEach(e=>{ if(e.tag===oldName) e.tag = newName; });
-  // Update filter if it was the old name
-  if(STATE.settings.filter===oldName) STATE.settings.filter = newName;
-  saveState(STATE);
-  rebuildCategoryUI();
-  renderBoard();
-  paintCatList();
-  showToast(`Renamed to "${newName}"`);
+// ── OPEN EDITOR ──
+function editNote(id){
+  STATE.currentNote = loadNote(id);
+  const note = STATE.currentNote;
+  
+  $('wv-title').value = note.title;
+  $('wv-lines').innerHTML = note.content || '';
+  $('btn-star').classList.toggle('on', note.starred);
+  
+  show($('writing-view'));
+  $('wv-lines').focus();
+  updateWordCount();
 }
 
-function addCategory(name){
-  const clean = name.trim();
-  if(!clean){ showToast('Enter a category name'); return; }
-  if(clean.length>30){ showToast('Category name too long'); return; }
-  const cats = getCategories();
-  if(cats.some(c=>c.toLowerCase()===clean.toLowerCase())){
-    showToast('Category already exists'); return;
-  }
-  if(clean.toLowerCase()==='all' || clean.toLowerCase()==='starred'){
-    showToast('That name is reserved'); return;
-  }
-  cats.push(clean);
-  STATE.settings.categories = cats;
-  saveState(STATE);
-  rebuildCategoryUI();
-  renderBoard();
-  showToast(`Added "${clean}"`);
+function createNote(){
+  const id = Date.now().toString();
+  STATE.currentNote = { id, title: '', content: '', category: 'General', starred: false };
+  STATE.notes.unshift(STATE.currentNote);
+  editNote(id);
 }
 
-$('cat-done').addEventListener('click', closeCatModal);
-$('cat-modal').addEventListener('click',(e)=>{if(e.target===$('cat-modal'))closeCatModal()});
-$('cat-add-btn').addEventListener('click',()=>{
-  addCategory($('cat-new-input').value);
-  $('cat-new-input').value = '';
-  paintCatList();
-});
-$('cat-new-input').addEventListener('keydown',(e)=>{
-  if(e.key==='Enter'){
+// ── SAVE EDITOR ──
+function saveEditor(){
+  if(!STATE.currentNote) return;
+  
+  const title = $('wv-title').value || 'Untitled';
+  const content = $('wv-lines').innerHTML;
+  const note = STATE.currentNote;
+  
+  saveNote(note.id, title, content, note.category, note.starred);
+  hide($('writing-view'));
+  renderBoard();
+  renderList();
+  
+  const btn = $('btn-save');
+  btn.textContent = 'Saved!';
+  btn.classList.add('saved');
+  setTimeout(() => {
+    btn.textContent = 'Save';
+    btn.classList.remove('saved');
+  }, 1500);
+}
+
+function closeEditor(){
+  saveEditor();
+}
+
+// ── WORD COUNT ──
+function updateWordCount(){
+  const text = $('wv-lines').textContent;
+  const words = text.trim().split(/\s+/).filter(w => w).length;
+  $('wv-word-count').textContent = words + ' words';
+}
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener('keydown', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.key === 's'){
     e.preventDefault();
-    addCategory($('cat-new-input').value);
-    $('cat-new-input').value = '';
-    paintCatList();
+    if(!$('writing-view').classList.contains('hidden')){
+      saveEditor();
+    }
+  }
+  if((e.ctrlKey || e.metaKey) && e.key === 'n'){
+    e.preventDefault();
+    createNote();
   }
 });
 
-/* ─── Search ─── */
-$('search-input').addEventListener('input',(e)=>{
+// ── EDITOR FORMATTING ──
+$('wv-lines').addEventListener('keydown', (e) => {
+  if((e.ctrlKey || e.metaKey) && !e.shiftKey){
+    if(e.key.toLowerCase() === 'b'){
+      e.preventDefault();
+      document.execCommand('bold');
+    } else if(e.key.toLowerCase() === 'i'){
+      e.preventDefault();
+      document.execCommand('italic');
+    } else if(e.key.toLowerCase() === 'u'){
+      e.preventDefault();
+      document.execCommand('underline');
+    } else if(e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      const url = prompt('Enter URL:');
+      if(url){
+        document.execCommand('createLink', false, url);
+      }
+    }
+  }
+});
+
+// ── LINKS ARE CLICKABLE ──
+$('wv-lines').addEventListener('click', (e) => {
+  if(e.target.tagName === 'A'){
+    e.preventDefault();
+    window.open(e.target.href, '_blank');
+  }
+});
+
+$('wv-lines').addEventListener('input', updateWordCount);
+
+// ── SEARCH ──
+$('search-input').addEventListener('input', (e) => {
   STATE.settings.search = e.target.value;
-  saveStateLocal(STATE);
   renderBoard();
+  renderList();
 });
 
-/* ─── Per-entry paper + pin pickers ─── */
-function paintWvPickers(){
-  document.querySelectorAll('#wv-paper-group .wv-swatch').forEach(sw=>{
-    sw.classList.toggle('picked', sw.getAttribute('data-paper')===CURRENT_PAPER);
-  });
-  document.querySelectorAll('#wv-pin-group .wv-pin-sw').forEach(sw=>{
-    sw.classList.toggle('picked', sw.getAttribute('data-tape')===CURRENT_TAPE);
-  });
-  // Update SVG pin colors in writing view
-  const pinColor = CURRENT_TAPE || DEFAULT_TAPE;
-  const pinDark = darkenColor(pinColor, 0.25);
-  const pinSvg = $('wv-pin-svg');
-  if(pinSvg){
-    pinSvg.querySelector('.pin-head').setAttribute('fill', pinColor);
-    pinSvg.querySelector('.pin-head').setAttribute('stroke', pinDark);
-    pinSvg.querySelector('.pin-needle').setAttribute('stroke', pinDark);
+// ── FILTERS ──
+document.addEventListener('click', (e) => {
+  if(e.target.classList.contains('chip')){
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    e.target.classList.add('on');
+    STATE.settings.filter = e.target.dataset.chip;
+    renderBoard();
+    renderList();
   }
-  $('wv-paper-ribbon').style.background = CURRENT_PAPER || DEFAULT_PAPER;
-}
-
-document.querySelectorAll('#wv-paper-group .wv-swatch').forEach(sw=>{
-  sw.addEventListener('click',()=>{
-    CURRENT_PAPER = sw.getAttribute('data-paper');
-    STATE.settings.defaultPaper = CURRENT_PAPER;
-    saveState(STATE);
-    paintWvPickers();
-    markDirty();
-  });
-});
-document.querySelectorAll('#wv-pin-group .wv-pin-sw').forEach(sw=>{
-  sw.addEventListener('click',()=>{
-    CURRENT_TAPE = sw.getAttribute('data-tape');
-    STATE.settings.defaultTape = CURRENT_TAPE;
-    saveState(STATE);
-    paintWvPickers();
-    markDirty();
-  });
 });
 
-/* ─── Writing view ─── */
-const boardView   = $('board-view');
-const writingView = $('writing-view');
-const wvTitle = $('wv-title');
-const wvLines = $('wv-lines');
+// ── VIEW TOGGLE ──
+document.addEventListener('click', (e) => {
+  if(e.target.closest('.view-toggle button')){
+    const btn = e.target.closest('button');
+    document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    STATE.settings.view = btn.dataset.view;
+    $('grid').classList.toggle('hidden', STATE.settings.view === 'list');
+    $('list-wrap').classList.toggle('hidden', STATE.settings.view !== 'list');
+  }
+});
 
-/* ─── Contenteditable ↔ plain text with checklist markers ─── */
-function serializeBody(){
-  const lines = [];
-  wvLines.childNodes.forEach(node => {
-    if(node.nodeType === 3){
-      const t = node.textContent;
-      if(t.trim()) lines.push(t);
-    } else if(node.nodeType === 1){
-      if(node.classList && node.classList.contains('cl-line')){
-        const done = node.classList.contains('done');
-        const txt = (node.textContent || '').replace(/​/g,'');
-        lines.push((done ? '[x] ' : '[ ] ') + txt);
-      } else {
-        const txt = (node.textContent || '').replace(/\u200B/g, '');
-        lines.push(txt);
-      }
-    }
-  });
-  return lines.join('\n');
-}
+// ── BUTTONS ──
+$('btn-new').addEventListener('click', createNote);
+$('btn-fab-new').addEventListener('click', createNote);
+$('btn-list-new').addEventListener('click', createNote);
+$('btn-close').addEventListener('click', closeEditor);
+$('btn-save').addEventListener('click', saveEditor);
+$('btn-star').addEventListener('click', (e) => {
+  e.preventDefault();
+  if(STATE.currentNote){
+    STATE.currentNote.starred = !STATE.currentNote.starred;
+    $('btn-star').classList.toggle('on');
+    saveState();
+  }
+});
 
-function deserializeBody(text){
-  wvLines.innerHTML = '';
-  if(!text){ return; }
-  const lines = text.split('\n');
-  lines.forEach(line => {
-    const clMatch = line.match(/^\[([ x])\] (.*)$/i);
-    if(clMatch){
-      const done = clMatch[1].toLowerCase() === 'x';
-      const txt = clMatch[2];
-      wvLines.appendChild(makeClLine(txt, done));
-    } else {
-      const div = document.createElement('div');
-      div.textContent = line || '\u200B';
-      wvLines.appendChild(div);
-    }
+// ── RENDER LIST VIEW ──
+function renderList(){
+  const rows = $('list-rows');
+  rows.innerHTML = '';
+  
+  let notes = STATE.notes;
+  const {search, filter} = STATE.settings;
+  
+  if(filter !== 'all'){
+    if(filter === 'Starred') notes = notes.filter(n => n.starred);
+    else notes = notes.filter(n => n.category === filter);
+  }
+  
+  if(search) notes = notes.filter(n => n.title.toLowerCase().includes(search));
+  
+  notes.forEach(note => {
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    row.innerHTML = `
+      <div class="list-paper-dot" style="background:${note.color||'#f6d0f6'}"></div>
+      <div class="list-title">${note.title || 'Untitled'}<span class="sub">${note.category || 'General'}</span></div>
+      <div class="list-tag">${note.category || 'General'}</div>
+      <div class="list-date">${note.updated ? new Date(note.updated).toLocaleDateString() : ''}</div>
+      <div class="list-wc">${note.starred ? '<span class="star">★</span>' : ''}</div>
+    `;
+    row.addEventListener('click', () => editNote(note.id));
+    rows.appendChild(row);
   });
 }
 
-function makeClLine(text, done){
-  const row = document.createElement('div');
-  row.className = 'cl-line' + (done ? ' done' : '');
-  row.textContent = text || '';
-  return row;
-}
-function placeCursor(el, offset){
-  wvLines.focus();
-  if(!el.firstChild) el.appendChild(document.createTextNode(''));
-  const node = el.firstChild;
-  const safeOff = Math.min(offset, node.length || 0);
-  const nr = document.createRange();
-  nr.setStart(node, safeOff); nr.collapse(true);
-  const s = window.getSelection();
-  s.removeAllRanges(); s.addRange(nr);
-}
-const wvTag   = $('wv-tag');
-const wvWc    = $('wv-wc');
-const wvDate  = $('wv-date');
-const wvSaved = $('wv-saved');
-const wvStar  = $('wv-star');
-const wvSave  = $('wv-save');
-const wvDelete= $('wv-delete');
-const wvFootLeft = $('wv-foot-left');
-const wvFootRight= $('wv-foot-right');
-
-function openWriting(id){
-  CURRENT_ID = id;
-  DIRTY = false;
-  let entry;
-  if(id){
-    entry = STATE.entries.find(e=>e.id===id);
-    if(!entry){ CURRENT_ID = null; return; }
-  } else {
-    entry = {
-      id: null, title: '', tag: getCategories()[0], body: '',
-      paper: STATE.settings.defaultPaper, tape: STATE.settings.defaultTape,
-      starred: false, pinnedToday: false,
-      createdAt: Date.now(), updatedAt: Date.now(), wordCount: 0
-    };
-  }
-  wvTitle.value = entry.title || '';
-  deserializeBody(entry.body || '');
-  // If the entry's tag isn't in the current category list (orphaned after
-  // category deletion), add it as a temporary option so the user sees the
-  // real tag and can choose to re-tag or leave it.
-  if(entry.tag && !getCategories().includes(entry.tag)){
-    const opt = document.createElement('option');
-    opt.value = entry.tag;
-    opt.textContent = entry.tag;
-    wvTag.prepend(opt);
-  }
-  wvTag.value = entry.tag || getCategories()[0];
-  wvStar.classList.toggle('on', !!entry.starred);
-  CURRENT_PAPER = entry.paper || STATE.settings.defaultPaper || DEFAULT_PAPER;
-  CURRENT_TAPE  = entry.tape  || STATE.settings.defaultTape  || DEFAULT_TAPE;
-  paintWvPickers();
-  wvDate.textContent = fmtDateLong(entry.createdAt || Date.now());
-  updateWc();
-  wvSaved.textContent = id ? '· saved' : '· new';
-  wvFootLeft.innerHTML = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>' : 'Draft';
-  wvFootRight.textContent = `${fmtDate(entry.updatedAt||Date.now())} · ${entry.wordCount||0} W`;
-  wvSave.classList.add('saved');
-  wvDelete.style.display = id ? '' : 'none';
-
-  boardView.classList.add('hidden');
-  writingView.classList.remove('hidden');
-  window.scrollTo(0,0);
-  setTimeout(()=>{
-    if(!entry.title) wvTitle.focus();
-    else wvLines.focus();
-  },50);
-  autosizeTitle();
-}
-
-function closeWriting(save=true){
-  clearTimeout(AUTOSAVE_TIMER);   // kill pending autosave before nulling CURRENT_ID
-  if(save && DIRTY) persistCurrent(true);
-  writingView.classList.add('hidden');
-  boardView.classList.remove('hidden');
-  CURRENT_ID = null;
-  DIRTY = false;
-  renderBoard();
-}
-
-function updateWc(){
-  wvWc.textContent = countWords(serializeBody()) + ' W';
-}
-
-function markDirty(){
-  DIRTY = true;
-  wvSave.classList.remove('saved');
-  wvSaved.textContent = '· unsaved…';
-  clearTimeout(AUTOSAVE_TIMER);
-  AUTOSAVE_TIMER = setTimeout(()=>persistCurrent(false), 1400);
-}
-
-wvTitle.addEventListener('input',()=>{autosizeTitle();markDirty()});
-wvLines.addEventListener('input',()=>{updateWc();markDirty()});
-wvTag.addEventListener('change',markDirty);
-wvStar.addEventListener('click',()=>{wvStar.classList.toggle('on');markDirty()});
-
-function autosizeTitle(){
-  wvTitle.style.height = 'auto';
-  wvTitle.style.height = wvTitle.scrollHeight + 'px';
-}
-
-function persistCurrent(explicit){
-  const title = wvTitle.value.trim();
-  const body  = serializeBody();
-  if(!title && !body.trim()){
-    if(!CURRENT_ID){
-      wvSaved.textContent = '· empty';
-      wvSave.classList.add('saved');
-      DIRTY = false;
-      return;
-    }
-  }
-  const now = Date.now();
-  let entry;
-  if(CURRENT_ID){
-    entry = STATE.entries.find(e=>e.id===CURRENT_ID);
-    if(!entry){ CURRENT_ID = null; return persistCurrent(explicit); }
-  } else {
-    entry = {
-      id: crypto.randomUUID(),
-      createdAt: now,
-      paper: STATE.settings.defaultPaper,
-      tape:  STATE.settings.defaultTape,
-      dbxTextId: null
-    };
-    STATE.entries.unshift(entry);
-    CURRENT_ID = entry.id;
-  }
-  entry.title = title || 'Untitled page';
-  entry.body  = body;
-  entry.tag   = wvTag.value;
-  entry.starred     = wvStar.classList.contains('on');
-  entry.updatedAt   = now;
-  entry.wordCount   = countWords(body);
-  entry.paper = CURRENT_PAPER || STATE.settings.defaultPaper || DEFAULT_PAPER;
-  entry.tape  = CURRENT_TAPE  || STATE.settings.defaultTape  || DEFAULT_TAPE;
-  saveState(STATE);
-  DIRTY = false;
-  wvSave.classList.add('saved');
-  wvSaved.textContent = explicit ? '· saved' : '· autosaved';
-  wvFootRight.textContent = `${fmtDate(entry.updatedAt)} · ${entry.wordCount} W`;
-  wvFootLeft.innerHTML    = entry.starred ? '<span class="star"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="none"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg></span>' : 'Draft';
-
-  if(explicit) showToast('Saved');
-  // Note: Dropbox push is scheduled by saveState → scheduleDropboxPush
-}
-
-$('wv-back').addEventListener('click',()=>closeWriting(true));
-wvSave.addEventListener('click',()=>persistCurrent(true));
-wvDelete.addEventListener('click',()=>{
-  if(!CURRENT_ID) return;
-  openConfirm('Delete this page?','This removes the page from your Notebook. This can\'t be undone.',()=>{
-    STATE.entries = STATE.entries.filter(e=>e.id!==CURRENT_ID);
-    saveState(STATE);
-    CURRENT_ID = null;
-    DIRTY = false;
-    showToast('Deleted');
-    closeWriting(false);
-  });
-});
-
-/* ─── Export ─── */
-function currentEntryForExport(){
-  if(CURRENT_ID) return STATE.entries.find(e=>e.id===CURRENT_ID);
-  return {
-    title: wvTitle.value.trim() || 'Untitled page',
-    body: serializeBody(),
-    tag: wvTag.value,
-    updatedAt: Date.now(), createdAt: Date.now(),
-    wordCount: countWords(serializeBody()),
-    starred: wvStar.classList.contains('on'),
-    pinnedToday: false
-  };
-}
-$('wv-export-txt').addEventListener('click',()=>{
-  if(DIRTY) persistCurrent(false);
-  const e = currentEntryForExport();
-  const blob = new Blob([txtOf(e)],{type:'text/plain;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${safeFilename(e.title)}_${new Date(e.updatedAt).toISOString().slice(0,10)}.txt`;
-  document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),500);
-  showToast('TXT downloaded');
-});
-$('wv-export-pdf').addEventListener('click',()=>{
-  if(DIRTY) persistCurrent(false);
-  window.print();
-});
-
-/* ─── Undo / Redo ─── */
-$('wv-undo').addEventListener('click',()=>{
-  wvLines.focus();
-  document.execCommand('undo');
-  updateWc();
-  markDirty();
-});
-$('wv-redo').addEventListener('click',()=>{
-  wvLines.focus();
-  document.execCommand('redo');
-  updateWc();
-  markDirty();
-});
-
-/* ─── Image drop & paste ─── */
-function insertImageFile(file){
-  if(!file || !file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = (ev)=>{
-    const img = document.createElement('img');
-    img.src = ev.target.result;
-    img.setAttribute('contenteditable','false');
-    const wrapper = document.createElement('div');
-    wrapper.appendChild(img);
-    const sel = window.getSelection();
-    if(sel.rangeCount){
-      const range = sel.getRangeAt(0);
-      range.collapse(false);
-      range.insertNode(wrapper);
-      range.setStartAfter(wrapper);
-      range.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } else {
-      wvLines.appendChild(wrapper);
-    }
-    markDirty();
-  };
-  reader.readAsDataURL(file);
-}
-
-wvLines.addEventListener('drop',(e)=>{
-  const files = e.dataTransfer && e.dataTransfer.files;
-  if(files && files.length){
-    for(let i=0; i<files.length; i++){
-      if(files[i].type.startsWith('image/')){
-        e.preventDefault();
-        insertImageFile(files[i]);
-      }
-    }
-  }
-});
-wvLines.addEventListener('dragover',(e)=>{
-  if(e.dataTransfer && e.dataTransfer.types.includes('Files')) e.preventDefault();
-});
-wvLines.addEventListener('paste',(e)=>{
-  const items = e.clipboardData && e.clipboardData.items;
-  if(!items) return;
-  for(let i=0; i<items.length; i++){
-    if(items[i].type.startsWith('image/')){
-      e.preventDefault();
-      insertImageFile(items[i].getAsFile());
-      return;
-    }
-  }
-});
-
-/* ─── Inline checklist (Apple Notes style) ─── */
-
-// Click in the left 22px (checkbox area) to toggle done
-wvLines.addEventListener('click',(e)=>{
-  const line = e.target.closest('.cl-line');
-  if(!line) return;
-  if(e.clientX - line.getBoundingClientRect().left < 22){
-    e.preventDefault();
-    line.classList.toggle('done');
-    markDirty();
-  }
-});
-
-// Toolbar button — toggle selected lines to/from checklist
-// tabindex="-1" on the button keeps focus in the editor on click
-$('wv-checklist').addEventListener('click',()=>{
-  wvLines.focus();
-  const sel = window.getSelection();
-  if(!sel.rangeCount || !wvLines.contains(sel.anchorNode)) return;
-
-  function lineOf(node){
-    while(node && node !== wvLines && node.parentNode !== wvLines) node = node.parentNode;
-    return (node && node !== wvLines) ? node : null;
-  }
-  const anchorLine = lineOf(sel.anchorNode);
-  const focusLine  = lineOf(sel.focusNode);
-
-  const nodes = [];
-  if(anchorLine){
-    if(!focusLine || focusLine === anchorLine){
-      nodes.push(anchorLine);
-    } else {
-      const children = Array.from(wvLines.children);
-      let ai = children.indexOf(anchorLine), fi = children.indexOf(focusLine);
-      if(ai > fi){ const t=ai; ai=fi; fi=t; }
-      for(let i=ai;i<=fi;i++) nodes.push(children[i]);
-    }
-  }
-  if(nodes.length === 0){
-    const cl = makeClLine('', false);
-    wvLines.appendChild(cl);
-    placeCursor(cl, 0);
-    markDirty();
-    return;
-  }
-
-  const allCl = nodes.every(n => n.classList && n.classList.contains('cl-line'));
-  // Toggle class only — no replaceWith, so selection is never disrupted
-  nodes.forEach(n => {
-    if(allCl){
-      n.classList.remove('cl-line','done');
-      if(!n.textContent) n.textContent = '​';
-    } else if(!n.classList.contains('cl-line')){
-      if(n.textContent === '​') n.textContent = '';
-      n.classList.add('cl-line');
-    }
-  });
-  markDirty();
-});
-// Checklist keyboard handling (Enter, Backspace)
-wvLines.addEventListener('keydown',(e)=>{
-  const sel = window.getSelection();
-  if(!sel.rangeCount) return;
-
-  // Find the top-level line div the cursor is in
-  function lineOf(n){ while(n && n !== wvLines && n.parentNode !== wvLines) n = n.parentNode; return (n && n !== wvLines) ? n : null; }
-  const line = lineOf(sel.anchorNode);
-  const isCl = line && line.classList && line.classList.contains('cl-line');
-
-  if(e.key === 'Enter' && isCl){
-    e.preventDefault();
-    const content = line.textContent;
-
-    // Empty checklist → remove cl-line class (escape to plain line, no replaceWith)
-    if(content.trim() === ''){
-      line.classList.remove('cl-line','done');
-      line.textContent = '\u200B';
-      placeCursor(line, 0);
-      markDirty();
-      return;
-    }
-
-    // Split at cursor
-    const r = sel.getRangeAt(0);
-    let offset = r.startOffset;
-    const cursorNode = sel.anchorNode;
-    if(cursorNode !== line && cursorNode.nodeType === 3){
-      let found = false;
-      const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
-      let absOffset = 0;
-      while(walker.nextNode()){
-        if(walker.currentNode === cursorNode){ absOffset += offset; found = true; break; }
-        absOffset += walker.currentNode.length;
-      }
-      if(found) offset = absOffset; else offset = content.length;
-    }
-
-    const before = content.slice(0, offset);
-    const after  = content.slice(offset);
-    line.textContent = before || '';
-
-    const cl = makeClLine(after, false);
-    line.after(cl);
-    placeCursor(cl, 0);
-    markDirty();
-    return;
-  }
-
-  if(e.key === 'Backspace' && isCl){
-    const content = line.textContent;
-    const r = sel.getRangeAt(0);
-
-    let atStart = false;
-    if(r.collapsed){
-      if(sel.anchorNode === line && r.startOffset === 0) atStart = true;
-      else if(sel.anchorNode.nodeType === 3){
-        const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
-        const firstText = walker.nextNode();
-        if(sel.anchorNode === firstText && r.startOffset === 0) atStart = true;
-      }
-    }
-
-    if(atStart){
-      e.preventDefault();
-      const prev = line.previousElementSibling;
-      if(prev && prev.classList && prev.classList.contains('cl-line')){
-        const prevContent = prev.textContent;
-        const cursorPos = prevContent.length;
-        prev.textContent = prevContent + content;
-        line.remove();
-        placeCursor(prev, cursorPos);
-      } else if(prev){
-        const prevContent = prev.textContent.replace(/\u200B/g,'');
-        const cursorPos = prevContent.length;
-        prev.textContent = prevContent + content;
-        line.remove();
-        placeCursor(prev, cursorPos);
-      } else {
-        // First line — remove checklist class, no replaceWith
-        line.classList.remove('cl-line','done');
-        if(!line.textContent) line.textContent = '\u200B';
-        placeCursor(line, 0);
-      }
-      markDirty();
-      return;
-    }
-  }
-
-  // Backspace from start of plain line into a checklist line above
-  if(e.key === 'Backspace' && line && !isCl){
-    const r = sel.getRangeAt(0);
-    if(!r.collapsed) return;
-    let atStart = false;
-    if(sel.anchorNode === line && r.startOffset === 0) atStart = true;
-    else if(sel.anchorNode.nodeType === 3){
-      const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
-      const firstText = walker.nextNode();
-      if(sel.anchorNode === firstText && r.startOffset === 0) atStart = true;
-    }
-    if(atStart){
-      const prev = line.previousElementSibling;
-      if(prev && prev.classList && prev.classList.contains('cl-line')){
-        e.preventDefault();
-        const prevContent = prev.textContent;
-        const cursorPos = prevContent.length;
-        prev.textContent = prevContent + line.textContent.replace(/\u200B/g,'');
-        line.remove();
-        placeCursor(prev, cursorPos);
-        markDirty();
-      }
-    }
-  }
-});
-
-/* ─── Toast + modal ─── */
-function showToast(msg){
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=>t.classList.remove('show'),1600);
-}
-function openConfirm(title,body,onOk){
-  $('confirm-title').textContent = title;
-  $('confirm-body').textContent = body;
-  const m = $('confirm-modal');
-  m.classList.remove('hidden');
-  const cleanup = ()=>{ m.classList.add('hidden'); okBtn.removeEventListener('click',okH); cancelBtn.removeEventListener('click',cancelH); };
-  const okBtn = $('confirm-ok'), cancelBtn = $('confirm-cancel');
-  const okH = ()=>{ cleanup(); onOk(); };
-  const cancelH = ()=>cleanup();
-  okBtn.addEventListener('click',okH);
-  cancelBtn.addEventListener('click',cancelH);
-}
-
-/* ═══════════════ DROPBOX — APP-LEVEL SYNC ════════════════════ */
-DBX.load();
-
-const dbxBtn   = $('btn-dropbox');
-const dbxLabel = $('dbx-label');
-const dbxModal = $('dbx-modal');
-
-function paintDbxBtn(state){
-  dbxBtn.classList.remove('linked','syncing');
-  if(state==='syncing'){
-    dbxBtn.classList.add('syncing');
-    dbxLabel.textContent = 'Syncing…';
-  } else if(DBX.isConnected()){
-    dbxBtn.classList.add('linked');
-    const acct = DBX.account();
-    dbxLabel.textContent = acct ? `Dropbox · ${acct.name.split(' ')[0]}` : 'Dropbox linked';
-  } else {
-    dbxLabel.textContent = 'Connect Dropbox';
-  }
-}
-
-function openDbxModal(){
-  const connected = DBX.isConnected();
-  $('dbx-connected-panel').classList.toggle('hidden', !connected);
-  $('dbx-disconnected-panel').classList.toggle('hidden', connected);
-  if(connected){
-    const a = DBX.account();
-    $('dbx-acct').textContent = a ? `${a.name} (${a.email})` : '—';
-  }
-  dbxModal.classList.remove('hidden');
-}
-function closeDbxModal(){ dbxModal.classList.add('hidden'); }
-
-dbxBtn.addEventListener('click',openDbxModal);
-$('dbx-cancel').addEventListener('click',closeDbxModal);
-$('dbx-close').addEventListener('click',closeDbxModal);
-$('dbx-connect').addEventListener('click',()=>DBX.startOAuth());
-
-/* ═══════════════ ABOUT MODAL ═══════════════════════════════ */
-const aboutModal = $('about-modal');
-$('btn-about').addEventListener('click',()=>aboutModal.classList.remove('hidden'));
-$('about-close').addEventListener('click',()=>aboutModal.classList.add('hidden'));
-aboutModal.addEventListener('click',(e)=>{if(e.target===aboutModal)aboutModal.classList.add('hidden')});
-$('dbx-disconnect').addEventListener('click',async()=>{
-  await DBX.disconnect();
-  paintDbxBtn();
-  closeDbxModal();
-  showToast('Dropbox disconnected');
-});
-$('dbx-pull').addEventListener('click',async()=>{
-  closeDbxModal();
-  await dbxPull();
-});
-
-/* Debounced push: any state change queues a push in ~2s (was 6s —
-   tightened for near-real-time sync across devices). */
-let PUSH_TIMER = null;
-function scheduleDropboxPush(){
-  if(!DBX.isConnected()) return;
-  clearTimeout(PUSH_TIMER);
-  PUSH_TIMER = setTimeout(()=>{ dbxPush().catch(e=>console.warn('DBX push:',e)); }, 2000);
-}
-
-let PUSH_IN_FLIGHT = false;
-async function dbxPush(){
-  if(!DBX.isConnected()) return;
-  if(PUSH_IN_FLIGHT){ scheduleDropboxPush(); return; } // re-queue, don't overlap
-  PUSH_IN_FLIGHT = true;
-  paintDbxBtn('syncing');
-  try{
-    const payload = JSON.stringify(STATE, null, 2);
-    const idCell = { id: DBX.getNotebookId(), path: null };
-    const res = await DBX.uploadSmart(idCell, '/The Notebook/notebook.json', payload);
-    if(res?.id) DBX.setNotebookId(res.id);
-  }catch(err){
-    console.warn('dbxPush failed:', err);
-    showToast('Dropbox sync paused — check connection');
-  } finally {
-    PUSH_IN_FLIGHT = false;
-    paintDbxBtn();
-  }
-}
-
-async function dbxPull(silent=false){
-  if(!DBX.isConnected()){ if(!silent) showToast('Not connected'); return; }
-  if(!silent) paintDbxBtn('syncing');
-  try{
-    let txt = null;
-    const nbId = DBX.getNotebookId();
-    console.log('dbxPull: trying downloadById, nbId =', nbId);
-    if(nbId) txt = await DBX.downloadById(nbId);
-    console.log('dbxPull: downloadById result =', txt ? 'got data (' + txt.length + ' chars)' : 'null');
-    if(!txt){
-      console.log('dbxPull: trying downloadPath /The Notebook/notebook.json');
-      txt = await DBX.downloadPath('/The Notebook/notebook.json');
-      console.log('dbxPull: downloadPath result =', txt ? 'got data (' + txt.length + ' chars)' : 'null');
-    }
-    if(!txt){
-      if(!silent) showToast('Nothing in Dropbox yet — push instead');
-      return;
-    }
-    const remote = JSON.parse(txt);
-    if(!remote.entries){ if(!silent) showToast('Could not read Dropbox file'); return; }
-    // Merge: if remote is newer, adopt it; otherwise keep local
-    const rTs = remote.lastModified || 0;
-    const lTs = STATE.lastModified || 0;
-    if(rTs > lTs){
-      // Guard: if user has an unsaved in-progress edit, don't clobber it.
-      if(DIRTY){ if(!silent) showToast('Unsaved edit — pull skipped'); return; }
-      // Preserve local-only UI settings (filter, search, view) so auto-pull
-      // from another device doesn't switch your current filter/view/search.
-      const localUI = {
-        filter: STATE.settings?.filter || 'all',
-        search: STATE.settings?.search || '',
-        view:   STATE.settings?.view   || 'board'
-      };
-      STATE = remote;
-      STATE.settings = Object.assign({
-        defaultPaper: DEFAULT_PAPER, defaultTape: DEFAULT_TAPE,
-        filter:'all', search:'', view:'board',
-        categories: DEFAULT_CATEGORIES.slice()
-      }, STATE.settings || {}, localUI);
-      // Cancel any pending push — we just pulled, we don't want to immediately
-      // push back with a fresh timestamp and make this device look "newer"
-      clearTimeout(PUSH_TIMER);
-      PUSH_TIMER = null;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
-      rebuildCategoryUI();
-      renderBoard();
-      // If the writing view is open and showing this entry, refresh it
-      // so the user sees the updated content instead of stale textarea values.
-      if(CURRENT_ID && !writingView.classList.contains('hidden')){
-        const updated = STATE.entries.find(e=>e.id===CURRENT_ID);
-        if(updated){
-          wvTitle.value = updated.title || '';
-          deserializeBody(updated.body || '');
-          if(updated.tag && !getCategories().includes(updated.tag)){
-            const opt = document.createElement('option');
-            opt.value = updated.tag;
-            opt.textContent = updated.tag;
-            wvTag.prepend(opt);
-          }
-          wvTag.value = updated.tag || getCategories()[0];
-          wvStar.classList.toggle('on', !!updated.starred);
-          CURRENT_PAPER = updated.paper || DEFAULT_PAPER;
-          CURRENT_TAPE  = updated.tape  || DEFAULT_TAPE;
-          paintWvPickers();
-          updateWc();
-          wvFootRight.textContent = `${fmtDate(updated.updatedAt)} · ${updated.wordCount||0} W`;
-          wvSaved.textContent = '· synced';
-          autosizeTitle();
-        }
-      }
-      if(!silent) showToast('Pulled from Dropbox');
-      // Silent auto-pulls don't toast — avoids spamming user every 10s
-    } else {
-      if(!silent) showToast('Local is newer — nothing to pull');
-    }
-  }catch(err){
-    console.warn('dbxPull failed:', err);
-    if(silent) return; // auto-pulls fail quietly
-    const msg = String(err?.message || err);
-    let userMsg = 'Pull failed';
-    if(/401|unauthorized|session expired/i.test(msg)) userMsg = 'Pull failed: session expired — reconnect';
-    else if(/scope|insufficient_scope/i.test(msg)) userMsg = 'Pull failed: missing Dropbox scopes — reconnect';
-    else if(/network|failed to fetch|NetworkError/i.test(msg)) userMsg = 'Pull failed: no network';
-    else if(/JSON/i.test(msg)) userMsg = 'Pull failed: bad data in Dropbox file';
-    else if(msg.length<60) userMsg = 'Pull failed: ' + msg;
-    showToast(userMsg);
-  } finally {
-    if(!silent) paintDbxBtn();
-  }
-}
-
-/* Real-time sync: poll Dropbox every ~10s for remote changes from another
-   device. Skip while the user is typing (DIRTY) or the tab is backgrounded
-   (save battery). Also pull immediately when the tab comes back to foreground. */
-setInterval(()=>{
-  if(!DBX.isConnected()) return;
-  if(DIRTY) return;           // don't clobber an in-progress edit
-  if(document.hidden) return; // save battery / data
-  dbxPull(true).catch(e=>console.warn('auto-pull:', e));
-}, 10000);
-
-document.addEventListener('visibilitychange', ()=>{
-  if(document.hidden) return;
-  if(!DBX.isConnected()) return;
-  if(DIRTY) return;
-  dbxPull(true).catch(e=>console.warn('visibility-pull:', e));
-});
-
-/* On load: finish OAuth if we just came back from Dropbox,
-   then paint and do an initial pull if connected. */
-(async function bootDropbox(){
-  let justConnected = false;
-  try{ justConnected = await DBX.handleCallback(); }catch(e){ console.warn('OAuth callback:',e); }
-  paintDbxBtn();
-  if(justConnected){
-    showToast('Dropbox connected');
-    // First-run sync: pull existing notebook if there is one, else push local
-    try{
-      const existing = await DBX.downloadPath('/The Notebook/notebook.json');
-      if(existing){
-        await dbxPull();
-      } else {
-        await dbxPush();
-      }
-    }catch(e){ console.warn('initial sync failed:',e); }
-  } else if(DBX.isConnected()){
-    // Silent background pull-then-sync on every load
-    try{ await dbxPull(true); }catch(e){ console.warn(e); }
-  }
-})();
-
-/* ─── Keyboard shortcuts ─── */
-document.addEventListener('keydown',(e)=>{
-  const cmd = e.metaKey||e.ctrlKey;
-  const inWriting = !writingView.classList.contains('hidden');
-  if(e.key==='Escape' && inWriting){
-    e.preventDefault(); closeWriting(true); return;
-  }
-  if(cmd && (e.key==='s' || e.key==='S')){
-    if(inWriting){ e.preventDefault(); persistCurrent(true); }
-  }
-  if(cmd && (e.key==='n' || e.key==='N')){
-    if(!inWriting){ e.preventDefault(); openWriting(null); }
-  }
-  if(cmd && (e.key==='p' || e.key==='P')){
-    if(inWriting){ e.preventDefault(); window.print(); }
-  }
-});
-
-/* ─── New-page buttons (desktop + mobile FAB + list) ─── */
-$('btn-new').addEventListener('click',()=>openWriting(null));
-$('fab-new').addEventListener('click',()=>openWriting(null));
-
-/* ─── Startup ─── */
+// ── STARTUP ──
 function boot(){
-  rebuildCategoryUI();
-  $('search-input').value = STATE.settings.search || '';
+  loadState();
   renderBoard();
+  renderList();
 }
 boot();
 
-/* Service worker (only when served over http(s)) */
+// Service worker
 if('serviceWorker' in navigator && (location.protocol==='https:' || location.protocol==='http:')){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('service-worker.js').catch(err=>{
