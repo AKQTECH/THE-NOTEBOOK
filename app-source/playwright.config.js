@@ -1,0 +1,2 @@
+import {defineConfig,devices} from '@playwright/test';
+export default defineConfig({testDir:'./tests',timeout:30000,workers:1,reporter:[['list'],['html',{open:'never',outputFolder:'test-report'}]],use:{baseURL:'http://127.0.0.1:4173',trace:'retain-on-failure'},projects:[{name:'desktop-chromium',use:{...devices['Desktop Chrome'],viewport:{width:1440,height:1000},launchOptions:process.env.CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH}:{}}},{name:'pwa-webkit',use:{...devices['iPhone 13'],browserName:'webkit'}}]});
