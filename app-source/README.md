@@ -62,3 +62,7 @@ The library uses square cards with uniform #DEEC82 top edges. THE NOTEBOOK uses 
 ## Editor refinements — November 16, 2026
 
 Category picker text is 16px. Empty-title placeholder is 24px with interior padding; entered titles retain their Anton style. The note action bar starts collapsed behind Note Actions and remembers the local toggle. Save failures remain visible and expose the retry controls. Settings opens as a separate full-screen view. Show word count is off by default and persists when changed. 40 tests passed, with two PWA-only desktop skips, including hide/show controls, word-count persistence, storage failure recovery, editing, and offline behavior.
+
+## Note-click race repair
+
+Reproduced a dropped click when a background storage/sync update replaced the board between pointer-down and pointer-up. The new regression failed on desktop Chromium and WebKit before the change and passed after it. Board updates now preserve existing card elements and defer rendering until the current pointer interaction completes. No note data is changed by this repair. Fresh live-site sessions opened notes normally before the repair; the specific reported user session could not be inspected, so this is a verified contributing bug rather than proof of that session’s sole cause.
