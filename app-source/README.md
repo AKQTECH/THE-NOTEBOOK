@@ -54,3 +54,7 @@ The editor uses Tiptap document transactions rather than the previous hand-mutat
 ## Additional safety verification
 
 November 13: 36 tests passed, 2 PWA-only desktop skips, zero npm audit vulnerabilities. See SAFETY_CHECKS_20261113.md for the expanded checks and limits.
+
+## Approved board update — November 16, 2026
+
+The library uses square cards with uniform #DEEC82 top edges. THE NOTEBOOK uses black Anton at 96px on desktop (double the 48px mockup), scaled to fit mobile. New Note is lime. Category and formatting dropdown arrows have additional inset space. Archive browsing and the persistent include-archived preference are in Settings. The original blue favicon is embedded for browser tabs/bookmarks, never displayed beside the app name. Existing notes and editor data are unchanged.
