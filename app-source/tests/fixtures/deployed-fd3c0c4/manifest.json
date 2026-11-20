@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "The Notebook",
+  "short_name": "Notebook",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faeaf3",
+  "theme_color": "#faeaf3",
+  "icons": [
+    {
+      "src": "icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
